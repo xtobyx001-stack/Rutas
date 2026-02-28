@@ -3,187 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Sistema de Flota Full</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+    <title>Llega Ya | Sistema Real</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --red: #E60042; --blue: #007AFF; --green: #28a745; --bg: #F2F2F7; }
+        :root { --red: #E60042; --blue: #007AFF; --green: #28a745; --bg: #F8F9FA; }
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); font-family: 'Outfit', sans-serif; padding-bottom: 120px; }
+        body { background: var(--bg); font-family: 'Outfit', sans-serif; padding-bottom: 100px; }
         
-        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .logo { font-weight: 800; color: var(--red); font-size: 1.3rem; cursor: pointer; }
-        #gps-status { font-size: 0.7rem; color: var(--green); font-weight: 700; margin-top: 5px; }
+        header { background: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top:0; z-index:100; }
+        .logo { font-weight: 900; color: var(--red); font-size: 1.5rem; cursor: pointer; }
+        .gps-status { color: var(--green); font-size: 0.7rem; font-weight: 700; margin-top: 5px; }
 
-        /* PANEL DEL JEFE */
-        #admin-panel { display: none; background: #1c1c1e; color: white; padding: 20px; margin: 15px; border-radius: 20px; border: 2px solid var(--red); }
-        textarea { width: 100%; background: #000; color: #0f0; border: 1px solid #333; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-family: monospace; }
-        
-        /* FORMULARIO AGREGAR CLIENTE (MENSAJERO) */
-        #add-client-form { display: none; background: white; margin: 15px; padding: 20px; border-radius: 24px; border: 2px solid var(--blue); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; }
-        .input-group input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #DDD; font-family: 'Outfit', sans-serif; }
+        /* BOTÓN PRINCIPAL PARA EL TRABAJADOR */
+        .btn-main-add { 
+            background: var(--blue); color: white; margin: 15px; padding: 15px; 
+            border-radius: 15px; text-align: center; font-weight: 800; border: none; 
+            width: calc(100% - 30px); display: block; box-shadow: 0 4px 15px rgba(0,122,255,0.3);
+        }
+
+        /* FORMULARIO AGREGAR */
+        #form-nuevo { display: none; background: white; margin: 15px; padding: 20px; border-radius: 20px; border: 2px solid var(--blue); }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #DDD; font-family: 'Outfit'; }
 
         /* TARJETAS */
-        .card { background: white; margin: 15px; padding: 20px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #EEE; }
+        .card { background: white; margin: 15px; padding: 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #EEE; }
         .card.done { opacity: 0.5; filter: grayscale(1); }
-        .client-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; display: block; }
-        .info { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
-        .price { font-weight: 800; color: var(--green); background: #EFFFF4; padding: 2px 6px; border-radius: 5px; }
+        .client-name { font-size: 1.2rem; font-weight: 800; display: block; margin-bottom: 5px; }
+        .client-meta { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+        .price { color: var(--green); font-weight: 800; background: #EFFFF4; padding: 2px 6px; border-radius: 5px; }
 
-        /* BOTONES */
-        .btn-nav { background: var(--blue); color: white; width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 800; font-size: 1rem; margin-bottom: 12px; }
-        .btn-no-loc { background: #EEE; color: #888; width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 800; margin-bottom: 12px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-action { padding: 14px; border-radius: 14px; border: none; font-weight: 700; font-size: 0.85rem; }
-        .btn-reubicar { background: #FFF0F4; color: var(--red); }
-        .btn-wa { background: #25D366; color: white; }
-        .btn-entregado { background: var(--red); color: white; width: 100%; padding: 16px; margin-top: 12px; border-radius: 14px; border: none; font-weight: 800; }
+        /* BOTONES DE ACCIÓN */
+        .btn-nav { background: var(--blue); color: white; width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 800; margin-bottom: 10px; }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-sec { padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-size: 0.8rem; }
+        .btn-finish { background: var(--red); color: white; width: 100%; padding: 16px; border-radius: 12px; border: none; font-weight: 800; margin-top: 10px; }
 
-        /* BOTÓN FLOTANTE AGREGAR */
-        .fab { position: fixed; bottom: 30px; right: 20px; background: var(--blue); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 10px 20px rgba(0,122,255,0.4); border: none; z-index: 99; font-weight: 800; }
+        /* PANEL JEFE */
+        #admin-panel { display: none; background: #111; color: white; padding: 20px; margin: 15px; border-radius: 20px; }
+        textarea { width: 100%; background: #000; color: #0f0; padding: 10px; border-radius: 10px; margin: 10px 0; font-family: monospace; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo" onclick="abrirAdmin()">LLEGA YA ELITE 🛵</div>
-    <div id="gps-status">🛰️ GPS ACTIVO</div>
+    <div class="logo" onclick="toggleAdmin()">LLEGA YA ELITE 🛵</div>
+    <div class="gps-status">● GPS ACTIVADO</div>
 </header>
 
-<button class="fab" onclick="toggleAddForm()">+</button>
+<button class="btn-main-add" onclick="toggleForm()">+ AGREGAR NUEVO CLIENTE</button>
+
+<div id="form-nuevo">
+    <h3 style="margin-bottom:10px; color:var(--blue);">Nuevo Pedido</h3>
+    <input type="text" id="n-nombre" placeholder="Nombre del Cliente">
+    <input type="tel" id="n-tel" placeholder="Teléfono">
+    <input type="number" id="n-monto" placeholder="Monto RD$">
+    <button onclick="guardarManual()" style="background:var(--blue); color:white; width:100%; padding:15px; border-radius:12px; border:none; font-weight:800;">GUARDAR Y FIJAR GPS</button>
+    <button onclick="toggleForm()" style="background:none; border:none; width:100%; margin-top:10px; color:#999;">Cancelar</button>
+</div>
 
 <div id="admin-panel">
-    <div style="text-align:center; color:var(--red); font-weight:800; margin-bottom:10px;">PANEL DEL DUEÑO</div>
-    <input type="file" id="file-input" accept=".json" style="margin-bottom: 10px; font-size: 0.8rem; color: white;">
-    <textarea id="json-box" rows="3" placeholder="Pegar código..."></textarea>
-    <button onclick="generarLinkWorker()" style="background:var(--green); color:white; width:100%; padding:12px; border-radius:10px; border:none; font-weight:800;">GENERAR LINK</button>
-    <div id="link-res" style="display:none; background:#000; color:#0f0; padding:10px; border-radius:10px; font-size:0.6rem; word-break:break-all; margin-top:10px;"></div>
-    <button onclick="cerrarAdmin()" style="width:100%; background:none; color:white; margin-top:10px; border:1px solid #444; padding:5px; border-radius:8px;">Cerrar</button>
+    <h3>Panel Jefe</h3>
+    <input type="file" id="f-json" accept=".json" style="margin: 10px 0; color: white;">
+    <textarea id="t-json" rows="4" placeholder="O pega el código aquí..."></textarea>
+    <button onclick="generarLink()" style="background:var(--green); color:white; width:100%; padding:12px; border-radius:10px; border:none; font-weight:800;">CREAR LINK WHATSAPP</button>
+    <div id="res-link" style="display:none; background:black; color:#0f0; padding:10px; border-radius:10px; font-size:0.6rem; word-break:break-all; margin-top:10px;"></div>
+    <button onclick="toggleAdmin()" style="background:none; border:1px solid #444; color:white; width:100%; margin-top:10px; padding:5px; border-radius:8px;">Cerrar</button>
 </div>
 
-<div id="add-client-form">
-    <div style="font-weight:800; margin-bottom:15px; color:var(--blue);">NUEVO CLIENTE / PEDIDO</div>
-    <div class="input-group"><label>NOMBRE:</label><input type="text" id="new-name" placeholder="Ej: Juan Pérez"></div>
-    <div class="input-group"><label>TELÉFONO:</label><input type="tel" id="new-phone" placeholder="8090000000"></div>
-    <div class="input-group"><label>MONTO A COBRAR (RD$):</label><input type="number" id="new-cod" placeholder="0.00"></div>
-    <div style="font-size: 0.7rem; color: #666; margin-bottom: 15px;">* Se guardará con tu ubicación GPS actual automáticamente.</div>
-    <button onclick="saveNewClient()" style="background:var(--blue); color:white; width:100%; padding:15px; border-radius:12px; border:none; font-weight:800;">GUARDAR CLIENTE</button>
-    <button onclick="toggleAddForm()" style="width:100%; background:none; color:#999; margin-top:10px; border:none; font-weight:700;">CANCELAR</button>
-</div>
-
-<div id="lista-pedidos"></div>
+<div id="app"></div>
 
 <script>
-    let db = { clientes: [] };
-    let miLoc = { lat: 0, lng: 0 };
+    let db = JSON.parse(localStorage.getItem('ly_v10')) || { clientes: [] };
+    let miPos = { lat: 0, lng: 0 };
 
-    function init() {
-        const params = new URLSearchParams(window.location.search);
-        const rutaUrl = params.get('ruta');
-        if (rutaUrl) {
-            try {
-                const decodificado = JSON.parse(decodeURIComponent(atob(rutaUrl)));
-                db.clientes = [...(decodificado.clientes || []), ...(decodificado.sin_ubicacion || [])];
-                guardar();
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } catch(e) { console.log(e); }
-        } else {
-            const guardado = localStorage.getItem('ly_pro_v7');
-            if(guardado) db = JSON.parse(guardado);
-        }
-
-        document.getElementById('file-input').addEventListener('change', function(e) {
-            const reader = new FileReader();
-            reader.onload = function(e) { document.getElementById('json-box').value = e.target.result; };
-            reader.readAsText(e.target.files[0]);
-        });
-
+    function start() {
         navigator.geolocation.watchPosition(p => {
-            miLoc = { lat: p.coords.latitude, lng: p.coords.longitude };
+            miPos = { lat: p.coords.latitude, lng: p.coords.longitude };
             render();
         }, null, {enableHighAccuracy:true});
+
+        // Lector de archivos
+        document.getElementById('f-json').addEventListener('change', function(e) {
+            const r = new FileReader();
+            r.onload = function(e) { document.getElementById('t-json').value = e.target.result; };
+            r.readAsText(e.target.files[0]);
+        });
+
+        // Cargar por URL
+        const params = new URLSearchParams(window.location.search);
+        const ruta = params.get('ruta');
+        if(ruta) {
+            try {
+                const data = JSON.parse(decodeURIComponent(atob(ruta)));
+                db.clientes = data.clientes || [];
+                save();
+                window.history.replaceState({}, '', window.location.pathname);
+            } catch(e) {}
+        }
         render();
     }
 
     function render() {
-        const cont = document.getElementById('lista-pedidos');
-        if(!db.clientes.length) {
-            cont.innerHTML = '<p style="text-align:center;padding:100px 20px;color:#888;">Toca el logo arriba o el botón "+" para empezar.</p>';
+        const cont = document.getElementById('app');
+        if(db.clientes.length === 0) {
+            cont.innerHTML = '<p style="text-align:center; padding:50px; opacity:0.5;">Esperando pedidos...</p>';
             return;
         }
-        const lista = db.clientes.sort((a,b) => (a.estado === 'entregado' ? 1 : -1));
+
         let html = '';
-        lista.forEach(c => {
-            const entregado = c.estado === 'entregado';
-            const tieneLoc = (c.lat && c.lat != "0");
+        db.clientes.sort((a,b) => (a.estado === 'entregado' ? 1 : -1)).forEach(c => {
+            const done = c.estado === 'entregado';
             html += `
-            <div class="card ${entregado ? 'done' : ''}">
+            <div class="card ${done ? 'done' : ''}">
                 <span class="client-name">${c.nombre}</span>
-                <div class="info">Tel: ${c.telefono} | <span class="price">RD$ ${c.cod}</span></div>
-                ${tieneLoc ? `<button class="btn-nav" onclick="irMapa('${c.lat}', '${c.lng}')">🚀 IR AL MAPA</button>` : `<button class="btn-no-loc" onclick="reubicar(${c.id})">⚠️ SIN UBICACIÓN (AÑADIR)</button>`}
-                <div class="grid"><button class="btn-action btn-reubicar" onclick="reubicar(${c.id})">📍 MOVER</button><button class="btn-action btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">WHATSAPP</button></div>
-                <button class="btn-entregado" onclick="marcar(${c.id})">${entregado ? '✓ ENTREGADO' : 'MARCAR ENTREGADO'}</button>
+                <div class="client-meta">${c.telefono} | <span class="price">RD$ ${c.cod}</span></div>
+                <button class="btn-nav" onclick="ir('${c.lat}','${c.lng}')">🚀 IR AL MAPA</button>
+                <div class="btn-row">
+                    <button class="btn-sec" style="background:#FFF0F4; color:var(--red);" onclick="reubicar(${c.id})">📍 MOVER</button>
+                    <button class="btn-sec" style="background:#EFFFF4; color:var(--green);" onclick="window.open('https://wa.me/${c.telefono}')">WHATSAPP</button>
+                </div>
+                <button class="btn-finish" onclick="completar(${c.id})">${done ? '✓ ENTREGADO' : 'MARCAR ENTREGADO'}</button>
             </div>`;
         });
         cont.innerHTML = html;
     }
 
-    // --- FUNCIÓN AGREGAR MANUAL (TRABAJADOR) ---
-    function toggleAddForm() {
-        const form = document.getElementById('add-client-form');
-        form.style.display = form.style.display === 'block' ? 'none' : 'block';
-        if(form.style.display === 'block') window.scrollTo(0,0);
+    function toggleForm() { 
+        const f = document.getElementById('form-nuevo');
+        f.style.display = f.style.display === 'block' ? 'none' : 'block';
     }
 
-    function saveNewClient() {
-        const name = document.getElementById('new-name').value;
-        const phone = document.getElementById('new-phone').value;
-        const cod = document.getElementById('new-cod').value;
+    function guardarManual() {
+        const n = document.getElementById('n-nombre').value;
+        const t = document.getElementById('n-tel').value;
+        const m = document.getElementById('n-monto').value;
+        if(!n || !t) return alert("Llena nombre y teléfono");
+        if(!miPos.lat) return alert("GPS buscando...");
 
-        if(!name || !phone) return alert("Nombre y Teléfono son obligatorios");
-        if(!miLoc.lat) return alert("Esperando señal GPS para fijar al cliente...");
-
-        const nuevo = {
-            id: Date.now(),
-            nombre: name,
-            telefono: phone,
-            cod: cod || "0",
-            lat: miLoc.lat,
-            lng: miLoc.lng,
-            estado: 'pendiente'
-        };
-
-        db.clientes.unshift(nuevo);
-        guardar();
-        toggleAddForm();
-        // Limpiar campos
-        document.getElementById('new-name').value = "";
-        document.getElementById('new-phone').value = "";
-        document.getElementById('new-cod').value = "";
+        db.clientes.unshift({ id: Date.now(), nombre: n, telefono: t, cod: m, lat: miPos.lat, lng: miPos.lng, estado: 'pendiente' });
+        save();
+        toggleForm();
+        document.getElementById('n-nombre').value = '';
+        document.getElementById('n-tel').value = '';
+        document.getElementById('n-monto').value = '';
     }
 
-    function irMapa(lat, lng) { window.open(`https://www.google.com/maps/dir/?api=1&destination=$0{lat},${lng}&travelmode=motorcycle`); }
-    function reubicar(id) {
-        const c = db.clientes.find(x => x.id == id);
-        if(confirm("¿Fijar este cliente en tu posición actual?")) {
-            c.lat = miLoc.lat; c.lng = miLoc.lng; guardar();
-        }
-    }
-    function marcar(id) { db.clientes.find(x => x.id == id).estado = 'entregado'; guardar(); }
-    function guardar() { localStorage.setItem('ly_pro_v7', JSON.stringify(db)); render(); }
-    function abrirAdmin() { if(prompt("CLAVE:") === "1234") document.getElementById('admin-panel').style.display = 'block'; }
-    function cerrarAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
-    function generarLinkWorker() {
-        const txt = document.getElementById('json-box').value;
-        const b64 = btoa(encodeURIComponent(txt));
-        const link = `${window.location.href.split('?')[0]}?ruta=${b64}`;
-        const res = document.getElementById('link-res');
-        res.style.display = 'block';
-        res.innerHTML = `<strong>LINK:</strong><br>${link}<br><br><button onclick="navigator.clipboard.writeText('${link}');alert('Copiado')">COPIAR</button>`;
+    function ir(la, ln) { window.open(`https://www.google.com/maps/dir/?api=1&destination=${la},${ln}&travelmode=motorcycle`); }
+    function reubicar(id) { if(confirm("¿Fijar cliente en tu ubicación actual?")) { db.clientes.find(x=>x.id==id).lat = miPos.lat; db.clientes.find(x=>x.id==id).lng = miPos.lng; save(); } }
+    function completar(id) { db.clientes.find(x=>x.id==id).estado = 'entregado'; save(); }
+    function save() { localStorage.setItem('ly_v10', JSON.stringify(db)); render(); }
+    function toggleAdmin() { if(prompt("Clave:") === "1234") { const p = document.getElementById('admin-panel'); p.style.display = p.style.display === 'block' ? 'none' : 'block'; } }
+    
+    function generarLink() {
+        const b64 = btoa(encodeURIComponent(document.getElementById('t-json').value));
+        const l = `${window.location.href.split('?')[0]}?ruta=${b64}`;
+        const box = document.getElementById('res-link');
+        box.style.display = 'block';
+        box.innerHTML = `Link: ${l} <br><button onclick="navigator.clipboard.writeText('${l}');alert('Copiado')">Copiar</button>`;
     }
 
-    init();
+    start();
 </script>
 </body>
 </html>
