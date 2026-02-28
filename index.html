@@ -17,7 +17,12 @@ header h1 { font-size: 1.1rem; }
 .toolbar { display: flex; gap: 8px; padding: 10px; background: #0f172a; border-bottom: 1px solid var(–border); position: sticky; top: 53px; z-index: 49; }
 .toolbar button { flex: 1; padding: 10px 6px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.8rem; cursor: pointer; color: white; }
 
-.tabs { display: flex; border-bottom: 1px solid var(–border); background: var(–card); position: sticky; top: 106px; z-index: 48; }
+.search-bar { padding: 8px 10px; background: #0f172a; border-bottom: 1px solid var(–border); position: sticky; top: 106px; z-index: 48; }
+.search-bar input { width: 100%; padding: 10px 14px 10px 36px; border-radius: 8px; border: 1px solid var(–border); background: var(–card); color: white; font-size: 0.9rem; }
+.search-wrap { position: relative; }
+.search-wrap .lupa { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 1rem; pointer-events: none; }
+
+.tabs { display: flex; border-bottom: 1px solid var(–border); background: var(–card); position: sticky; top: 159px; z-index: 47; }
 .tab { flex: 1; padding: 10px; text-align: center; font-size: 0.85rem; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; color: #94a3b8; }
 .tab.active { color: var(–blue); border-bottom-color: var(–blue); }
 
@@ -43,7 +48,7 @@ header h1 { font-size: 1.1rem; }
 .modal h2 { margin-bottom: 16px; font-size: 1.1rem; }
 .field { margin-bottom: 12px; }
 .field label { display: block; font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px; }
-.field input, .field textarea, .field select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(–border); background: #0f172a; color: white; font-size: 0.95rem; }
+.field input, .field textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(–border); background: #0f172a; color: white; font-size: 0.95rem; }
 .field textarea { resize: vertical; min-height: 80px; }
 .modal-btns { display: flex; gap: 8px; margin-top: 16px; }
 .modal-btns button { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 0.9rem; }
@@ -53,7 +58,6 @@ header h1 { font-size: 1.1rem; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; margin-left: 6px; }
 .badge-orange { background: var(–orange); color: black; }
-.badge-green { background: var(–green); }
 
 .empty { text-align: center; padding: 40px 20px; color: #64748b; }
 </style>
@@ -68,8 +72,15 @@ header h1 { font-size: 1.1rem; }
 
 <div class="toolbar">
   <button style="background:var(--blue)" onclick="openModal('modalCargar')">📂 Cargar JSON</button>
-  <button style="background:var(--purple)" onclick="sortNearest()">⚡ Por Cercanía</button>
+  <button style="background:var(--purple)" onclick="sortNearest()">⚡ Cercanía</button>
   <button style="background:var(--green)" onclick="openModal('modalCliente')">+ Cliente</button>
+</div>
+
+<div class="search-bar">
+  <div class="search-wrap">
+    <span class="lupa">🔍</span>
+    <input type="text" id="busqueda" placeholder="Buscar por nombre o teléfono..." oninput="render()">
+  </div>
 </div>
 
 <div class="tabs">
@@ -100,7 +111,7 @@ header h1 { font-size: 1.1rem; }
   </div>
 </div>
 
-<!-- Modal Nuevo Cliente -->
+<!-- Modal Nuevo/Editar Cliente -->
 
 <div class="overlay" id="modalCliente">
   <div class="modal">
@@ -133,6 +144,8 @@ header h1 { font-size: 1.1rem; }
   </div>
 </div>
 
+<!-- FAB + Config -->
+
 <div class="fab">
   <button style="background:#475569" onclick="openModal('modalConfig')">⚙️</button>
 </div>
@@ -149,7 +162,6 @@ header h1 { font-size: 1.1rem; }
 <script>
 let clientes = JSON.parse(localStorage.getItem('llega_ya_clientes') || '[]');
 let tabActual = 'pendientes';
-
 const ORIGEN = { lat: 19.2917, lng: -70.2558 };
 
 function guardar() {
@@ -159,6 +171,7 @@ function guardar() {
 
 function render() {
   const list = document.getElementById('list');
+  const busqueda = document.getElementById('busqueda').value.toLowerCase().trim();
   let datos;
 
   if (tabActual === 'pendientes') {
@@ -166,10 +179,16 @@ function render() {
   } else if (tabActual === 'sin_ubicacion') {
     datos = clientes.filter(c => !c.lat || !c.lng);
   } else {
-    datos = clientes.filter(c => c.estado === 'entregado' || c.estado === 'fallido');
+    datos = clientes.filter(c => (c.estado === 'entregado' || c.estado === 'fallido') && c.lat && c.lng);
   }
 
-  // stats
+  if (busqueda) {
+    datos = datos.filter(c =>
+      (c.nombre || '').toLowerCase().includes(busqueda) ||
+      (c.telefono || '').includes(busqueda)
+    );
+  }
+
   const total = clientes.length;
   const entregados = clientes.filter(c => c.estado === 'entregado').length;
   document.getElementById('stats').textContent = `${entregados}/${total} entregados`;
@@ -183,27 +202,43 @@ function render() {
     const mapsUrl = c.lat && c.lng ? `https://www.google.com/maps?q=${c.lat},${c.lng}` : null;
     const waUrl = c.telefono ? `https://wa.me/${c.telefono.replace(/\D/g,'')}` : null;
     const sinUbi = !c.lat || !c.lng;
+    const esSinUbi = tabActual === 'sin_ubicacion';
+
+    // Estado visual de los botones toggle
+    const btnEntregado = c.estado === 'entregado'
+      ? `<button class="btn-sm" style="background:#065f46" onclick="toggleEstado(${c.id},'entregado','pendiente')">✅ Entregado</button>`
+      : `<button class="btn-sm" style="background:var(--green)" onclick="toggleEstado(${c.id},'pendiente','entregado')">✅ Entregado</button>`;
+
+    const btnFallo = c.estado === 'fallido'
+      ? `<button class="btn-sm" style="background:#7f1d1d" onclick="toggleEstado(${c.id},'fallido','pendiente')">❌ Falló</button>`
+      : `<button class="btn-sm" style="background:var(--red)" onclick="toggleEstado(${c.id},'pendiente','fallido')">❌ Falló</button>`;
 
     return `
-    <div class="card ${c.estado !== 'pendiente' ? c.estado : ''} ${sinUbi ? 'sin-ubi' : ''}">
+    <div class="card ${!esSinUbi && c.estado !== 'pendiente' ? c.estado : ''} ${sinUbi ? 'sin-ubi' : ''}">
       <div class="card-header">
         <div class="nombre">${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}</div>
         <div class="cod">RD$ ${(c.cod||0).toLocaleString()} · Tel: ${c.telefono || '—'}</div>
       </div>
       <div class="card-body">
-        ${mapsUrl ? `<a class="btn" style="background:var(--blue)" href="${mapsUrl}" target="_blank">🗺️ Ver en Mapa</a>` : ''}
-        ${waUrl ? `<a class="btn" style="background:#25d366" href="${waUrl}" target="_blank">💬 WhatsApp</a>` : ''}
         <div class="btn-row">
-          <button class="btn-sm" style="background:var(--purple)" onclick="abrirUbi(${c.id})">📍 Actualizar Ubicación</button>
+          ${mapsUrl ? `<a class="btn-sm" style="background:var(--blue)" href="${mapsUrl}" target="_blank">🗺️ Mapa</a>` : ''}
+          ${waUrl ? `<a class="btn-sm" style="background:#25d366" href="${waUrl}" target="_blank">💬 WhatsApp</a>` : ''}
+        </div>
+        <div class="btn-row">
+          <button class="btn-sm" style="background:var(--purple)" onclick="abrirUbi(${c.id})">📍 Ubicación</button>
           <button class="btn-sm" style="background:#334155" onclick="editarCliente(${c.id})">✏️ Editar</button>
         </div>
-        ${c.estado === 'pendiente' ? `
+        ${esSinUbi ? `
         <div class="btn-row">
-          <button class="btn-sm" style="background:var(--green)" onclick="setEstado(${c.id},'entregado')">✅ Entregado</button>
-          <button class="btn-sm" style="background:var(--red)" onclick="setEstado(${c.id},'fallido')">❌ Falló</button>
+          ${btnEntregado}
+          ${btnFallo}
+        </div>
+        <div class="btn-row">
+          <button class="btn-sm" style="background:#0f766e" onclick="rotarAlFinal(${c.id})">🔄 Ya Contacté</button>
         </div>` : `
         <div class="btn-row">
-          <button class="btn-sm" style="background:#475569" onclick="setEstado(${c.id},'pendiente')">↩️ Pendiente</button>
+          ${btnEntregado}
+          ${btnFallo}
         </div>`}
       </div>
     </div>`;
@@ -212,15 +247,29 @@ function render() {
 
 function switchTab(tab) {
   tabActual = tab;
+  document.getElementById('busqueda').value = '';
   document.querySelectorAll('.tab').forEach((t, i) => {
     t.classList.toggle('active', ['pendientes','sin_ubicacion','completados'][i] === tab);
   });
   render();
 }
 
-function setEstado(id, estado) {
+// Toggle de estado: si ya está en ese estado, regresa a pendiente
+function toggleEstado(id, estadoActual, estadoNuevo) {
   const c = clientes.find(x => x.id === id);
-  if (c) { c.estado = estado; guardar(); }
+  if (!c) return;
+  // En sin_ubicacion no mover a completados, solo cambiar estado internamente
+  c.estado = (c.estado === estadoNuevo) ? 'pendiente' : estadoNuevo;
+  guardar();
+}
+
+// Rotar al final de la lista (Ya contacté)
+function rotarAlFinal(id) {
+  const idx = clientes.findIndex(x => x.id === id);
+  if (idx === -1) return;
+  const [c] = clientes.splice(idx, 1);
+  clientes.push(c);
+  guardar();
 }
 
 function sortNearest() {
@@ -228,7 +277,6 @@ function sortNearest() {
   let pendientes = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
   let resto = clientes.filter(c => !(c.estado === 'pendiente' && c.lat && c.lng));
   let ordenados = [];
-
   while (pendientes.length > 0) {
     let idx = 0, min = Infinity;
     pendientes.forEach((c, i) => {
@@ -239,14 +287,12 @@ function sortNearest() {
     ordenados.push(next);
     lat = next.lat; lng = next.lng;
   }
-
   clientes = [...ordenados, ...resto];
   tabActual = 'pendientes';
   switchTab('pendientes');
   guardar();
 }
 
-// Cargar archivo
 function cargarArchivo(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -264,17 +310,10 @@ function cargarPegado() {
 function procesarJSON(txt) {
   try {
     const data = JSON.parse(txt);
-    let lista = [];
-    if (Array.isArray(data)) {
-      lista = data;
-    } else {
-      lista = [...(data.clientes || []), ...(data.sin_ubicacion || [])];
-    }
-    // Merge: conservar estados existentes
+    let lista = Array.isArray(data) ? data : [...(data.clientes || []), ...(data.sin_ubicacion || [])];
     lista.forEach(nuevo => {
       const existe = clientes.find(c => c.id === nuevo.id);
       if (existe) {
-        // actualizar datos pero conservar estado
         Object.assign(existe, nuevo, { estado: existe.estado });
       } else {
         clientes.push({ ...nuevo, estado: nuevo.estado || 'pendiente' });
@@ -283,20 +322,10 @@ function procesarJSON(txt) {
     guardar();
     closeModal('modalCargar');
     alert(`✅ ${lista.length} clientes cargados`);
-  } catch(e) {
-    alert('Error: JSON no válido');
-  }
+  } catch(e) { alert('Error: JSON no válido'); }
 }
 
-// Nuevo / Editar cliente
 let nextId = () => Math.max(0, ...clientes.map(c => c.id || 0)) + 1;
-
-function openModalCliente() {
-  document.getElementById('editId').value = '';
-  document.getElementById('modalClienteTitulo').textContent = '➕ Nuevo Cliente';
-  ['cNombre','cTel','cCod','cLat','cLng'].forEach(id => document.getElementById(id).value = '');
-  openModal('modalCliente');
-}
 
 function editarCliente(id) {
   const c = clientes.find(x => x.id === id);
@@ -318,9 +347,7 @@ function guardarCliente() {
   const cod = parseFloat(document.getElementById('cCod').value) || 0;
   const lat = parseFloat(document.getElementById('cLat').value) || null;
   const lng = parseFloat(document.getElementById('cLng').value) || null;
-
   if (!nombre) return alert('El nombre es requerido');
-
   if (editId) {
     const c = clientes.find(x => x.id == editId);
     if (c) { c.nombre = nombre; c.telefono = telefono; c.cod = cod; c.lat = lat; c.lng = lng; }
@@ -331,7 +358,6 @@ function guardarCliente() {
   closeModal('modalCliente');
 }
 
-// Actualizar ubicación
 function abrirUbi(id) {
   document.getElementById('ubiId').value = id;
   document.getElementById('ubiInput').value = '';
@@ -347,8 +373,14 @@ function guardarUbicacion() {
   if (c) { c.lat = parseFloat(match[1]); c.lng = parseFloat(match[2]); guardar(); closeModal('modalUbi'); }
 }
 
-// Modales
-function openModal(id) { document.getElementById(id).classList.add('open'); }
+function openModal(id) {
+  if (id === 'modalCliente') {
+    document.getElementById('editId').value = '';
+    document.getElementById('modalClienteTitulo').textContent = '➕ Nuevo Cliente';
+    ['cNombre','cTel','cCod','cLat','cLng'].forEach(i => document.getElementById(i).value = '');
+  }
+  document.getElementById(id).classList.add('open');
+}
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
 
