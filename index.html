@@ -3,186 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Sistema de Flota</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <title>Llega Ya | Sistema de Flota Full</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --red: #E60042; --blue: #007AFF; --green: #28a745; --bg: #F8F9FA; --dark: #1A1A1A; }
+        :root { --red: #E60042; --blue: #007AFF; --green: #28a745; --bg: #F2F2F7; }
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); color: var(--dark); font-family: 'Outfit', sans-serif; padding-bottom: 120px; }
+        body { background: var(--bg); font-family: 'Outfit', sans-serif; padding-bottom: 120px; }
         
-        /* Header con acceso oculto al Jefe */
-        header { background: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top:0; z-index:100; }
-        .logo { font-weight: 800; color: var(--red); font-size: 1.4rem; cursor: pointer; }
+        header { background: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo { font-weight: 800; color: var(--red); font-size: 1.3rem; cursor: pointer; }
         #gps-status { font-size: 0.7rem; color: var(--green); font-weight: 700; margin-top: 5px; }
 
-        /* Estilo de las Tarjetas de Pedido */
-        .card { background: white; margin: 15px; padding: 20px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #EEE; position: relative; transition: 0.3s; }
-        .card.done { opacity: 0.4; filter: grayscale(1); border-left: 6px solid var(--green); }
+        /* PANEL DEL JEFE */
+        #admin-panel { display: none; background: #1c1c1e; color: white; padding: 20px; margin: 15px; border-radius: 20px; border: 2px solid var(--red); }
+        textarea { width: 100%; background: #000; color: #0f0; border: 1px solid #333; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-family: monospace; }
         
-        .client-name { font-size: 1.25rem; font-weight: 700; display: block; margin-bottom: 5px; }
-        .client-info { font-size: 0.9rem; color: #666; margin-bottom: 15px; font-family: 'JetBrains Mono', monospace; }
-        .price-tag { color: var(--green); background: #EFFFF4; padding: 3px 8px; border-radius: 6px; font-weight: 800; }
+        /* FORMULARIO AGREGAR CLIENTE (MENSAJERO) */
+        #add-client-form { display: none; background: white; margin: 15px; padding: 20px; border-radius: 24px; border: 2px solid var(--blue); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; }
+        .input-group input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #DDD; font-family: 'Outfit', sans-serif; }
 
-        /* Botones de Acción para el Mensajero */
-        .btn-nav { background: var(--blue); color: white; width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 800; font-size: 1rem; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,122,255,0.3); }
-        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        button { border-radius: 14px; border: none; font-family: 'Outfit', sans-serif; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        
-        .btn-move { background: #FFF0F4; color: var(--red); padding: 14px; }
-        .btn-wa { background: #25D366; color: white; padding: 14px; }
-        .btn-finish { background: var(--red); color: white; width: 100%; padding: 16px; font-weight: 800; font-size: 1rem; }
+        /* TARJETAS */
+        .card { background: white; margin: 15px; padding: 20px; border-radius: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #EEE; }
+        .card.done { opacity: 0.5; filter: grayscale(1); }
+        .client-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; display: block; }
+        .info { font-size: 0.9rem; color: #666; margin-bottom: 15px; }
+        .price { font-weight: 800; color: var(--green); background: #EFFFF4; padding: 2px 6px; border-radius: 5px; }
 
-        /* Panel de Administrador (Oculto) */
-        #admin-box { background: #111; color: white; padding: 25px; display: none; margin: 15px; border-radius: 20px; }
-        #admin-box h2 { font-size: 1.2rem; margin-bottom: 10px; color: var(--red); }
-        textarea { width: 100%; background: #222; border: 1px solid #444; color: #0f0; padding: 10px; border-radius: 10px; margin: 10px 0; font-family: monospace; }
-        .btn-gen { background: var(--green); color: white; padding: 15px; width: 100%; border-radius: 10px; font-size: 1rem; }
+        /* BOTONES */
+        .btn-nav { background: var(--blue); color: white; width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 800; font-size: 1rem; margin-bottom: 12px; }
+        .btn-no-loc { background: #EEE; color: #888; width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 800; margin-bottom: 12px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-action { padding: 14px; border-radius: 14px; border: none; font-weight: 700; font-size: 0.85rem; }
+        .btn-reubicar { background: #FFF0F4; color: var(--red); }
+        .btn-wa { background: #25D366; color: white; }
+        .btn-entregado { background: var(--red); color: white; width: 100%; padding: 16px; margin-top: 12px; border-radius: 14px; border: none; font-weight: 800; }
 
-        /* Resultado del Link */
-        #result-link { background: #000; color: #0f0; padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 0.7rem; word-break: break-all; display: none; border: 1px dashed #555; }
+        /* BOTÓN FLOTANTE AGREGAR */
+        .fab { position: fixed; bottom: 30px; right: 20px; background: var(--blue); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; box-shadow: 0 10px 20px rgba(0,122,255,0.4); border: none; z-index: 99; font-weight: 800; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo" onclick="accessAdmin()">LLEGA YA ELITE 🛵</div>
-    <div id="gps-status">● GPS ACTIVADO</div>
+    <div class="logo" onclick="abrirAdmin()">LLEGA YA ELITE 🛵</div>
+    <div id="gps-status">🛰️ GPS ACTIVO</div>
 </header>
 
-<div id="admin-box">
-    <h2>PANEL DE CONTROL (JEFE)</h2>
-    <p style="font-size: 0.8rem; opacity: 0.7;">Pega el JSON aquí para crear el link del mensajero:</p>
-    <textarea id="input-json" rows="6" placeholder='{"clientes": [...] }'></textarea>
-    <button class="btn-gen" onclick="generateWorkerLink()">CREAR LINK PARA TRABAJADOR</button>
-    <div id="result-link"></div>
+<button class="fab" onclick="toggleAddForm()">+</button>
+
+<div id="admin-panel">
+    <div style="text-align:center; color:var(--red); font-weight:800; margin-bottom:10px;">PANEL DEL DUEÑO</div>
+    <input type="file" id="file-input" accept=".json" style="margin-bottom: 10px; font-size: 0.8rem; color: white;">
+    <textarea id="json-box" rows="3" placeholder="Pegar código..."></textarea>
+    <button onclick="generarLinkWorker()" style="background:var(--green); color:white; width:100%; padding:12px; border-radius:10px; border:none; font-weight:800;">GENERAR LINK</button>
+    <div id="link-res" style="display:none; background:#000; color:#0f0; padding:10px; border-radius:10px; font-size:0.6rem; word-break:break-all; margin-top:10px;"></div>
+    <button onclick="cerrarAdmin()" style="width:100%; background:none; color:white; margin-top:10px; border:1px solid #444; padding:5px; border-radius:8px;">Cerrar</button>
 </div>
 
-<div id="main-app"></div>
+<div id="add-client-form">
+    <div style="font-weight:800; margin-bottom:15px; color:var(--blue);">NUEVO CLIENTE / PEDIDO</div>
+    <div class="input-group"><label>NOMBRE:</label><input type="text" id="new-name" placeholder="Ej: Juan Pérez"></div>
+    <div class="input-group"><label>TELÉFONO:</label><input type="tel" id="new-phone" placeholder="8090000000"></div>
+    <div class="input-group"><label>MONTO A COBRAR (RD$):</label><input type="number" id="new-cod" placeholder="0.00"></div>
+    <div style="font-size: 0.7rem; color: #666; margin-bottom: 15px;">* Se guardará con tu ubicación GPS actual automáticamente.</div>
+    <button onclick="saveNewClient()" style="background:var(--blue); color:white; width:100%; padding:15px; border-radius:12px; border:none; font-weight:800;">GUARDAR CLIENTE</button>
+    <button onclick="toggleAddForm()" style="width:100%; background:none; color:#999; margin-top:10px; border:none; font-weight:700;">CANCELAR</button>
+</div>
+
+<div id="lista-pedidos"></div>
 
 <script>
-    let routeData = { clientes: [] };
-    let currentPos = { lat: 0, lng: 0 };
+    let db = { clientes: [] };
+    let miLoc = { lat: 0, lng: 0 };
 
     function init() {
-        // 1. ¿Viene una ruta nueva en el link?
         const params = new URLSearchParams(window.location.search);
-        const encodedData = params.get('ruta');
-
-        if (encodedData) {
+        const rutaUrl = params.get('ruta');
+        if (rutaUrl) {
             try {
-                // Decodificar y guardar en la memoria del celular
-                const decoded = JSON.parse(decodeURIComponent(atob(encodedData)));
-                routeData.clientes = decoded.clientes || [];
-                localStorage.setItem('ly_flota_v2', JSON.stringify(routeData));
-                // Limpiar la URL para que quede bonita
+                const decodificado = JSON.parse(decodeURIComponent(atob(rutaUrl)));
+                db.clientes = [...(decodificado.clientes || []), ...(decodificado.sin_ubicacion || [])];
+                guardar();
                 window.history.replaceState({}, document.title, window.location.pathname);
-            } catch(e) { alert("Error al procesar el link de ruta."); }
+            } catch(e) { console.log(e); }
         } else {
-            // 2. Si no hay link nuevo, buscar lo que ya estaba guardado
-            const saved = localStorage.getItem('ly_flota_v2');
-            if(saved) routeData = JSON.parse(saved);
+            const guardado = localStorage.getItem('ly_pro_v7');
+            if(guardado) db = JSON.parse(guardado);
         }
 
-        // Activar GPS real
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(e) { document.getElementById('json-box').value = e.target.result; };
+            reader.readAsText(e.target.files[0]);
+        });
+
         navigator.geolocation.watchPosition(p => {
-            currentPos = { lat: p.coords.latitude, lng: p.coords.longitude };
+            miLoc = { lat: p.coords.latitude, lng: p.coords.longitude };
             render();
         }, null, {enableHighAccuracy:true});
-
         render();
     }
 
     function render() {
-        const container = document.getElementById('main-app');
-        if(!routeData.clientes.length) {
-            container.innerHTML = '<div style="text-align:center;padding:80px 20px;opacity:0.4;">Esperando asignación de ruta...</div>';
+        const cont = document.getElementById('lista-pedidos');
+        if(!db.clientes.length) {
+            cont.innerHTML = '<p style="text-align:center;padding:100px 20px;color:#888;">Toca el logo arriba o el botón "+" para empezar.</p>';
             return;
         }
-
-        // Ordenar: Pendientes arriba, Entregados abajo
-        const list = routeData.clientes.sort((a,b) => (a.estado === 'entregado' ? 1 : -1));
-
+        const lista = db.clientes.sort((a,b) => (a.estado === 'entregado' ? 1 : -1));
         let html = '';
-        list.forEach(c => {
-            const done = c.estado === 'entregado';
+        lista.forEach(c => {
+            const entregado = c.estado === 'entregado';
+            const tieneLoc = (c.lat && c.lat != "0");
             html += `
-            <div class="card ${done ? 'done' : ''}">
+            <div class="card ${entregado ? 'done' : ''}">
                 <span class="client-name">${c.nombre}</span>
-                <div class="client-info">
-                    TEL: ${c.telefono} | <span class="price-tag">RD$ ${Number(c.cod).toLocaleString()}</span>
-                </div>
-
-                <button class="btn-nav" onclick="navigate('${c.lat}', '${c.lng}')">🚀 NAVEGAR AHORA</button>
-
-                <div class="btn-row">
-                    <button class="btn-move" onclick="reRoute(${c.id})">📍 SE MOVIÓ</button>
-                    <button class="btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">WHATSAPP</button>
-                </div>
-
-                <button class="btn-finish" onclick="markDone(${c.id})">${done ? '✓ ENTREGADO' : 'MARCAR ENTREGADO'}</button>
+                <div class="info">Tel: ${c.telefono} | <span class="price">RD$ ${c.cod}</span></div>
+                ${tieneLoc ? `<button class="btn-nav" onclick="irMapa('${c.lat}', '${c.lng}')">🚀 IR AL MAPA</button>` : `<button class="btn-no-loc" onclick="reubicar(${c.id})">⚠️ SIN UBICACIÓN (AÑADIR)</button>`}
+                <div class="grid"><button class="btn-action btn-reubicar" onclick="reubicar(${c.id})">📍 MOVER</button><button class="btn-action btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">WHATSAPP</button></div>
+                <button class="btn-entregado" onclick="marcar(${c.id})">${entregado ? '✓ ENTREGADO' : 'MARCAR ENTREGADO'}</button>
             </div>`;
         });
-        container.innerHTML = html;
+        cont.innerHTML = html;
     }
 
-    // --- FUNCIONES DEL MENSAJERO ---
-    function navigate(lat, lng) {
-        if(!lat || lat === "undefined") return alert("El cliente no tiene ubicación.");
-        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=motorcycle`);
+    // --- FUNCIÓN AGREGAR MANUAL (TRABAJADOR) ---
+    function toggleAddForm() {
+        const form = document.getElementById('add-client-form');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        if(form.style.display === 'block') window.scrollTo(0,0);
     }
 
-    function reRoute(id) {
-        const c = routeData.clientes.find(x => x.id == id);
-        const mode = confirm("¿Dónde está el cliente?\n\nOK: Estoy frente a él (Guardar mi GPS).\nCANCELAR: Pegar coordenadas nuevas.");
-        
-        if(mode) {
-            if(!currentPos.lat) return alert("Buscando señal GPS...");
-            c.lat = currentPos.lat; c.lng = currentPos.lng;
-        } else {
-            const raw = prompt("Pega las nuevas coordenadas (ej: 19.30, -70.24):");
-            if(raw && raw.includes(',')) {
-                const p = raw.split(',');
-                c.lat = p[0].trim(); c.lng = p[1].trim();
-            }
+    function saveNewClient() {
+        const name = document.getElementById('new-name').value;
+        const phone = document.getElementById('new-phone').value;
+        const cod = document.getElementById('new-cod').value;
+
+        if(!name || !phone) return alert("Nombre y Teléfono son obligatorios");
+        if(!miLoc.lat) return alert("Esperando señal GPS para fijar al cliente...");
+
+        const nuevo = {
+            id: Date.now(),
+            nombre: name,
+            telefono: phone,
+            cod: cod || "0",
+            lat: miLoc.lat,
+            lng: miLoc.lng,
+            estado: 'pendiente'
+        };
+
+        db.clientes.unshift(nuevo);
+        guardar();
+        toggleAddForm();
+        // Limpiar campos
+        document.getElementById('new-name').value = "";
+        document.getElementById('new-phone').value = "";
+        document.getElementById('new-cod').value = "";
+    }
+
+    function irMapa(lat, lng) { window.open(`https://www.google.com/maps/dir/?api=1&destination=$0{lat},${lng}&travelmode=motorcycle`); }
+    function reubicar(id) {
+        const c = db.clientes.find(x => x.id == id);
+        if(confirm("¿Fijar este cliente en tu posición actual?")) {
+            c.lat = miLoc.lat; c.lng = miLoc.lng; guardar();
         }
-        updateMemory();
     }
-
-    function markDone(id) {
-        routeData.clientes.find(x => x.id == id).estado = 'entregado';
-        updateMemory();
-    }
-
-    function updateMemory() {
-        localStorage.setItem('ly_flota_v2', JSON.stringify(routeData));
-        render();
-    }
-
-    // --- FUNCIONES DEL JEFE (ADMIN) ---
-    function accessAdmin() {
-        const pass = prompt("Clave de Jefe:");
-        if(pass === "1234") {
-            document.getElementById('admin-box').style.display = 'block';
-            window.scrollTo(0,0);
-        }
-    }
-
-    function generateWorkerLink() {
-        const json = document.getElementById('input-json').value;
-        try {
-            JSON.parse(json); // Validar que esté bien escrito
-            const base64 = btoa(encodeURIComponent(json));
-            const finalLink = `${window.location.href.split('?')[0]}?ruta=${base64}`;
-            
-            const res = document.getElementById('result-link');
-            res.style.display = 'block';
-            res.innerHTML = `<strong>LINK LISTO:</strong><br>${finalLink}<br><br><button onclick="copyLink('${finalLink}')" style="background:#fff; color:#000; padding:5px; border-radius:5px;">COPIAR PARA WHATSAPP</button>`;
-        } catch(e) { alert("El código JSON está mal escrito. Revísalo."); }
-    }
-
-    function copyLink(link) {
-        navigator.clipboard.writeText(link);
-        alert("¡Link copiado! Ya puedes pegarlo en el WhatsApp del trabajador.");
+    function marcar(id) { db.clientes.find(x => x.id == id).estado = 'entregado'; guardar(); }
+    function guardar() { localStorage.setItem('ly_pro_v7', JSON.stringify(db)); render(); }
+    function abrirAdmin() { if(prompt("CLAVE:") === "1234") document.getElementById('admin-panel').style.display = 'block'; }
+    function cerrarAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+    function generarLinkWorker() {
+        const txt = document.getElementById('json-box').value;
+        const b64 = btoa(encodeURIComponent(txt));
+        const link = `${window.location.href.split('?')[0]}?ruta=${b64}`;
+        const res = document.getElementById('link-res');
+        res.style.display = 'block';
+        res.innerHTML = `<strong>LINK:</strong><br>${link}<br><br><button onclick="navigator.clipboard.writeText('${link}');alert('Copiado')">COPIAR</button>`;
     }
 
     init();
