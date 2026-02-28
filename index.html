@@ -43,7 +43,7 @@ header h1 { font-size: 1.1rem; }
 .card-body { padding: 8px 14px 12px; display: flex; flex-direction: column; gap: 6px; }
 .btn-row { display: flex; gap: 6px; }
 .btn { padding: 10px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.82rem; cursor: pointer; color: white; text-align: center; text-decoration: none; display: block; width: 100%; }
-.btn-sm { flex: 1; padding: 9px 4px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.78rem; cursor: pointer; color: white; }
+.btn-sm { flex: 1; padding: 9px 4px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.78rem; cursor: pointer; color: white; text-align: center; text-decoration: none; display: block; }
 
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
 .overlay.open { display: flex; }
@@ -165,7 +165,6 @@ header h1 { font-size: 1.1rem; }
 <script>
 let clientes = JSON.parse(localStorage.getItem('llega_ya_clientes') || '[]');
 let tabActual = 'pendientes';
-const ORIGEN = { lat: 19.2917, lng: -70.2558 };
 
 function guardar() {
   localStorage.setItem('llega_ya_clientes', JSON.stringify(clientes));
@@ -184,7 +183,6 @@ function render() {
   } else {
     datos = clientes.filter(c => (c.estado === 'entregado' || c.estado === 'fallido') && c.lat && c.lng);
   }
-
 
   if (busqueda) {
     datos = datos.filter(c =>
@@ -208,7 +206,6 @@ function render() {
     const sinUbi = !c.lat || !c.lng;
     const esSinUbi = tabActual === 'sin_ubicacion';
 
-    // Estado visual de los botones toggle
     const btnEntregado = c.estado === 'entregado'
       ? `<button class="btn-sm" style="background:#065f46" onclick="toggleEstado(${c.id},'entregado','pendiente')">✅ Entregado</button>`
       : `<button class="btn-sm" style="background:var(--green)" onclick="toggleEstado(${c.id},'pendiente','entregado')">✅ Entregado</button>`;
@@ -263,7 +260,6 @@ function switchTab(tab) {
   render();
 }
 
-// Toggle de estado: si ya está en ese estado, regresa a pendiente
 function toggleEstado(id, estadoActual, estadoNuevo) {
   const c = clientes.find(x => x.id === id);
   if (!c) return;
@@ -286,7 +282,6 @@ function devolverPendiente(id) {
   if (c) { c.estado = 'pendiente'; guardar(); }
 }
 
-// Rotar al final de la lista (Ya contacté)
 function rotarAlFinal(id) {
   const idx = clientes.findIndex(x => x.id === id);
   if (idx === -1) return;
@@ -295,14 +290,12 @@ function rotarAlFinal(id) {
   guardar();
 }
 
-async function sortNearest() {
+// Ordenar por cercanía usando solo Haversine (sin OSRM, sin fallos de red)
+function sortNearest() {
   const pendientes = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
   const resto = clientes.filter(c => !(c.estado === 'pendiente' && c.lat && c.lng));
 
   if (pendientes.length === 0) return alert('No hay clientes con ubicación pendientes.');
-
-  const btn = document.querySelector('button[onclick="sortNearest()"]');
-  if (btn) { btn.textContent = '⏳ Calculando...'; btn.disabled = true; }
 
   const haversine = (lat1, lng1, lat2, lng2) => {
     const R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180;
@@ -310,84 +303,49 @@ async function sortNearest() {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   };
 
-  // Obtener ubicación actual o usar origen fijo
-  let origen = { lat: ORIGEN.lat, lng: ORIGEN.lng };
-  try {
-    const pos = await new Promise((resolve, reject) => {
-      if (!navigator.geolocation) reject('no geo');
-      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
-    });
-    origen = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-  } catch(e) {
-    // Si no da permiso o falla, usa el origen fijo
-  }
+  // Intentar obtener ubicación actual, si no usar origen fijo
+  const ORIGEN = { lat: 19.2917, lng: -70.2558 };
 
-  const haversineFallback = (org) => {
-    let lat = org.lat, lng = org.lng;
+  const ordenarDesde = (origen) => {
+    let lat = origen.lat, lng = origen.lng;
     let p = [...pendientes], ordenados = [];
     while (p.length > 0) {
       let idx = 0, min = Infinity;
-      p.forEach((c, i) => { const d = haversine(lat, lng, c.lat, c.lng); if (d < min) { min = d; idx = i; } });
+      p.forEach((c, i) => {
+        const d = haversine(lat, lng, c.lat, c.lng);
+        if (d < min) { min = d; idx = i; }
+      });
       const next = p.splice(idx, 1)[0];
-      ordenados.push(next); lat = next.lat; lng = next.lng;
+      ordenados.push(next);
+      lat = next.lat; lng = next.lng;
     }
     return ordenados;
   };
 
-  let ordenados = null;
-
-  try {
-    const coords = [`${origen.lng},${origen.lat}`, ...pendientes.map(c => `${c.lng},${c.lat}`)].join(';');
-    const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?roundtrip=false&source=first&destination=last&overview=false`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.code !== 'Ok') throw new Error('OSRM trip error');
-
-    const mapped = [...data.waypoints]
-      .sort((a, b) => a.waypoint_index - b.waypoint_index)
-      .filter(w => w.waypoint_index > 0)
-      .map(w => {
-        const [wlng, wlat] = w.location;
-        return pendientes.find(c => Math.abs(c.lat - wlat) < 0.0001 && Math.abs(c.lng - wlng) < 0.0001);
-      })
-      .filter(Boolean);
-
-    if (mapped.length === pendientes.length) {
-      ordenados = mapped;
-    } else {
-      throw new Error('Mismatch');
-    }
-  } catch(e) {
-    try {
-      const puntos = [origen, ...pendientes.map(c => ({ lat: c.lat, lng: c.lng }))];
-      const coords2 = puntos.map(p => `${p.lng},${p.lat}`).join(';');
-      const res2 = await fetch(`https://router.project-osrm.org/table/v1/driving/${coords2}?annotations=duration`);
-      const data2 = await res2.json();
-      if (data2.code !== 'Ok') throw new Error();
-      const matrix = data2.durations;
-      const n = pendientes.length;
-      const visitado = new Array(n).fill(false);
-      const ord2 = [];
-      let actual = 0;
-      for (let paso = 0; paso < n; paso++) {
-        let mejorIdx = -1, mejorTiempo = Infinity;
-        for (let i = 0; i < n; i++) {
-          if (!visitado[i] && matrix[actual][i+1] < mejorTiempo) { mejorTiempo = matrix[actual][i+1]; mejorIdx = i; }
-        }
-        visitado[mejorIdx] = true; ord2.push(pendientes[mejorIdx]); actual = mejorIdx + 1;
-      }
-      ordenados = ord2;
-    } catch(e2) {
-      ordenados = haversineFallback(origen);
-      alert('⚠️ Sin conexión a OSRM, se usó distancia real en km.');
-    }
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const origen = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        clientes = [...ordenarDesde(origen), ...resto];
+        tabActual = 'pendientes';
+        switchTab('pendientes');
+        guardar();
+      },
+      () => {
+        // Sin permiso de GPS, usar origen fijo
+        clientes = [...ordenarDesde(ORIGEN), ...resto];
+        tabActual = 'pendientes';
+        switchTab('pendientes');
+        guardar();
+      },
+      { timeout: 5000 }
+    );
+  } else {
+    clientes = [...ordenarDesde(ORIGEN), ...resto];
+    tabActual = 'pendientes';
+    switchTab('pendientes');
+    guardar();
   }
-
-  clientes = [...ordenados, ...resto];
-  tabActual = 'pendientes';
-  switchTab('pendientes');
-  guardar();
-  if (btn) { btn.textContent = '⚡ Cercanía'; btn.disabled = false; }
 }
 
 function cargarArchivo(e) {
@@ -478,8 +436,12 @@ function openModal(id) {
   }
   document.getElementById(id).classList.add('open');
 }
+
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => {
+  if (e.target === o) o.classList.remove('open');
+}));
 
 render();
 </script>
