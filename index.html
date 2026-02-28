@@ -3,176 +3,246 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Control Total</title>
+    <title>Llega Ya | Terminal Elite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --red: #E60042; --blue: #007AFF; --green: #28a745; }
-        body { font-family: sans-serif; background: #f0f0f0; margin: 0; padding: 10px; }
-        
-        /* CABECERA SIMPLE */
-        .header { background: white; padding: 15px; text-align: center; font-weight: bold; border-bottom: 3px solid var(--red); margin-bottom: 10px; }
-        
-        /* 1. SECCIÓN: METER ARCHIVO Y COPIAR LINK */
-        .admin-box { background: #fff; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px; }
-        .admin-box label { font-size: 12px; font-weight: bold; display: block; margin-top: 10px; }
-        textarea { width: 100%; height: 50px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; font-family: monospace; }
-        .btn-link { background: var(--green); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        :root {
+            --bg-main: #020617;
+            --bg-card: rgba(15, 23, 42, 0.8);
+            --accent-primary: #3b82f6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --font-main: 'Figtree', sans-serif;
+            --font-data: 'JetBrains Mono', monospace;
+        }
 
-        /* 2. SECCIÓN: AGREGAR CLIENTE MANUAL (PARA EL MOTORISTA) */
-        .btn-nuevo { background: var(--blue); color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; margin-bottom: 10px; font-size: 16px; }
-        #form-add { display: none; background: #fff; padding: 15px; border-radius: 10px; border: 2px solid var(--blue); margin-bottom: 15px; }
-        .input-f { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-main); color: white; font-family: var(--font-main); min-height: 100vh; padding-bottom: 120px; background-image: radial-gradient(rgba(59,130,246,0.07) 1px, transparent 1px); background-size: 22px 22px; }
 
-        /* TARJETAS DE CLIENTES */
-        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 12px; }
-        .card.entregado { opacity: 0.5; background: #f9f9f9; border-left: 5px solid #ccc; }
-        .nombre { font-size: 1.2rem; font-weight: bold; display: block; margin-bottom: 5px; }
-        .monto { color: var(--green); font-weight: bold; font-size: 1.1rem; }
-        
-        /* BOTONES DE LA TARJETA */
-        .btn-mapa { background: var(--blue); color: white; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 10px; font-weight: bold; font-size: 16px; }
-        .fila { display: flex; gap: 8px; margin-top: 10px; }
-        .btn-accion { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; color: white; font-size: 11px; text-transform: uppercase; }
-        .btn-gps { background: var(--red); } /* 3. ACTUALIZAR UBICACIÓN */
-        .btn-wa { background: #25D366; }
-        .btn-listo { background: #444; width: 100%; margin-top: 10px; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; }
+        header { padding: 20px; background: var(--bg-card); backdrop-filter: blur(16px); border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 100; text-align: center; }
+        .logo { font-family: var(--font-data); font-weight: bold; font-size: 1.5rem; color: var(--accent-primary); text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .kpi { background: var(--bg-card); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; text-align: center; }
+        .kpi-v { font-family: var(--font-data); font-size: 1.1rem; color: var(--accent-primary); display: block; }
+        .kpi-l { font-size: 0.65rem; opacity: 0.5; text-transform: uppercase; }
+
+        .card { background: var(--bg-card); margin: 0 15px 12px; padding: 15px; border-radius: 16px; border: 1px solid var(--glass-border); position: relative; }
+        .status-line { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 4px 0 0 4px; }
+        .st-pendiente { background: var(--accent-primary); }
+        .st-entregado { background: var(--accent-success); box-shadow: 2px 0 10px var(--accent-success); }
+        .st-rechazado { background: var(--accent-danger); box-shadow: 2px 0 10px var(--accent-danger); }
+
+        .card-name { font-weight: 700; margin-bottom: 4px; display: block; }
+        .card-info { font-family: var(--font-data); font-size: 0.8rem; opacity: 0.7; margin-bottom: 12px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+
+        button { padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; color: white; font-family: var(--font-main); font-size: 0.8rem; }
+        .btn-blue { background: var(--accent-primary); }
+        .btn-green { background: var(--accent-success); }
+        .btn-red { background: var(--accent-danger); }
+        .btn-glass { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); }
+
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--glass-border); display: flex; gap: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); z-index: 500; }
+        .nav-item { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: var(--accent-primary); box-shadow: 0 0 15px rgba(59,130,246,0.3); }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: #0f172a; border: 1px solid var(--glass-border); padding: 25px; border-radius: 24px; width: 100%; max-width: 380px; }
+        input, textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 14px; border-radius: 10px; color: white; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
-<div class="header">LLEGA YA ELITE 🛵</div>
+<header>
+    <div class="logo">LLEGA YA</div>
+    <div id="gps-info" style="font-size: 0.65rem; color: var(--accent-success); font-weight: bold; margin-top:4px">🛰️ GPS: BUSCANDO...</div>
+</header>
 
-<div class="admin-box">
-    <label>SUBIR ARCHIVO JSON:</label>
-    <input type="file" id="input-archivo" style="width:100%; margin-bottom:10px;">
-    
-    <label>CÓDIGO DE RUTA:</label>
-    <textarea id="box-json" placeholder="Pega el código aquí..."></textarea>
-    
-    <button class="btn-link" onclick="copiarLinkRuta()">COPIAR LINK PARA WHATSAPP</button>
+<div class="dashboard">
+    <div class="kpi"><span class="kpi-l">📦 Progreso</span><span id="stat-p" class="kpi-v">0/0</span></div>
+    <div class="kpi"><span class="kpi-l">💰 Total Cobrado</span><span id="stat-m" class="kpi-v">RD$ 0</span></div>
 </div>
 
-<button class="btn-nuevo" onclick="abrirForm()">+ AGREGAR PEDIDO NUEVO</button>
+<div id="list"></div>
 
-<div id="form-add">
-    <input type="text" id="add-n" class="input-f" placeholder="Nombre del Cliente">
-    <input type="tel" id="add-t" class="input-f" placeholder="WhatsApp">
-    <input type="number" id="add-m" class="input-f" placeholder="Monto RD$">
-    <button class="btn-link" onclick="guardarManual()" style="background:var(--blue)">GUARDAR CON MI POSICIÓN</button>
+<div class="bottom-nav">
+    <div class="nav-item" onclick="showModal('m-add')">➕</div>
+    <div class="nav-item" onclick="showModal('m-json')" style="background: var(--accent-warning)">📝</div>
+    <div class="nav-item" onclick="document.getElementById('f-in').click()" style="background: var(--accent-success)">📂</div>
+    <div class="nav-item" onclick="showModal('m-cfg')" style="background: #64748b">⚙️</div>
 </div>
 
-<div id="lista-clientes"></div>
+<input type="file" id="f-in" style="display:none" accept=".json">
+
+<div id="m-add" class="modal">
+    <div class="modal-content">
+        <h3 style="color:var(--accent-primary); margin-bottom:15px">➕ Agregar Pedido</h3>
+        <input type="text" id="in-nom" placeholder="Nombre del cliente">
+        <input type="tel" id="in-tel" placeholder="WhatsApp">
+        <input type="number" id="in-cod" placeholder="Monto RD$">
+        <p style="font-size: 0.7rem; opacity: 0.6; margin-bottom: 10px">Se guardará con tu ubicación actual.</p>
+        <button class="btn-blue" style="width:100%" onclick="addManual()">Guardar Cliente</button>
+        <button class="btn-glass" style="width:100%; margin-top:10px" onclick="closeModals()">Cancelar</button>
+    </div>
+</div>
+
+<div id="m-json" class="modal">
+    <div class="modal-content">
+        <h3>📝 Pegar Código</h3>
+        <textarea id="tx-json" rows="8" placeholder='Pega el contenido JSON aquí...'></textarea>
+        <button class="btn-blue" style="width:100%" onclick="importText()">Importar Ruta</button>
+        <button class="btn-glass" style="width:100%; margin-top:10px" onclick="closeModals()">Cerrar</button>
+    </div>
+</div>
+
+<div id="m-cfg" class="modal">
+    <div class="modal-content">
+        <h3>⚙️ Opciones</h3>
+        <button class="btn-blue" style="width:100%; margin-bottom:10px" onclick="shareRoute()">📤 Compartir Ruta por Link</button>
+        <button class="btn-red" style="width:100%" onclick="clearAll()">🗑️ Borrar Todo</button>
+        <button class="btn-glass" style="width:100%; margin-top:10px" onclick="closeModals()">Cerrar</button>
+    </div>
+</div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_v_final')) || { clientes: [] };
-    let miGPS = { lat: 0, lng: 0 };
+    let db = JSON.parse(localStorage.getItem('ly_v_elite')) || { clientes: [] };
+    let myPos = { lat: 0, lng: 0 };
 
-    function iniciar() {
-        // Rastreo de GPS constante
-        navigator.geolocation.watchPosition(p => {
-            miGPS = { lat: p.coords.latitude, lng: p.coords.longitude };
-            render();
-        }, null, {enableHighAccuracy:true});
-
-        // Función para leer el archivo JSON que subas
-        document.getElementById('input-archivo').addEventListener('change', function(e) {
-            const r = new FileReader();
-            r.onload = (e) => { document.getElementById('box-json').value = e.target.result; };
-            r.readAsText(e.target.files[0]);
-        });
-
-        // Si entran por un link con ruta
-        const urlP = new URLSearchParams(window.location.search);
-        if(urlP.get('ruta')) {
+    function init() {
+        // Carga por URL si existe
+        const params = new URLSearchParams(window.location.search);
+        if(params.get('ruta')) {
             try {
-                db.clientes = JSON.parse(decodeURIComponent(atob(urlP.get('ruta')))).clientes;
-                salvar();
+                db.clientes = JSON.parse(decodeURIComponent(atob(params.get('ruta')))).clientes;
+                save();
                 window.history.replaceState({}, '', window.location.pathname);
-            } catch(e) { alert("Error al cargar ruta del link"); }
+            } catch(e) { alert("Link inválido"); }
+        }
+
+        if(navigator.geolocation) {
+            navigator.geolocation.watchPosition(p => {
+                myPos = { lat: p.coords.latitude, lng: p.coords.longitude };
+                document.getElementById('gps-info').innerText = `🛰️ GPS: ACTIVO`;
+                render();
+            }, null, {enableHighAccuracy:true});
         }
         render();
     }
 
     function render() {
-        const contenedor = document.getElementById('lista-clientes');
+        const container = document.getElementById('list');
         if(db.clientes.length === 0) {
-            contenedor.innerHTML = '<p style="text-align:center; color:#999; margin-top:20px;">No hay pedidos en la lista.</p>';
+            container.innerHTML = '<div style="text-align:center; padding:100px 20px; opacity:0.3">USAR BOTONES DE ABAJO PARA CARGAR RUTA</div>';
             return;
         }
 
-        let html = '';
-        db.clientes.sort((a,b) => (a.estado === 'si' ? 1 : -1)).forEach(c => {
-            const estaListo = c.estado === 'si';
-            html += `
-                <div class="card ${estaListo ? 'entregado' : ''}">
-                    <span class="nombre">${c.nombre}</span>
-                    <span>Tel: ${c.telefono} | <span class="monto">RD$ ${c.cod}</span></span>
-                    
-                    <button class="btn-mapa" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=motorcycle')">🚀 IR AL MAPA</button>
-                    
-                    <div class="fila">
-                        <button class="btn-accion btn-gps" onclick="fijarGPS(${c.id})">📍 FIJAR GPS AQUÍ</button>
-                        <button class="btn-accion btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">WHATSAPP</button>
-                    </div>
-                    
-                    <button class="btn-listo" onclick="marcar(${c.id})">${estaListo ? '✓ ENTREGADO' : 'MARCAR ENTREGADO'}</button>
-                </div>
-            `;
+        // Ordenar por distancia
+        const lista = db.clientes.sort((a,b) => {
+            if(a.estado === 'entregado' && b.estado !== 'entregado') return 1;
+            if(a.estado !== 'entregado' && b.estado === 'entregado') return -1;
+            if(!a.lat) return 1; if(!b.lat) return -1;
+            return Math.hypot(a.lat-myPos.lat, a.lng-myPos.lng) - Math.hypot(b.lat-myPos.lat, b.lng-myPos.lng);
         });
-        contenedor.innerHTML = html;
+
+        let html = '';
+        lista.forEach((c, i) => {
+            const st = c.estado || 'pendiente';
+            const hasUbi = c.lat && c.lat !== 0;
+            html += `
+            <div class="card">
+                <div class="status-line st-${st}"></div>
+                <span class="card-name">${c.nombre}</span>
+                <div class="card-info">📞 ${c.telefono} | RD$ ${Number(c.cod).toLocaleString()}</div>
+                <div class="grid-2">
+                    <button class="btn-green" style="background:#25d366" onclick="window.open('https://wa.me/${c.telefono}')">WhatsApp</button>
+                    ${hasUbi ? 
+                        `<button class="btn-blue" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=motorcycle')">Navegar</button>` : 
+                        `<button class="btn-red" onclick="setLoc(${c.id})">📍 FIJAR GPS</button>`}
+                </div>
+                <div class="grid-3">
+                    <button class="btn-green" onclick="upd(${c.id},'entregado')">OK</button>
+                    <button class="btn-red" onclick="upd(${c.id},'rechazado')">NO</button>
+                    <button class="btn-glass" onclick="setLoc(${c.id})">📍</button>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+        stats();
     }
 
-    function abrirForm() {
-        const f = document.getElementById('form-add');
-        f.style.display = f.style.display === 'block' ? 'none' : 'block';
+    function setLoc(id) {
+        if(!myPos.lat) return alert("Esperando señal GPS...");
+        const c = db.clientes.find(x => x.id === id);
+        c.lat = myPos.lat; c.lng = myPos.lng;
+        save();
+        alert("¡Ubicación guardada!");
     }
 
-    function guardarManual() {
-        const n = document.getElementById('add-n').value;
-        const t = document.getElementById('add-t').value;
-        const m = document.getElementById('add-m').value;
-        if(!n || !t) return alert("Faltan datos");
-        if(!miGPS.lat) return alert("Buscando GPS...");
+    function addManual() {
+        const n = document.getElementById('in-nom').value;
+        const t = document.getElementById('add-t'); // Error corregido aquí
+        const tel = document.getElementById('in-tel').value;
+        const cod = document.getElementById('in-cod').value;
 
-        db.clientes.unshift({ id: Date.now(), nombre: n, telefono: t, cod: m, lat: miGPS.lat, lng: miGPS.lng, estado: 'no' });
-        salvar();
-        abrirForm();
-        document.getElementById('add-n').value=''; document.getElementById('add-t').value=''; document.getElementById('add-m').value='';
+        if(!n || !tel) return alert('Nombre y teléfono obligatorios');
+        
+        db.clientes.unshift({ 
+            id: Date.now(), 
+            nombre: n, 
+            telefono: tel, 
+            cod: cod, 
+            lat: myPos.lat, 
+            lng: myPos.lng, 
+            estado: 'pendiente' 
+        });
+        save();
+        closeModals();
+        document.querySelectorAll('input').forEach(i => i.value = '');
     }
 
-    // ACTUALIZAR UBICACIÓN (LO QUE PEDISTE)
-    function fijarGPS(id) {
-        if(confirm("¿Fijar la ubicación del cliente donde estás parado ahora?")) {
-            const c = db.clientes.find(x => x.id == id);
-            c.lat = miGPS.lat; c.lng = miGPS.lng;
-            salvar();
-            alert("¡Ubicación actualizada!");
-        }
+    function shareRoute() {
+        const b64 = btoa(encodeURIComponent(JSON.stringify(db)));
+        const link = `${window.location.href.split('?')[0]}?ruta=${b64}`;
+        navigator.clipboard.writeText(link);
+        alert("¡Link de ruta copiado! Pégalo en WhatsApp.");
     }
 
-    function marcar(id) {
-        const c = db.clientes.find(x => x.id == id);
-        c.estado = (c.estado === 'si') ? 'no' : 'si';
-        salvar();
-    }
+    function upd(id, s) { db.clientes.forEach(c => { if(c.id === id) c.estado = s; }); save(); }
 
-    function salvar() {
-        localStorage.setItem('ly_v_final', JSON.stringify(db));
-        render();
-    }
-
-    // COPIAR LINK (LO QUE PEDISTE)
-    function copiarLinkRuta() {
-        const jsonText = document.getElementById('box-json').value;
-        if(!jsonText) return alert("Sube el archivo o pega el código primero");
+    function importText() {
         try {
-            const b64 = btoa(encodeURIComponent(jsonText));
-            const linkFinal = `${window.location.href.split('?')[0]}?ruta=${b64}`;
-            navigator.clipboard.writeText(linkFinal);
-            alert("¡LINK COPIADO! Ya puedes pegarlo en el WhatsApp del motorista.");
-        } catch(e) { alert("El código no es un JSON válido."); }
+            const raw = JSON.parse(document.getElementById('tx-json').value);
+            db.clientes = [...(raw.clientes || []), ...(raw.sin_ubicacion || [])];
+            save(); closeModals();
+        } catch(e) { alert('JSON inválido'); }
     }
 
-    iniciar();
+    document.getElementById('f-in').addEventListener('change', (e) => {
+        const r = new FileReader();
+        r.onload = (ev) => {
+            const raw = JSON.parse(ev.target.result);
+            db.clientes = [...(raw.clientes || []), ...(raw.sin_ubicacion || [])];
+            save();
+        };
+        r.readAsText(e.target.files[0]);
+    });
+
+    function stats() {
+        const ok = db.clientes.filter(c => c.estado === 'entregado');
+        document.getElementById('stat-p').innerText = `${ok.length}/${db.clientes.length}`;
+        document.getElementById('stat-m').innerText = `RD$ ${ok.reduce((a,b) => a+(Number(b.cod)||0),0).toLocaleString()}`;
+    }
+
+    function save() { localStorage.setItem('ly_v_elite', JSON.stringify(db)); render(); }
+    function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+    function clearAll() { if(confirm('¿Borrar todo?')) { localStorage.removeItem('ly_v_elite'); location.reload(); } }
+
+    init();
 </script>
 </body>
 </html>
