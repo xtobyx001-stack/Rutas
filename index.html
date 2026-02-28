@@ -309,8 +309,20 @@ async function sortNearest() {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   };
 
-  const haversineFallback = () => {
-    let lat = ORIGEN.lat, lng = ORIGEN.lng;
+  // Obtener ubicación actual o usar origen fijo
+  let origen = { lat: ORIGEN.lat, lng: ORIGEN.lng };
+  try {
+    const pos = await new Promise((resolve, reject) => {
+      if (!navigator.geolocation) reject('no geo');
+      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+    });
+    origen = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+  } catch(e) {
+    // Si no da permiso o falla, usa el origen fijo
+  }
+
+  const haversineFallback = (org) => {
+    let lat = org.lat, lng = org.lng;
     let p = [...pendientes], ordenados = [];
     while (p.length > 0) {
       let idx = 0, min = Infinity;
@@ -324,7 +336,7 @@ async function sortNearest() {
   let ordenados = null;
 
   try {
-    const coords = [`${ORIGEN.lng},${ORIGEN.lat}`, ...pendientes.map(c => `${c.lng},${c.lat}`)].join(';');
+    const coords = [`${origen.lng},${origen.lat}`, ...pendientes.map(c => `${c.lng},${c.lat}`)].join(';');
     const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?roundtrip=false&source=first&destination=last&overview=false`;
     const res = await fetch(url);
     const data = await res.json();
@@ -346,7 +358,7 @@ async function sortNearest() {
     }
   } catch(e) {
     try {
-      const puntos = [ORIGEN, ...pendientes.map(c => ({ lat: c.lat, lng: c.lng }))];
+      const puntos = [origen, ...pendientes.map(c => ({ lat: c.lat, lng: c.lng }))];
       const coords2 = puntos.map(p => `${p.lng},${p.lat}`).join(';');
       const res2 = await fetch(`https://router.project-osrm.org/table/v1/driving/${coords2}?annotations=duration`);
       const data2 = await res2.json();
@@ -365,7 +377,7 @@ async function sortNearest() {
       }
       ordenados = ord2;
     } catch(e2) {
-      ordenados = haversineFallback();
+      ordenados = haversineFallback(origen);
       alert('⚠️ Sin conexión a OSRM, se usó distancia real en km.');
     }
   }
