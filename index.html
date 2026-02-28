@@ -3,236 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Terminal Elite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Llega Ya | Elite Estático</title>
     <style>
-        :root {
-            --bg-main: #020617;
-            --bg-card: rgba(15, 23, 42, 0.95);
-            --accent-primary: #3b82f6;
-            --accent-success: #10b981;
-            --accent-warning: #f59e0b;
-            --accent-danger: #ef4444;
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-main); color: white; font-family: 'Figtree', sans-serif; min-height: 100vh; padding-bottom: 120px; }
-
-        header { padding: 15px; background: var(--bg-card); backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 100; text-align: center; }
-        .logo { font-family: 'JetBrains Mono', monospace; font-weight: bold; font-size: 1.4rem; color: var(--accent-primary); }
-
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
-        .kpi-card { background: var(--bg-card); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; text-align: center; }
-        .kpi-val { font-family: 'JetBrains Mono'; font-size: 1.1rem; color: var(--accent-primary); }
-
-        #main-list { padding: 0 15px; }
-        .card { background: var(--bg-card); padding: 18px; border-radius: 20px; border: 1px solid var(--glass-border); position: relative; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .status-strip { position: absolute; left: 0; top: 0; bottom: 0; width: 6px; border-radius: 6px 0 0 6px; }
-        .st-entregado { background: var(--accent-success); }
-        .st-pendiente { background: var(--accent-primary); }
-
-        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; display: block; color: #fff; }
-        .card-detail { font-size: 0.9rem; opacity: 0.8; margin-bottom: 15px; font-family: 'JetBrains Mono'; color: var(--accent-primary); }
-
-        /* --- BOTONES PRINCIPALES --- */
-        button { padding: 14px; border-radius: 12px; border: none; font-weight: 700; color: white; cursor: pointer; font-size: 0.85rem; width: 100%; transition: transform 0.1s; }
-        button:active { transform: scale(0.98); }
-
-        /* EL BOTÓN QUE BUSCABAS: ACTUALIZAR UBICACIÓN */
-        .btn-update-gps { 
-            background: var(--accent-warning); 
-            color: #000; 
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        .btn-maps { background: var(--accent-primary); margin-bottom: 10px; }
-        .btn-wa { background: #25d366; margin-bottom: 15px; }
+        :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: var(--bg); color: white; padding-bottom: 100px; overflow-x: hidden; }
         
-        /* ESTADOS OK / NO / VOLVER */
-        .states { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .btn-ok { background: var(--accent-success); }
-        .btn-no { background: var(--accent-danger); }
-        .btn-rev { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); }
+        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
+        .stats { display: flex; justify-content: space-around; padding: 10px; background: #0f172a; font-size: 0.9rem; font-weight: bold; }
 
-        /* CONTROLES FLOTANTES */
-        .float-btns { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
-        .btn-round { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+        #list { padding: 10px; }
+        .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); transition: opacity 0.3s; }
+        .card.done { border-left-color: var(--green); opacity: 0.6; }
+        
+        .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 0.9rem; }
+        .btn-upd { background: var(--orange); color: black; }
+        .btn-paste { background: #6366f1; }
+        .btn-maps { background: var(--blue); }
+        .btn-wa { background: #25d366; }
+        
+        .row { display: flex; gap: 8px; }
+        .btn-s { flex: 1; padding: 12px; border-radius: 8px; border: none; color: white; font-weight: bold; }
 
-        /* MODALES */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-        .modal-content { background: #0f172a; border: 1px solid var(--glass-border); padding: 30px; border-radius: 25px; width: 100%; max-width: 350px; }
-        input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 15px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 1rem; }
+        /* Modal que no rompe la vista */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; padding: 25px; z-index: 1000; justify-content: center; backdrop-filter: blur(5px); }
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
+
+        .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
+        .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">LLEGA YA ELITE</div>
-        <div id="gps-status" style="font-size: 0.7rem; color: var(--accent-success); margin-top:5px; font-weight: bold;">🛰️ GPS ACTIVO</div>
-    </header>
+<header><h1>LLEGA YA ELITE 🛵</h1></header>
+<div class="stats">
+    <div>LISTO: <span id="count">0/0</span></div>
+    <div>DINERO: <span id="cash">RD$ 0</span></div>
+</div>
 
-    <div class="dashboard">
-        <div class="kpi-card"><span id="stat-p" class="kpi-val">0/0</span><div style="font-size:0.6rem;opacity:0.5;font-weight:bold">ENTREGAS</div></div>
-        <div class="kpi-card"><span id="stat-m" class="kpi-val">RD$ 0</span><div style="font-size:0.6rem;opacity:0.5;font-weight:bold">COBRADO</div></div>
-    </div>
+<div id="list"></div>
 
-    <div id="main-list"></div>
+<div class="float">
+    <button class="circle" style="background: var(--green)" onclick="showM('addM')">+</button>
+    <button class="circle" style="background: var(--blue)" onclick="showM('cfgM')">⚙️</button>
+</div>
 
-    <div class="float-btns">
-        <div class="btn-round" style="background: var(--accent-success)" onclick="openMod('add-modal')">➕</div>
-        <div class="btn-round" style="background: var(--accent-primary)" onclick="openMod('config-modal')">⚙️</div>
-    </div>
+<div id="pasteM" class="modal">
+    <h2 style="color:var(--orange); margin-bottom:10px;">Actualizar Destino</h2>
+    <p style="margin-bottom:15px; opacity:0.8;">Pega aquí el link de Google Maps o las coordenadas (ej: 18.4, -69.9):</p>
+    <textarea id="coordsInput" rows="4" placeholder="Pega el link de WhatsApp aquí..."></textarea>
+    <input type="hidden" id="targetId">
+    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">ACTUALIZAR CLIENTE</button>
+    <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
+</div>
 
-    <div id="add-modal" class="modal">
-        <div class="modal-content">
-            <h2 style="margin-bottom:20px; text-align:center">Nuevo Pedido</h2>
-            <input type="text" id="add-nom" placeholder="Nombre del Cliente">
-            <input type="tel" id="add-tel" placeholder="WhatsApp / Tel">
-            <input type="number" id="add-cod" placeholder="Monto a Cobrar RD$">
-            <button class="btn-ok" style="width:100%" onclick="addCli()">💾 GUARDAR CON MI GPS</button>
-            <button class="btn-rev" style="width:100%; margin-top:10px" onclick="closeMod()">CANCELAR</button>
-        </div>
-    </div>
+<div id="addM" class="modal">
+    <h2>Nuevo Pedido</h2><br>
+    <input type="text" id="n" placeholder="Nombre">
+    <input type="tel" id="t" placeholder="WhatsApp">
+    <input type="number" id="m" placeholder="Monto RD$">
+    <button class="btn" style="background:var(--green)" onclick="add()">GUARDAR</button>
+    <button class="btn" style="background:var(--red)" onclick="hideM()">CERRAR</button>
+</div>
 
-    <div id="config-modal" class="modal">
-        <div class="modal-content">
-            <h2 style="margin-bottom:20px; text-align:center">Herramientas</h2>
-            <button class="btn-maps" style="background: #6366f1" onclick="document.getElementById('f-in').click()">📂 CARGAR ARCHIVO JSON</button>
-            <button class="btn-wa" style="width:100%; margin-bottom:10px" onclick="copyLink()">🔗 COPIAR LINK DE RUTA</button>
-            <hr style="opacity:0.1; margin-bottom:15px">
-            <button class="btn-no" style="width:100%" onclick="clearAll()">🗑️ BORRAR TODA LA RUTA</button>
-            <button class="btn-rev" style="width:100%; margin-top:10px" onclick="closeMod()">CERRAR</button>
-        </div>
-    </div>
+<div id="cfgM" class="modal">
+    <h2>Configuración</h2><br>
+    <button class="btn btn-maps" onclick="document.getElementById('file').click()">📂 CARGAR JSON</button>
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
+    <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
+</div>
 
-    <input type="file" id="f-in" style="display:none" accept=".json">
+<input type="file" id="file" style="display:none" accept=".json">
 
-    <script>
-        let db = JSON.parse(localStorage.getItem('ly_final_v1')) || { clientes: [] };
-        let pos = { lat: 0, lng: 0 };
+<script>
+    let db = JSON.parse(localStorage.getItem('ly_v11')) || [];
+    let curPos = { lat: 0, lng: 0 };
 
-        function init() {
-            // Escuchar GPS discretamente para no causar parpadeos
-            navigator.geolocation.watchPosition(p => { 
-                pos = { lat: p.coords.latitude, lng: p.coords.longitude }; 
-            }, null, {enableHighAccuracy:true});
+    // GPS en segundo plano, sin molestar
+    navigator.geolocation.watchPosition(p => {
+        curPos = { lat: p.coords.latitude, lng: p.coords.longitude };
+    }, null, { enableHighAccuracy: true });
 
-            // Lector de archivos
-            document.getElementById('f-in').addEventListener('change', (e) => {
-                const r = new FileReader();
-                r.onload = (ev) => {
-                    const data = JSON.parse(ev.target.result);
-                    db.clientes = [...(data.clientes || []), ...(data.sin_ubicacion || [])];
-                    save(); closeMod();
-                };
-                r.readAsText(e.target.files[0]);
-            });
+    function render() {
+        const div = document.getElementById('list');
+        div.innerHTML = ''; // Solo se llama al cargar o al borrar/añadir
+        db.forEach((c, i) => {
+            const card = document.createElement('div');
+            card.id = `card-${i}`;
+            card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
+            card.innerHTML = `
+                <h3>${c.n}</h3>
+                <p>RD$ ${Number(c.m).toLocaleString()} | ${c.t}</p>
+                
+                <div class="row" style="margin-bottom:8px">
+                    <button class="btn-upd" style="flex:1" onclick="updGPS(${i})">📍 USAR MI GPS</button>
+                    <button class="btn-paste" style="flex:1" onclick="openPastePanel(${i})">📋 PEGAR LINK</button>
+                </div>
+                
+                <a id="link-${i}" class="btn btn-maps" href="https://www.google.com/maps/dir/?api=1&destination=${c.lt},${c.lg}&travelmode=motorcycle" target="_blank">🚀 IR AL MAPA</a>
+                <a class="btn btn-wa" href="https://wa.me/${c.t}" target="_blank">💬 WHATSAPP</a>
+                
+                <div class="row">
+                    <button class="btn-s" style="background:var(--green)" onclick="status(${i},'ok')">OK</button>
+                    <button class="btn-s" style="background:var(--red)" onclick="status(${i},'no')">NO</button>
+                </div>
+            `;
+            div.appendChild(card);
+        });
+        updateStats();
+    }
 
-            // Carga por Link
-            const p = new URLSearchParams(window.location.search);
-            if(p.get('ruta')) {
-                try {
-                    db.clientes = JSON.parse(decodeURIComponent(atob(p.get('ruta')))).clientes;
-                    save(); window.history.replaceState({}, '', window.location.pathname);
-                } catch(e) {}
-            }
-            render();
+    // ACTUALIZAR SIN RECARGAR PÁGINA
+    function updGPS(i) {
+        if(curPos.lat === 0) return alert("Esperando señal GPS...");
+        db[i].lt = curPos.lat;
+        db[i].lg = curPos.lng;
+        silenceSave();
+        document.getElementById(`link-${i}`).href = `https://www.google.com/maps/dir/?api=1&destination=${db[i].lt},${db[i].lg}&travelmode=motorcycle`;
+        alert("📍 Ubicación actualizada a tu posición actual.");
+    }
+
+    function openPastePanel(i) {
+        document.getElementById('targetId').value = i;
+        document.getElementById('coordsInput').value = '';
+        showM('pasteM');
+    }
+
+    function saveManualLocation() {
+        const i = document.getElementById('targetId').value;
+        const text = document.getElementById('coordsInput').value;
+        
+        // Extraer coordenadas de links o texto plano
+        const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
+        const match = text.match(reg);
+        
+        if (match) {
+            db[i].lt = match[1];
+            db[i].lg = match[2];
+            silenceSave();
+            document.getElementById(`link-${i}`).href = `https://www.google.com/maps/dir/?api=1&destination=${db[i].lt},${db[i].lg}&travelmode=motorcycle`;
+            hideM();
+            alert("✅ Ubicación actualizada con éxito.");
+        } else {
+            alert("No encontré coordenadas. Pega el link de Google Maps o las coordenadas (ej: 18.44, -69.95)");
         }
+    }
 
-        function render() {
-            const box = document.getElementById('main-list');
-            if (db.clientes.length === 0) {
-                box.innerHTML = '<div style="text-align:center; padding:60px; opacity:0.3"><h3>Ruta vacía</h3><p>Usa el botón (+) para empezar</p></div>';
-                return;
-            }
+    function status(i, s) { 
+        db[i].s = s; 
+        silenceSave();
+        document.getElementById(`card-${i}`).className = `card ${s === 'ok' ? 'done' : ''}`;
+        updateStats();
+    }
 
-            let html = '';
-            // Los pendientes van arriba
-            const ordenados = [...db.clientes].sort((a,b) => (a.estado==='entregado'?1:-1));
-            
-            ordenados.forEach(c => {
-                const done = c.estado === 'entregado';
-                html += `
-                <div class="card">
-                    <div class="status-strip ${done ? 'st-entregado' : 'st-pendiente'}"></div>
-                    <span class="card-title">${c.nombre}</span>
-                    <div class="card-detail">📞 ${c.telefono} | COD: RD$ ${Number(c.cod).toLocaleString()}</div>
-                    
-                    <button class="btn-update-gps" onclick="updUbi(${c.id})">
-                        📍 ACTUALIZAR UBICACIÓN AQUÍ
-                    </button>
+    function silenceSave() { localStorage.setItem('ly_v11', JSON.stringify(db)); }
 
-                    <button class="btn-maps" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=motorcycle')">🚀 ABRIR MAPAS</button>
-                    
-                    <button class="btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">💬 WHATSAPP</button>
+    function add() {
+        const nom = document.getElementById('n').value;
+        if(!nom) return;
+        db.push({ n: nom, t: document.getElementById('t').value, m: document.getElementById('m').value, lt: curPos.lat, lg: curPos.lng, s: 'p' });
+        localStorage.setItem('ly_v11', JSON.stringify(db));
+        render(); hideM();
+    }
 
-                    <div class="states">
-                        <button class="btn-ok" onclick="st(${c.id},'entregado')">LISTO</button>
-                        <button class="btn-no" onclick="st(${c.id},'rechazado')">FALLÓ</button>
-                        <button class="btn-rev" onclick="st(${c.id},'pendiente')">↩</button>
-                    </div>
-                </div>`;
-            });
-            box.innerHTML = html;
-            stats();
-        }
+    function updateStats() {
+        const ok = db.filter(x => x.s === 'ok');
+        document.getElementById('count').innerText = `${ok.length}/${db.length}`;
+        document.getElementById('cash').innerText = `RD$ ${ok.reduce((a, b) => a + Number(b.m || 0), 0).toLocaleString()}`;
+    }
 
-        // FUNCIÓN CLAVE PARA ACTUALIZAR GPS
-        function updUbi(id) {
-            if(!pos.lat) return alert("❌ Sin señal GPS. Activa tu ubicación.");
-            if(confirm("¿Quieres guardar tu ubicación actual como la nueva dirección de este cliente?")) {
-                const cli = db.clientes.find(x => x.id === id);
-                cli.lat = pos.lat; 
-                cli.lng = pos.lng;
-                save(); 
-                alert("✅ ¡Ubicación actualizada correctamente!");
-            }
-        }
+    function showM(id) { document.getElementById(id).style.display = 'flex'; }
+    function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
-        function addCli() {
-            const n = document.getElementById('add-nom').value;
-            const t = document.getElementById('add-tel').value;
-            const c = document.getElementById('add-cod').value;
-            if(!n || !t) return alert("Faltan datos");
-            db.clientes.unshift({ id: Date.now(), nombre: n, telefono: t, cod: c, lat: pos.lat, lng: pos.lng, estado: 'pendiente' });
-            save(); closeMod();
-            document.querySelectorAll('input').forEach(i => i.value = '');
-        }
+    document.getElementById('file').addEventListener('change', e => {
+        const reader = new FileReader();
+        reader.onload = ev => { db = JSON.parse(ev.target.result).clientes || JSON.parse(ev.target.result); localStorage.setItem('ly_v11', JSON.stringify(db)); render(); hideM(); };
+        reader.readAsText(e.target.files[0]);
+    });
 
-        function copyLink() {
-            const b64 = btoa(encodeURIComponent(JSON.stringify(db)));
-            const link = `${window.location.href.split('?')[0]}?ruta=${b64}`;
-            navigator.clipboard.writeText(link);
-            alert("🔗 Link copiado. Pégalo en WhatsApp.");
-        }
-
-        function st(id, s) { 
-            db.clientes.find(x => x.id === id).estado = s; 
-            save(); 
-        }
-
-        function stats() {
-            const ok = db.clientes.filter(c => c.estado === 'entregado');
-            document.getElementById('stat-p').innerText = `${ok.length}/${db.clientes.length}`;
-            document.getElementById('stat-m').innerText = `RD$ ${ok.reduce((a,b)=>a+(Number(b.cod)||0),0).toLocaleString()}`;
-        }
-
-        function save() { 
-            localStorage.setItem('ly_final_v1', JSON.stringify(db)); 
-            render(); 
-        }
-        function openMod(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeMod() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-        function clearAll() { if(confirm('¿Seguro que quieres borrar toda la ruta?')) { localStorage.removeItem('ly_final_v1'); location.reload(); } }
-
-        init();
-    </script>
+    render();
+</script>
 </body>
 </html>
