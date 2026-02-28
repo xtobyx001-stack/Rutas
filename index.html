@@ -304,37 +304,38 @@ async function sortNearest() {
   if (btn) { btn.textContent = '⏳ Calculando...'; btn.disabled = true; }
 
   try {
-    // Origen + todos los pendientes
-    const puntos = [ORIGEN, ...pendientes.map(c => ({ lat: c.lat, lng: c.lng }))];
-    const coords = puntos.map(p => `${p.lng},${p.lat}`).join(';');
+    const coords = [
+      `${ORIGEN.lng},${ORIGEN.lat}`,
+      ...pendientes.map(c => `${c.lng},${c.lat}`)
+    ].join(';');
 
-    // OSRM table: matriz de duraciones reales entre todos los puntos
-    const url = `https://router.project-osrm.org/table/v1/driving/${coords}?annotations=duration`;
+    // OSRM trip: calcula la ruta global óptima partiendo del origen
+    const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?roundtrip=false&source=first&destination=last&overview=false`;
     const res = await fetch(url);
     const data = await res.json();
 
     if (data.code !== 'Ok') throw new Error('OSRM error');
 
-    const matrix = data.durations; // matrix[i][j] = segundos de i a j
+    // Ordenar waypoints por trip_index (orden óptimo que devuelve OSRM)
+    const waypoints = [...data.waypoints].sort((a, b) => a.waypoint_index - b.waypoint_index);
 
-    // Vecino más cercano usando duraciones reales
-    const n = pendientes.length;
-    const visitado = new Array(n).fill(false);
-    const ordenados = [];
-    let actual = 0; // índice 0 = origen en la matriz
+    // Mapear cada waypoint de vuelta al cliente original
+    // waypoint_index 0 = origen, los demás = clientes en orden óptimo
+    const ordenados = waypoints
+      .filter(w => w.waypoint_index > 0)
+      .sort((a, b) => a.waypoint_index - b.waypoint_index)
+      .map(w => {
+        // trips_index indica la posición en el viaje óptimo
+        // location del waypoint nos permite identificar qué cliente es
+        const [wlng, wlat] = w.location;
+        return pendientes.find(c =>
+          Math.abs(c.lat - wlat) < 0.0001 && Math.abs(c.lng - wlng) < 0.0001
+        );
+      })
+      .filter(Boolean);
 
-    for (let paso = 0; paso < n; paso++) {
-      let mejorIdx = -1, mejorTiempo = Infinity;
-      for (let i = 0; i < n; i++) {
-        if (!visitado[i]) {
-          const tiempo = matrix[actual][i + 1]; // +1 porque índice 0 es origen
-          if (tiempo < mejorTiempo) { mejorTiempo = tiempo; mejorIdx = i; }
-        }
-      }
-      visitado[mejorIdx] = true;
-      ordenados.push(pendientes[mejorIdx]);
-      actual = mejorIdx + 1; // actualizar posición actual en la matriz
-    }
+    // Si OSRM no ordenó bien (misma cantidad), usar orden del trips_index
+    if (ordenados.length !== pendientes.length) throw new Error('Mismatch');
 
     clientes = [...ordenados, ...resto];
     tabActual = 'pendientes';
@@ -344,24 +345,50 @@ async function sortNearest() {
 
   } catch(e) {
     if (btn) { btn.textContent = '⚡ Cercanía'; btn.disabled = false; }
-    // Fallback línea recta
-    let lat = ORIGEN.lat, lng = ORIGEN.lng;
-    let p = [...pendientes], ordenados = [];
-    while (p.length > 0) {
-      let idx = 0, min = Infinity;
-      p.forEach((c, i) => {
-        const d = Math.pow(c.lat - lat, 2) + Math.pow(c.lng - lng, 2);
-        if (d < min) { min = d; idx = i; }
-      });
-      const next = p.splice(idx, 1)[0];
-      ordenados.push(next);
-      lat = next.lat; lng = next.lng;
+    // Fallback: vecino más cercano con matriz OSRM
+    try {
+      const puntos = [ORIGEN, ...pendientes.map(c => ({ lat: c.lat, lng: c.lng }))];
+      const coords2 = puntos.map(p => `${p.lng},${p.lat}`).join(';');
+      const res2 = await fetch(`https://router.project-osrm.org/table/v1/driving/${coords2}?annotations=duration`);
+      const data2 = await res2.json();
+      if (data2.code !== 'Ok') throw new Error();
+      const matrix = data2.durations;
+      const n = pendientes.length;
+      const visitado = new Array(n).fill(false);
+      const ordenados2 = [];
+      let actual = 0;
+      for (let paso = 0; paso < n; paso++) {
+        let mejorIdx = -1, mejorTiempo = Infinity;
+        for (let i = 0; i < n; i++) {
+          if (!visitado[i] && matrix[actual][i + 1] < mejorTiempo) {
+            mejorTiempo = matrix[actual][i + 1]; mejorIdx = i;
+          }
+        }
+        visitado[mejorIdx] = true;
+        ordenados2.push(pendientes[mejorIdx]);
+        actual = mejorIdx + 1;
+      }
+      clientes = [...ordenados2, ...resto];
+    } catch(e2) {
+      // Último fallback: línea recta
+      let lat = ORIGEN.lat, lng = ORIGEN.lng;
+      let p = [...pendientes], ordenados3 = [];
+      while (p.length > 0) {
+        let idx = 0, min = Infinity;
+        p.forEach((c, i) => {
+          const d = Math.pow(c.lat - lat, 2) + Math.pow(c.lng - lng, 2);
+          if (d < min) { min = d; idx = i; }
+        });
+        const next = p.splice(idx, 1)[0];
+        ordenados3.push(next);
+        lat = next.lat; lng = next.lng;
+      }
+      clientes = [...ordenados3, ...resto];
+      alert('⚠️ Sin conexión, se usó distancia aproximada.');
     }
-    clientes = [...ordenados, ...resto];
     tabActual = 'pendientes';
     switchTab('pendientes');
     guardar();
-    alert('⚠️ Sin conexión a OSRM, se usó distancia aproximada.');
   }
 }
 
