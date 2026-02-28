@@ -3,278 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Mensajería Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Llega Ya | Sistema de Flota</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --peya-red: #E60042; /* Rojo PedidosYa */
-            --didi-orange: #FF8D4D; /* Naranja DiDi */
-            --bg-gray: #F7F7F7;
-            --text-dark: #2D2D2D;
-            --text-light: #757575;
-            --white: #FFFFFF;
-            --shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
+        :root { --red: #E60042; --blue: #007AFF; --green: #28a745; --bg: #F8F9FA; --dark: #1A1A1A; }
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); color: var(--dark); font-family: 'Outfit', sans-serif; padding-bottom: 120px; }
         
-        body { 
-            background-color: var(--bg-gray); 
-            color: var(--text-dark); 
-            font-family: 'Outfit', sans-serif; 
-            padding-bottom: 100px;
-        }
+        /* Header con acceso oculto al Jefe */
+        header { background: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top:0; z-index:100; }
+        .logo { font-weight: 800; color: var(--red); font-size: 1.4rem; cursor: pointer; }
+        #gps-status { font-size: 0.7rem; color: var(--green); font-weight: 700; margin-top: 5px; }
 
-        /* Header Estilo App */
-        header { 
-            background: var(--white); 
-            padding: 15px 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .logo { font-weight: 700; font-size: 1.2rem; color: var(--peya-red); letter-spacing: -0.5px; }
-        #gps-status { font-size: 0.7rem; color: #10b981; font-weight: 600; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
-        #gps-status::before { content: '●'; font-size: 10px; animation: blink 1s infinite; }
-
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        /* Dashboard de Ingresos */
-        .stats { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            padding: 15px; 
-        }
-        .kpi { 
-            background: var(--white); 
-            padding: 15px; 
-            border-radius: 16px; 
-            box-shadow: var(--shadow);
-            border: 1px solid #EAEAEA;
-        }
-        .kpi span { font-size: 0.7rem; color: var(--text-light); font-weight: 600; text-transform: uppercase; }
-        .kpi b { display: block; font-size: 1.1rem; color: var(--text-dark); margin-top: 2px; }
-
-        /* Tarjetas de Clientes Estilo PedidosYa */
-        .card { 
-            background: var(--white); 
-            margin: 0 15px 15px; 
-            padding: 18px; 
-            border-radius: 20px; 
-            box-shadow: var(--shadow);
-            border: 1px solid #EAEAEA;
-            position: relative;
-            overflow: hidden;
-        }
-        .card.done { opacity: 0.6; filter: grayscale(1); background: #f0f0f0; }
-
-        .dist-tag {
-            background: #FFF0F4;
-            color: var(--peya-red);
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-
-        .client-name { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
-        .client-info { font-size: 0.85rem; color: var(--text-light); margin-bottom: 15px; }
-        .client-cod { font-weight: 700; color: #28a745; background: #EFFFF4; padding: 2px 6px; border-radius: 4px; }
-
-        /* Botones de Acción */
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        /* Estilo de las Tarjetas de Pedido */
+        .card { background: white; margin: 15px; padding: 20px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #EEE; position: relative; transition: 0.3s; }
+        .card.done { opacity: 0.4; filter: grayscale(1); border-left: 6px solid var(--green); }
         
-        button { 
-            border-radius: 12px; 
-            border: none; 
-            font-family: 'Outfit', sans-serif; 
-            font-weight: 700; 
-            font-size: 0.85rem; 
-            cursor: pointer; 
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
+        .client-name { font-size: 1.25rem; font-weight: 700; display: block; margin-bottom: 5px; }
+        .client-info { font-size: 0.9rem; color: #666; margin-bottom: 15px; font-family: 'JetBrains Mono', monospace; }
+        .price-tag { color: var(--green); background: #EFFFF4; padding: 3px 8px; border-radius: 6px; font-weight: 800; }
 
-        .btn-maps { background: #E8F2FF; color: #007AFF; padding: 12px; width: 100%; margin-bottom: 10px; }
-        .btn-wa { background: #EFFFF4; color: #28a745; padding: 12px; }
-        .btn-move { background: #FFF4E8; color: var(--didi-orange); padding: 12px; }
+        /* Botones de Acción para el Mensajero */
+        .btn-nav { background: var(--blue); color: white; width: 100%; padding: 18px; border-radius: 16px; border: none; font-weight: 800; font-size: 1rem; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,122,255,0.3); }
+        .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        button { border-radius: 14px; border: none; font-family: 'Outfit', sans-serif; font-weight: 700; cursor: pointer; transition: 0.2s; }
         
-        /* Botones de Estado */
-        .status-group { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
-        .btn-ok { background: var(--peya-red); color: white; padding: 14px; }
-        .btn-reset { background: #F2F2F2; color: var(--text-dark); padding: 14px; }
+        .btn-move { background: #FFF0F4; color: var(--red); padding: 14px; }
+        .btn-wa { background: #25D366; color: white; padding: 14px; }
+        .btn-finish { background: var(--red); color: white; width: 100%; padding: 16px; font-weight: 800; font-size: 1rem; }
 
-        /* Barra Inferior (Dock) */
-        .dock {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--white);
-            padding: 15px 25px 30px;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-            border-top: 1px solid #EAEAEA;
-            z-index: 1000;
-        }
-        .dock-item { color: var(--text-light); font-size: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .dock-item.active { color: var(--peya-red); }
-        .dock-item span { font-size: 0.6rem; font-weight: 700; }
+        /* Panel de Administrador (Oculto) */
+        #admin-box { background: #111; color: white; padding: 25px; display: none; margin: 15px; border-radius: 20px; }
+        #admin-box h2 { font-size: 1.2rem; margin-bottom: 10px; color: var(--red); }
+        textarea { width: 100%; background: #222; border: 1px solid #444; color: #0f0; padding: 10px; border-radius: 10px; margin: 10px 0; font-family: monospace; }
+        .btn-gen { background: var(--green); color: white; padding: 15px; width: 100%; border-radius: 10px; font-size: 1rem; }
 
-        /* Modal Moderno */
-        .modal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
-            display: none; align-items: center; justify-content: center; 
-            z-index: 2000; padding: 20px; backdrop-filter: blur(4px);
-        }
-        .modal-content { 
-            background: var(--white); padding: 25px; border-radius: 24px; 
-            width: 100%; max-width: 340px; text-align: center;
-        }
-        textarea { 
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #DDD; 
-            margin: 15px 0; font-family: inherit; font-size: 1rem; background: #F9F9F9;
-        }
+        /* Resultado del Link */
+        #result-link { background: #000; color: #0f0; padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 0.7rem; word-break: break-all; display: none; border: 1px dashed #555; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">LLEGA YA 🛵</div>
-    <div id="gps-status">GPS CONECTADO</div>
+    <div class="logo" onclick="accessAdmin()">LLEGA YA ELITE 🛵</div>
+    <div id="gps-status">● GPS ACTIVADO</div>
 </header>
 
-<div class="stats">
-    <div class="kpi"><span>Entregas</span><b id="count">0/0</b></div>
-    <div class="kpi"><span>Por Cobrar</span><b id="cash">RD$ 0</b></div>
+<div id="admin-box">
+    <h2>PANEL DE CONTROL (JEFE)</h2>
+    <p style="font-size: 0.8rem; opacity: 0.7;">Pega el JSON aquí para crear el link del mensajero:</p>
+    <textarea id="input-json" rows="6" placeholder='{"clientes": [...] }'></textarea>
+    <button class="btn-gen" onclick="generateWorkerLink()">CREAR LINK PARA TRABAJADOR</button>
+    <div id="result-link"></div>
 </div>
 
-<div id="list"></div>
-
-<div class="dock">
-    <div class="dock-item active" onclick="location.reload()">📍<span>Ruta</span></div>
-    <div class="dock-item" onclick="openM('m-js')" style="color:var(--didi-orange)">📝<span>Cargar</span></div>
-    <div class="dock-item" onclick="resetApp()" style="color:var(--text-light)">🗑️<span>Limpiar</span></div>
-</div>
-
-<div id="m-js" class="modal">
-    <div class="modal-content">
-        <h3>Nueva Ruta</h3>
-        <p style="font-size:0.8rem; color:var(--text-light)">Pega el código JSON de tus clientes</p>
-        <textarea id="t-js" rows="6" placeholder="Pega aquí..."></textarea>
-        <button class="btn-ok" style="width:100%" onclick="importData()">EMPEZAR RUTA</button>
-        <button class="btn-reset" style="width:100%; margin-top:10px" onclick="closeM()">Cerrar</button>
-    </div>
-</div>
+<div id="main-app"></div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_delivery_v1')) || { clientes: [], sin_ubicacion: [] };
-    let myLoc = { lat: 0, lng: 0 };
+    let routeData = { clientes: [] };
+    let currentPos = { lat: 0, lng: 0 };
 
     function init() {
-        if(navigator.geolocation) {
-            navigator.geolocation.watchPosition(p => {
-                myLoc = { lat: p.coords.latitude, lng: p.coords.longitude };
-                render();
-            }, null, {enableHighAccuracy:true});
+        // 1. ¿Viene una ruta nueva en el link?
+        const params = new URLSearchParams(window.location.search);
+        const encodedData = params.get('ruta');
+
+        if (encodedData) {
+            try {
+                // Decodificar y guardar en la memoria del celular
+                const decoded = JSON.parse(decodeURIComponent(atob(encodedData)));
+                routeData.clientes = decoded.clientes || [];
+                localStorage.setItem('ly_flota_v2', JSON.stringify(routeData));
+                // Limpiar la URL para que quede bonita
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } catch(e) { alert("Error al procesar el link de ruta."); }
+        } else {
+            // 2. Si no hay link nuevo, buscar lo que ya estaba guardado
+            const saved = localStorage.getItem('ly_flota_v2');
+            if(saved) routeData = JSON.parse(saved);
         }
+
+        // Activar GPS real
+        navigator.geolocation.watchPosition(p => {
+            currentPos = { lat: p.coords.latitude, lng: p.coords.longitude };
+            render();
+        }, null, {enableHighAccuracy:true});
+
         render();
     }
 
-    function getD(l1, n1, l2, n2) {
-        if(!l1 || !l2) return 999;
-        const R = 6371;
-        const dL = (l2-l1)*Math.PI/180; const dN = (n2-n1)*Math.PI/180;
-        const a = Math.sin(dL/2)**2 + Math.cos(l1*Math.PI/180)*Math.cos(l2*Math.PI/180)*Math.sin(dN/2)**2;
-        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    }
-
     function render() {
-        const box = document.getElementById('list');
-        const todos = [...db.clientes, ...db.sin_ubicacion];
-        if(!todos.length) { box.innerHTML = '<div style="text-align:center;padding:50px;color:#AAA">No hay pedidos asignados</div>'; return; }
+        const container = document.getElementById('main-app');
+        if(!routeData.clientes.length) {
+            container.innerHTML = '<div style="text-align:center;padding:80px 20px;opacity:0.4;">Esperando asignación de ruta...</div>';
+            return;
+        }
 
-        const orden = todos.sort((a,b) => {
-            if (a.estado === 'entregado') return 1;
-            if (b.estado === 'entregado') return -1;
-            return getD(myLoc.lat, myLoc.lng, a.lat, a.lng) - getD(myLoc.lat, myLoc.lng, b.lat, b.lng);
-        });
+        // Ordenar: Pendientes arriba, Entregados abajo
+        const list = routeData.clientes.sort((a,b) => (a.estado === 'entregado' ? 1 : -1));
 
-        let h = '';
-        orden.forEach(c => {
-            const dist = getD(myLoc.lat, myLoc.lng, c.lat, c.lng);
-            const isDone = c.estado === 'entregado';
-            h += `
-            <div class="card ${isDone ? 'done' : ''}">
-                <div class="dist-tag">${c.lat ? 'A ' + dist.toFixed(2) + ' km' : 'UBICACIÓN POR CONFIRMAR'}</div>
-                <div class="client-name">${c.nombre}</div>
-                <div class="client-info">Tel: ${c.telefono} | <span class="client-cod">RD$ ${Number(c.cod).toLocaleString()}</span></div>
-                
-                ${c.lat ? `<button class="btn-maps" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=motorcycle')">📍 VER MAPA</button>` : ''}
-                
-                <div class="btn-group">
-                    <button class="btn-move" onclick="reubicar(${c.id})">🔄 MOVER</button>
+        let html = '';
+        list.forEach(c => {
+            const done = c.estado === 'entregado';
+            html += `
+            <div class="card ${done ? 'done' : ''}">
+                <span class="client-name">${c.nombre}</span>
+                <div class="client-info">
+                    TEL: ${c.telefono} | <span class="price-tag">RD$ ${Number(c.cod).toLocaleString()}</span>
+                </div>
+
+                <button class="btn-nav" onclick="navigate('${c.lat}', '${c.lng}')">🚀 NAVEGAR AHORA</button>
+
+                <div class="btn-row">
+                    <button class="btn-move" onclick="reRoute(${c.id})">📍 SE MOVIÓ</button>
                     <button class="btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">WHATSAPP</button>
                 </div>
-                
-                <div class="status-group">
-                    <button class="btn-ok" onclick="setStatus(${c.id},'entregado')">ENTREGADO</button>
-                    <button class="btn-reset" onclick="setStatus(${c.id},'pendiente')">↩</button>
-                </div>
+
+                <button class="btn-finish" onclick="markDone(${c.id})">${done ? '✓ ENTREGADO' : 'MARCAR ENTREGADO'}</button>
             </div>`;
         });
-        box.innerHTML = h;
-        updateStats(todos);
+        container.innerHTML = html;
     }
 
-    function reubicar(id) {
-        const op = confirm("¿El cliente cambió de lugar?\n\nOK: Guardar donde estás tú ahora.\nCANCELAR: Pegar coordenadas de WhatsApp.");
-        if(op) {
-            if(!myLoc.lat) return alert("Esperando GPS...");
-            updateCoords(id, myLoc.lat, myLoc.lng);
+    // --- FUNCIONES DEL MENSAJERO ---
+    function navigate(lat, lng) {
+        if(!lat || lat === "undefined") return alert("El cliente no tiene ubicación.");
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=motorcycle`);
+    }
+
+    function reRoute(id) {
+        const c = routeData.clientes.find(x => x.id == id);
+        const mode = confirm("¿Dónde está el cliente?\n\nOK: Estoy frente a él (Guardar mi GPS).\nCANCELAR: Pegar coordenadas nuevas.");
+        
+        if(mode) {
+            if(!currentPos.lat) return alert("Buscando señal GPS...");
+            c.lat = currentPos.lat; c.lng = currentPos.lng;
         } else {
-            const raw = prompt("Pega las coordenadas (ej: 19.3, -70.2):");
+            const raw = prompt("Pega las nuevas coordenadas (ej: 19.30, -70.24):");
             if(raw && raw.includes(',')) {
                 const p = raw.split(',');
-                updateCoords(id, parseFloat(p[0]), parseFloat(p[1]));
+                c.lat = p[0].trim(); c.lng = p[1].trim();
             }
         }
+        updateMemory();
     }
 
-    function updateCoords(id, lat, lng) {
-        let c = db.clientes.find(x => x.id == id) || db.sin_ubicacion.find(x => x.id == id);
-        if(db.sin_ubicacion.find(x => x.id == id)) {
-            let i = db.sin_ubicacion.findIndex(x => x.id == id);
-            c = db.sin_ubicacion.splice(i, 1)[0];
-            db.clientes.push(c);
+    function markDone(id) {
+        routeData.clientes.find(x => x.id == id).estado = 'entregado';
+        updateMemory();
+    }
+
+    function updateMemory() {
+        localStorage.setItem('ly_flota_v2', JSON.stringify(routeData));
+        render();
+    }
+
+    // --- FUNCIONES DEL JEFE (ADMIN) ---
+    function accessAdmin() {
+        const pass = prompt("Clave de Jefe:");
+        if(pass === "1234") {
+            document.getElementById('admin-box').style.display = 'block';
+            window.scrollTo(0,0);
         }
-        c.lat = lat; c.lng = lng;
-        save();
-        alert("¡Ubicación actualizada!");
     }
 
-    function setStatus(id, s) { [...db.clientes, ...db.sin_ubicacion].forEach(c => {if(c.id==id) c.estado=s;}); save(); }
-    function updateStats(t) {
-        const ok = t.filter(x => x.estado === 'entregado');
-        document.getElementById('count').innerText = `${ok.length}/${t.length}`;
-        document.getElementById('cash').innerText = `RD$ ${ok.reduce((a,b)=>a+(Number(b.cod)||0),0).toLocaleString()}`;
+    function generateWorkerLink() {
+        const json = document.getElementById('input-json').value;
+        try {
+            JSON.parse(json); // Validar que esté bien escrito
+            const base64 = btoa(encodeURIComponent(json));
+            const finalLink = `${window.location.href.split('?')[0]}?ruta=${base64}`;
+            
+            const res = document.getElementById('result-link');
+            res.style.display = 'block';
+            res.innerHTML = `<strong>LINK LISTO:</strong><br>${finalLink}<br><br><button onclick="copyLink('${finalLink}')" style="background:#fff; color:#000; padding:5px; border-radius:5px;">COPIAR PARA WHATSAPP</button>`;
+        } catch(e) { alert("El código JSON está mal escrito. Revísalo."); }
     }
-    function importData() { try { const j = JSON.parse(document.getElementById('t-js').value); db = {clientes:j.clientes||[], sin_ubicacion:j.sin_ubicacion||[]}; save(); closeM(); } catch(e){alert("Error JSON");} }
-    function save() { localStorage.setItem('ly_delivery_v1', JSON.stringify(db)); render(); }
-    function openM(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-    function resetApp() { if(confirm('¿Limpiar ruta?')) { localStorage.removeItem('ly_delivery_v1'); location.reload(); } }
+
+    function copyLink(link) {
+        navigator.clipboard.writeText(link);
+        alert("¡Link copiado! Ya puedes pegarlo en el WhatsApp del trabajador.");
+    }
 
     init();
 </script>
