@@ -18,9 +18,9 @@ header h1 { font-size: 1.1rem; }
 .toolbar button { flex: 1; padding: 10px 6px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.8rem; cursor: pointer; color: white; }
 
 .search-bar { padding: 8px 10px; background: #0f172a; border-bottom: 1px solid var(–border); position: sticky; top: 106px; z-index: 48; }
-.search-bar input { width: 100%; padding: 10px 14px 10px 36px; border-radius: 8px; border: 1px solid var(–border); background: var(–card); color: #f1f5f9; font-size: 0.9rem; -webkit-text-fill-color: #f1f5f9; }
+.search-bar input { width: 100%; padding: 10px 14px 10px 36px; border-radius: 8px; border: 1px solid var(–border); background: var(–card); color: #f1f5f9; font-size: 0.9rem; -webkit-text-fill-color: #f1f5f9; -webkit-box-shadow: 0 0 0px 1000px #1e293b inset; }
 .search-bar input::placeholder { color: #64748b; -webkit-text-fill-color: #64748b; }
-.search-bar input:focus { background: var(–card); color: #f1f5f9; -webkit-text-fill-color: #f1f5f9; outline: 2px solid var(–blue); }
+.search-bar input:focus { -webkit-box-shadow: 0 0 0px 1000px #1e293b inset; outline: 2px solid var(–blue); }
 .search-wrap { position: relative; }
 .search-wrap .lupa { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 1rem; pointer-events: none; }
 
@@ -201,7 +201,7 @@ function render() {
     return;
   }
 
-  list.innerHTML = datos.map(c => {
+  list.innerHTML = datos.map((c, idx) => {
     const mapsUrl = c.lat && c.lng ? `https://www.google.com/maps?q=${c.lat},${c.lng}` : null;
     const waUrl = c.telefono ? `https://wa.me/${c.telefono.replace(/\D/g,'')}` : null;
     const sinUbi = !c.lat || !c.lng;
@@ -218,7 +218,7 @@ function render() {
     return `
     <div class="card ${sinUbi ? 'sin-ubi' : ''} ${c.estado !== 'pendiente' ? c.estado : ''}">
       <div class="card-header">
-        <div class="nombre">${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}</div>
+        <div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#${idx+1}</span>${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}</div>
         <div class="cod">RD$ ${(c.cod||0).toLocaleString()} · Tel: ${c.telefono || '—'}</div>
       </div>
       <div class="card-body">
