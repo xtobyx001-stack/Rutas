@@ -217,7 +217,7 @@ function render() {
       : `<button class="btn-sm" style="background:var(--red)" onclick="toggleEstado(${c.id},'pendiente','fallido')">❌ Falló</button>`;
 
     return `
-    <div class="card ${!esSinUbi && c.estado !== 'pendiente' ? c.estado : ''} ${sinUbi ? 'sin-ubi' : ''}">
+    <div class="card ${sinUbi ? 'sin-ubi' : ''} ${c.estado !== 'pendiente' ? c.estado : ''}">
       <div class="card-header">
         <div class="nombre">${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}</div>
         <div class="cod">RD$ ${(c.cod||0).toLocaleString()} · Tel: ${c.telefono || '—'}</div>
@@ -294,25 +294,62 @@ function rotarAlFinal(id) {
   guardar();
 }
 
-function sortNearest() {
-  let lat = ORIGEN.lat, lng = ORIGEN.lng;
-  let pendientes = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
-  let resto = clientes.filter(c => !(c.estado === 'pendiente' && c.lat && c.lng));
-  let ordenados = [];
-  while (pendientes.length > 0) {
-    let idx = 0, min = Infinity;
-    pendientes.forEach((c, i) => {
-      const d = Math.pow(c.lat - lat, 2) + Math.pow(c.lng - lng, 2);
-      if (d < min) { min = d; idx = i; }
-    });
-    const next = pendientes.splice(idx, 1)[0];
-    ordenados.push(next);
-    lat = next.lat; lng = next.lng;
+async function sortNearest() {
+  const pendientes = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
+  const resto = clientes.filter(c => !(c.estado === 'pendiente' && c.lat && c.lng));
+
+  if (pendientes.length === 0) return alert('No hay clientes con ubicación pendientes.');
+
+  const btn = document.querySelector('.toolbar button[onclick="sortNearest()"]');
+  if (btn) { btn.textContent = '⏳ Calculando...'; btn.disabled = true; }
+
+  try {
+    // Construir coordenadas: origen + todos los pendientes
+    const coords = [
+      `${ORIGEN.lng},${ORIGEN.lat}`,
+      ...pendientes.map(c => `${c.lng},${c.lat}`)
+    ].join(';');
+
+    const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?roundtrip=false&source=first&destination=last&overview=false`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.code !== 'Ok') throw new Error('OSRM error');
+
+    // OSRM devuelve waypoints en el orden óptimo
+    const waypoints = data.waypoints.sort((a, b) => a.waypoint_index - b.waypoint_index);
+    // El primer waypoint es el origen (índice 0), los demás son los clientes
+    const ordenados = waypoints
+      .filter(w => w.waypoint_index > 0)
+      .map(w => pendientes[w.trips_index !== undefined ? w.waypoint_index - 1 : w.waypoint_index - 1]);
+
+    clientes = [...ordenados, ...resto];
+    tabActual = 'pendientes';
+    switchTab('pendientes');
+    guardar();
+    if (btn) { btn.textContent = '⚡ Cercanía'; btn.disabled = false; }
+
+  } catch(e) {
+    // Fallback a distancia en línea recta si OSRM falla
+    if (btn) { btn.textContent = '⚡ Cercanía'; btn.disabled = false; }
+    let lat = ORIGEN.lat, lng = ORIGEN.lng;
+    let p = [...pendientes], ordenados = [];
+    while (p.length > 0) {
+      let idx = 0, min = Infinity;
+      p.forEach((c, i) => {
+        const d = Math.pow(c.lat - lat, 2) + Math.pow(c.lng - lng, 2);
+        if (d < min) { min = d; idx = i; }
+      });
+      const next = p.splice(idx, 1)[0];
+      ordenados.push(next);
+      lat = next.lat; lng = next.lng;
+    }
+    clientes = [...ordenados, ...resto];
+    tabActual = 'pendientes';
+    switchTab('pendientes');
+    guardar();
+    alert('⚠️ No se pudo conectar a OSRM, se usó distancia aproximada.');
   }
-  clientes = [...ordenados, ...resto];
-  tabActual = 'pendientes';
-  switchTab('pendientes');
-  guardar();
 }
 
 function cargarArchivo(e) {
