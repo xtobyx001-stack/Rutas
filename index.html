@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | ELITE FINAL</title>
+    <title>Llega Ya | Solo Ruta</title>
     <style>
         :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background: var(--bg); color: white; padding-bottom: 100px; }
-        
         header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
-        .stats { display: flex; justify-content: space-around; padding: 10px; background: #0f172a; font-weight: bold; font-size: 0.9rem; border-bottom: 1px solid #334155; }
-
+        
         #list { padding: 10px; }
         .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); }
         .card.done { border-left-color: var(--green); opacity: 0.6; }
         
-        h3 { font-size: 1.2rem; margin-bottom: 5px; color: #fff; }
-        .info { font-size: 0.9rem; margin-bottom: 12px; color: #94a3b8; font-weight: bold; }
+        h3 { font-size: 1.3rem; margin-bottom: 10px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
 
-        .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 1rem; }
         .btn-paste { background: var(--orange); color: black; } 
         .btn-maps { background: var(--blue); }
         .btn-wa { background: #25d366; }
@@ -31,30 +28,25 @@
         input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
 
         .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
-        .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
+        .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
 <header><h1>LLEGA YA ELITE 🛵</h1></header>
-<div class="stats">
-    <div>LISTOS: <span id="count">0/0</span></div>
-    <div>TOTAL: <span id="cash">RD$ 0</span></div>
-</div>
 
 <div id="list"></div>
 
 <div class="float">
-    <button class="circle" style="background: var(--green)" onclick="showM('addM')">＋</button>
+    <button class="circle" style="background: var(--green)" onclick="showM('addM')">+</button>
     <button class="circle" style="background: var(--blue)" onclick="showM('cfgM')">⚙️</button>
 </div>
 
 <div id="pasteM" class="modal">
-    <h2 style="color:var(--orange); margin-bottom:10px;">Actualizar Destino</h2>
-    <p style="margin-bottom:15px; opacity:0.8;">Pega el link de Maps o coordenadas:</p>
-    <textarea id="coordsInput" rows="4" placeholder="Pega aquí..."></textarea>
+    <h2 style="color:var(--orange); margin-bottom:10px;">Pegar Ubicación</h2>
+    <textarea id="coordsInput" rows="5" placeholder="Pega el link de Maps aquí..."></textarea>
     <input type="hidden" id="targetId">
-    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR CAMBIO</button>
+    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR UBICACIÓN</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
 </div>
 
@@ -62,15 +54,14 @@
     <h2>Nuevo Cliente</h2><br>
     <input type="text" id="n" placeholder="Nombre">
     <input type="tel" id="t" placeholder="WhatsApp">
-    <input type="number" id="m" placeholder="Monto RD$">
-    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR</button>
+    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR A LISTA</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CERRAR</button>
 </div>
 
 <div id="cfgM" class="modal">
-    <h2>Opciones</h2><br>
-    <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 CARGAR ARCHIVO JSON</button>
-    <button class="btn btn-wa" onclick="shareRoute()">🔗 COPIAR LINK RUTA</button>
+    <h2>Subir Datos</h2><br>
+    <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 1. SUBIR ARCHIVO JSON</button>
+    <button class="btn btn-wa" onclick="shareRoute()">🔗 2. COPIAR LINK DE RUTA</button>
     <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
     <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
     <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
@@ -79,39 +70,39 @@
 <input type="file" id="file" style="display:none" accept=".json">
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_master_v1')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_simple_v1')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
         
         db.forEach((c, i) => {
-            // Lector flexible para nombres y montos (soporta n, nombre, m, cod, etc)
-            const nombre = c.n || c.nombre || c.Nombre || "Cliente Sin Nombre";
-            const telefono = c.t || c.telefono || c.tel || "---";
-            const monto = c.m || c.cod || c.monto || 0;
+            const nombre = c.n || c.nombre || "Sin Nombre";
+            const telefono = c.t || c.telefono || "";
             const lat = c.lt || c.lat || 0;
             const lng = c.lg || c.lng || 0;
 
             const card = document.createElement('div');
             card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
+            
+            const mapsUrl = (lat != 0) ? `https://www.google.com/maps?q=${lat},${lng}` : "#";
+
             card.innerHTML = `
                 <h3>${nombre}</h3>
-                <div class="info">RD$ ${Number(monto).toLocaleString()} | 📞 ${telefono}</div>
                 
-                <button class="btn btn-paste" onclick="openPastePanel(${i})">📋 PEGAR NUEVA UBICACIÓN</button>
+                <button class="btn btn-paste" onclick="openPastePanel(${i})">📋 PEGAR UBICACIÓN</button>
                 
-                <a class="btn btn-maps" href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=motorcycle" target="_blank">🚀 IR AL MAPA</a>
+                <a class="btn btn-maps" href="${mapsUrl}" target="_blank">🚀 IR AL MAPA</a>
+                
                 <a class="btn btn-wa" href="https://wa.me/${telefono}" target="_blank">💬 WHATSAPP</a>
                 
                 <div class="row">
-                    <button class="btn-s" style="background:var(--green)" onclick="status(${i},'ok')">OK</button>
-                    <button class="btn-s" style="background:var(--red)" onclick="status(${i},'no')">NO</button>
+                    <button class="btn-s" style="background:var(--green)" onclick="status(${i},'ok')">LISTO</button>
+                    <button class="btn-s" style="background:var(--red)" onclick="status(${i},'no')">FALLO</button>
                 </div>
             `;
             div.appendChild(card);
         });
-        updateStats();
     }
 
     function openPastePanel(i) {
@@ -127,33 +118,29 @@
         const match = text.match(reg);
         
         if (match) {
-            db[i].lt = match[1]; db[i].lg = match[2];
-            save(); hideM();
+            db[i].lt = match[1]; 
+            db[i].lg = match[2];
+            save(); 
+            hideM();
         } else {
-            alert("Pega un link de Maps o coordenadas válidas.");
+            alert("Error: No se detectaron coordenadas en el texto.");
         }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_master_v1', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('ly_simple_v1', JSON.stringify(db)); render(); }
 
     function add() {
         const nom = document.getElementById('n').value;
         if(!nom) return;
-        db.push({ n: nom, t: document.getElementById('t').value, m: document.getElementById('m').value, lt: 0, lg: 0, s: 'p' });
+        db.push({ n: nom, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
-    }
-
-    function updateStats() {
-        const ok = db.filter(x => x.s === 'ok');
-        document.getElementById('count').innerText = `${ok.length}/${db.length}`;
-        document.getElementById('cash').innerText = `RD$ ${ok.reduce((a, b) => a + Number(b.m || b.cod || 0), 0).toLocaleString()}`;
     }
 
     function shareRoute() {
         const str = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
         const url = window.location.origin + window.location.pathname + '?r=' + str;
-        navigator.clipboard.writeText(url).then(() => alert("Link copiado."));
+        navigator.clipboard.writeText(url).then(() => alert("Link copiado. Pégalo en el navegador de otro celular."));
     }
 
     function showM(id) { document.getElementById(id).style.display = 'flex'; }
