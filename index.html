@@ -97,7 +97,7 @@ let datos;
 if (tabActual === 'pendientes') {
 datos = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
 } else if (tabActual === 'sin_ubicacion') {
-datos = clientes.filter(c => !c.lat || !c.lng);
+datos = clientes.filter(c => (!c.lat || !c.lng) && c.estado === 'pendiente');
 } else {
 datos = clientes.filter(c => c.estado === 'entregado' || c.estado === 'fallido');
 }
@@ -151,7 +151,7 @@ ${btnFallo}
 <div class="btn-row">
 ${btnEntregado}
 ${btnFallo}
-<button class="btn-sm" style="background:#475569" onclick="devolverPendiente(${c.id})">↩️ Pendiente</button>
+<button class="btn-sm" style="background:#1d4ed8" onclick="devolverPendiente(${c.id})">↩️ Pendiente</button>
 </div>` : `
 <div class="btn-row">
 ${btnEntregado}
