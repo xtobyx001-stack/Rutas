@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -25,11 +26,14 @@
         input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
         .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
         .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .origin-info { background: #1e293b; border: 1px solid var(--purple); border-radius: 10px; padding: 10px 15px; margin: 10px; font-size: 0.85rem; color: #a78bfa; text-align: center; }
     </style>
 </head>
 <body>
 
 <header><h1>LLEGA YA ELITE 🛵</h1></header>
+
+<div class="origin-info">📍 Salida fija: Sanchez casa 9A, San Francisco de Macorís</div>
 
 <div class="sort-bar">
     <button class="btn-sort" onclick="sortNearest()">⚡ ORDENAR POR CERCANÍA</button>
@@ -73,6 +77,10 @@
 </div>
 
 <script>
+    // Punto de salida fijo: Sanchez casa 9A, San Francisco de Macorís
+    const ORIGIN_LAT = 19.3009;
+    const ORIGIN_LNG = -70.2531;
+
     let db = JSON.parse(localStorage.getItem('ly_master_final')) || [];
 
     function render() {
@@ -101,7 +109,6 @@
         });
     }
 
-    // PROCESAR LO QUE SE PEGA EN EL CUADRO GRANDE
     function processFileContent() {
         const raw = document.getElementById('fileInputContent').value.trim();
         try {
@@ -117,21 +124,29 @@
     }
 
     function sortNearest() {
-        if (!navigator.geolocation) return alert("Activa el GPS");
-        navigator.geolocation.getCurrentPosition(pos => {
-            let lat = pos.coords.latitude, lng = pos.coords.longitude;
-            let p = [...db.filter(x => x.s !== 'ok')], d = [...db.filter(x => x.s === 'ok')], s = [];
-            while(p.length > 0) {
-                let idx = 0, min = Infinity;
-                p.forEach((c, i) => {
-                    let dist = Math.sqrt(Math.pow((c.lt||0)-lat,2) + Math.pow((c.lg||0)-lng,2));
-                    if(dist < min) { min = dist; idx = i; }
-                });
-                let n = p.splice(idx, 1)[0];
-                s.push(n); lat = n.lt || lat; lng = n.lg || lng;
-            }
-            db = [...s, ...d]; save();
-        });
+        // Siempre parte desde el origen fijo: Sanchez casa 9A, San Francisco de Macorís
+        let lat = ORIGIN_LAT;
+        let lng = ORIGIN_LNG;
+
+        let p = [...db.filter(x => x.s !== 'ok')];
+        let d = [...db.filter(x => x.s === 'ok')];
+        let s = [];
+
+        while(p.length > 0) {
+            let idx = 0, min = Infinity;
+            p.forEach((c, i) => {
+                let dist = Math.sqrt(Math.pow((c.lt||0)-lat,2) + Math.pow((c.lg||0)-lng,2));
+                if(dist < min) { min = dist; idx = i; }
+            });
+            let n = p.splice(idx, 1)[0];
+            s.push(n);
+            lat = n.lt || lat;
+            lng = n.lg || lng;
+        }
+
+        db = [...s, ...d];
+        save();
+        alert('✅ Ruta ordenada desde Sanchez casa 9A');
     }
 
     function openPastePanel(i) { document.getElementById('targetId').value = i; showM('pasteM'); }
@@ -141,6 +156,7 @@
         const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
         const m = txt.match(reg);
         if(m) { db[i].lt = parseFloat(m[1]); db[i].lg = parseFloat(m[2]); save(); hideM(); }
+        else { alert("No se encontraron coordenadas válidas. Asegúrate de pegar coordenadas como: 19.3045, -70.2498"); }
     }
 
     function status(i, s) { db[i].s = s; save(); }
@@ -154,5 +170,6 @@
 
     render();
 </script>
+
 </body>
 </html>
