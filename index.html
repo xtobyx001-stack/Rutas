@@ -3,30 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Solo Ruta</title>
+    <title>Llega Ya | Ubicación Fix</title>
     <style>
         :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background: var(--bg); color: white; padding-bottom: 100px; }
         header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
-        
         #list { padding: 10px; }
         .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); }
         .card.done { border-left-color: var(--green); opacity: 0.6; }
-        
-        h3 { font-size: 1.3rem; margin-bottom: 10px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-
+        h3 { font-size: 1.3rem; margin-bottom: 10px; color: #fff; text-transform: uppercase; }
         .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 1rem; }
         .btn-paste { background: var(--orange); color: black; } 
         .btn-maps { background: var(--blue); }
         .btn-wa { background: #25d366; }
-        
         .row { display: flex; gap: 8px; }
         .btn-s { flex: 1; padding: 12px; border-radius: 8px; border: none; color: white; font-weight: bold; }
-
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; padding: 25px; z-index: 1000; justify-content: center; backdrop-filter: blur(5px); }
         input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
-
         .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
         .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
     </style>
@@ -51,31 +45,28 @@
 </div>
 
 <div id="addM" class="modal">
-    <h2>Nuevo Cliente</h2><br>
+    <h2>Nuevo Cliente</h2>
     <input type="text" id="n" placeholder="Nombre">
     <input type="tel" id="t" placeholder="WhatsApp">
-    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR A LISTA</button>
+    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CERRAR</button>
 </div>
 
 <div id="cfgM" class="modal">
-    <h2>Subir Datos</h2><br>
-    <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 1. SUBIR ARCHIVO JSON</button>
-    <button class="btn btn-wa" onclick="shareRoute()">🔗 2. COPIAR LINK DE RUTA</button>
-    <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
-    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
+    <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 SUBIR ARCHIVO JSON</button>
+    <button class="btn btn-wa" onclick="shareRoute()">🔗 COPIAR LINK RUTA</button>
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR</button>
     <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
 </div>
 
 <input type="file" id="file" style="display:none" accept=".json">
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_simple_v1')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_v_final_ubi')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
-        
         db.forEach((c, i) => {
             const nombre = c.n || c.nombre || "Sin Nombre";
             const telefono = c.t || c.telefono || "";
@@ -85,17 +76,14 @@
             const card = document.createElement('div');
             card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
             
-            const mapsUrl = (lat != 0) ? `https://www.google.com/maps?q=${lat},${lng}` : "#";
+            // CORRECCIÓN DE UBICACIÓN: Formato de Google Maps oficial
+            const mapsUrl = (lat != 0) ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=motorcycle` : "#";
 
             card.innerHTML = `
                 <h3>${nombre}</h3>
-                
                 <button class="btn btn-paste" onclick="openPastePanel(${i})">📋 PEGAR UBICACIÓN</button>
-                
                 <a class="btn btn-maps" href="${mapsUrl}" target="_blank">🚀 IR AL MAPA</a>
-                
                 <a class="btn btn-wa" href="https://wa.me/${telefono}" target="_blank">💬 WHATSAPP</a>
-                
                 <div class="row">
                     <button class="btn-s" style="background:var(--green)" onclick="status(${i},'ok')">LISTO</button>
                     <button class="btn-s" style="background:var(--red)" onclick="status(${i},'no')">FALLO</button>
@@ -116,53 +104,35 @@
         const text = document.getElementById('coordsInput').value;
         const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
         const match = text.match(reg);
-        
         if (match) {
-            db[i].lt = match[1]; 
-            db[i].lg = match[2];
-            save(); 
-            hideM();
-        } else {
-            alert("Error: No se detectaron coordenadas en el texto.");
-        }
+            db[i].lt = match[1]; db[i].lg = match[2];
+            save(); hideM();
+        } else { alert("Pega coordenadas válidas."); }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_simple_v1', JSON.stringify(db)); render(); }
-
+    function save() { localStorage.setItem('ly_v_final_ubi', JSON.stringify(db)); render(); }
     function add() {
-        const nom = document.getElementById('n').value;
-        if(!nom) return;
-        db.push({ n: nom, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
+        db.push({ n: document.getElementById('n').value, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
     }
-
     function shareRoute() {
         const str = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
         const url = window.location.origin + window.location.pathname + '?r=' + str;
-        navigator.clipboard.writeText(url).then(() => alert("Link copiado. Pégalo en el navegador de otro celular."));
+        navigator.clipboard.writeText(url).then(() => alert("Link copiado."));
     }
-
     function showM(id) { document.getElementById(id).style.display = 'flex'; }
     function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
     document.getElementById('file').addEventListener('change', e => {
         const reader = new FileReader();
-        reader.onload = ev => {
-            const data = JSON.parse(ev.target.result);
-            db = data.clientes || data;
-            save(); hideM();
-        };
+        reader.onload = ev => { db = JSON.parse(ev.target.result).clientes || JSON.parse(ev.target.result); save(); hideM(); };
         reader.readAsText(e.target.files[0]);
     });
 
     const urlP = new URLSearchParams(window.location.search);
     if(urlP.get('r')) {
-        try {
-            db = JSON.parse(decodeURIComponent(escape(atob(urlP.get('r')))));
-            save();
-            window.history.replaceState({}, '', window.location.pathname);
-        } catch(e) {}
+        try { db = JSON.parse(decodeURIComponent(escape(atob(urlP.get('r'))))); save(); } catch(e) {}
     }
 
     render();
