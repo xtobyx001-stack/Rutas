@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LLEGA YA | FIX CARPETA</title>
+    <title>LLEGA YA | TODO EN UNO</title>
     <style>
         :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
@@ -12,7 +12,7 @@
         #list { padding: 10px; }
         .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); }
         .card.done { border-left-color: var(--green); opacity: 0.5; }
-        h3 { font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; color: #fff; }
+        h3 { font-size: 1.2rem; margin-bottom: 10px; text-transform: uppercase; }
         .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 1rem; }
         .btn-paste { background: var(--orange); color: black; } 
         .btn-maps { background: var(--blue); }
@@ -37,9 +37,9 @@
 
 <div id="pasteM" class="modal">
     <h2 style="color:var(--orange);">Pegar Ubicación</h2><br>
-    <textarea id="coordsInput" rows="5" placeholder="Pega el link de WhatsApp aquí..."></textarea>
+    <textarea id="coordsInput" rows="5" placeholder="Pega el link de WhatsApp o coordenadas aquí..."></textarea>
     <input type="hidden" id="targetId">
-    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR</button>
+    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR UBICACIÓN</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
 </div>
 
@@ -61,21 +61,17 @@
 <input type="file" id="fileInput" style="display:none" accept=".json">
 
 <script>
-    let db = [];
-    try {
-        db = JSON.parse(localStorage.getItem('ly_v_final_super')) || [];
-    } catch(e) { db = []; }
+    let db = JSON.parse(localStorage.getItem('ly_v_final_all')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
-        if (db.length === 0) {
-            div.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.5;">Usa el botón de la carpeta en ⚙️ para cargar tu ruta.</p>';
-        }
+        if (db.length === 0) div.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.5;">Carga un JSON en la carpeta (⚙️).</p>';
+        
         db.forEach((c, i) => {
             const lat = c.lt || c.lat || 0;
             const lng = c.lg || c.lng || 0;
-            const mapsUrl = (lat != 0) ? `https://www.google.com/maps?q=${lat},${lng}` : "#";
+            const mapsUrl = (lat != 0) ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : "#";
 
             const card = document.createElement('div');
             card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
@@ -95,19 +91,23 @@
 
     function openPastePanel(i) { document.getElementById('targetId').value = i; showM('pasteM'); }
 
+    // ESTA ES LA FUNCIÓN QUE LEE EL CÓDIGO PEGADO (SOPORTA LINKS Y COORDENADAS)
     function saveManualLocation() {
         const i = document.getElementById('targetId').value;
         const text = document.getElementById('coordsInput').value;
         const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
         const m = text.match(reg);
         if (m) {
-            db[i].lt = parseFloat(m[1]); db[i].lg = parseFloat(m[2]);
+            db[i].lt = parseFloat(m[1]); 
+            db[i].lg = parseFloat(m[2]);
             save(); hideM();
-        } else { alert("No se detectaron coordenadas."); }
+        } else {
+            alert("Error: No encontré coordenadas. Pega el link completo.");
+        }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_v_final_super', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('ly_v_final_all', JSON.stringify(db)); render(); }
     function add() {
         db.push({ n: document.getElementById('n').value, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
@@ -115,19 +115,15 @@
     function showM(id) { document.getElementById(id).style.display = 'flex'; }
     function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
-    // ESTO ES LO QUE ARREGLA LA CARPETA
+    // CARPETA FUNCIONANDO
     document.getElementById('fileInput').onchange = function(e) {
         const reader = new FileReader();
         reader.onload = function(ev) {
             try {
                 const res = JSON.parse(ev.target.result);
-                // Busca los clientes sin importar como se llame la lista
                 db = res.clientes || (Array.isArray(res) ? res : []);
-                save();
-                hideM();
-            } catch(err) {
-                alert("Error: El archivo no es un JSON válido.");
-            }
+                save(); hideM();
+            } catch(err) { alert("Archivo JSON no válido."); }
         };
         reader.readAsText(e.target.files[0]);
     };
