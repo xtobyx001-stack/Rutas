@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LLEGA YA | TODO EN UNO</title>
+    <title>LLEGA YA ELITE | COMPLETO</title>
     <style>
         :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
@@ -43,35 +43,43 @@
     <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
 </div>
 
+<div id="routeM" class="modal">
+    <h2 style="color:var(--blue);">Pegar Código de Ruta</h2><br>
+    <textarea id="routeInput" rows="8" placeholder="Pega el código largo de la ruta aquí..."></textarea>
+    <button class="btn" style="background:var(--green)" onclick="loadRouteCode()">SUBIR RUTA</button>
+    <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
+</div>
+
 <div id="addM" class="modal">
     <h2>Nuevo Cliente</h2><br>
     <input type="text" id="n" placeholder="Nombre">
     <input type="tel" id="t" placeholder="WhatsApp">
-    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR</button>
+    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR CLIENTE</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CERRAR</button>
 </div>
 
 <div id="cfgM" class="modal">
-    <h2>Opciones</h2><br>
-    <button class="btn" style="background:#6366f1" onclick="document.getElementById('fileInput').click()">📂 CARGAR ARCHIVO JSON</button>
-    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Limpiar todo?')){localStorage.clear(); location.reload();}">🗑️ BORRAR TODO</button>
+    <h2>Opciones de Carga</h2><br>
+    <button class="btn" style="background:#6366f1" onclick="document.getElementById('fileInput').click()">📂 CARGAR JSON (Archivo)</button>
+    <button class="btn" style="background:var(--orange); color:black;" onclick="hideM(); showM('routeM')">📋 PEGAR CÓDIGO RUTA</button>
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
     <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
 </div>
 
 <input type="file" id="fileInput" style="display:none" accept=".json">
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_v_final_all')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_v_final_full_route')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
-        if (db.length === 0) div.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.5;">Carga un JSON en la carpeta (⚙️).</p>';
+        if (db.length === 0) div.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.5;">Sin ruta. Usa ⚙️ para cargar.</p>';
         
         db.forEach((c, i) => {
             const lat = c.lt || c.lat || 0;
             const lng = c.lg || c.lng || 0;
-            const mapsUrl = (lat != 0) ? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}` : "#";
+            const mapsUrl = (lat != 0) ? `https://www.google.com/maps?q=${lat},${lng}` : "#";
 
             const card = document.createElement('div');
             card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
@@ -91,7 +99,6 @@
 
     function openPastePanel(i) { document.getElementById('targetId').value = i; showM('pasteM'); }
 
-    // ESTA ES LA FUNCIÓN QUE LEE EL CÓDIGO PEGADO (SOPORTA LINKS Y COORDENADAS)
     function saveManualLocation() {
         const i = document.getElementById('targetId').value;
         const text = document.getElementById('coordsInput').value;
@@ -101,21 +108,34 @@
             db[i].lt = parseFloat(m[1]); 
             db[i].lg = parseFloat(m[2]);
             save(); hideM();
-        } else {
-            alert("Error: No encontré coordenadas. Pega el link completo.");
+        } else { alert("No se encontraron coordenadas."); }
+    }
+
+    // FUNCIÓN PARA CARGAR LA RUTA PEGADA
+    function loadRouteCode() {
+        const code = document.getElementById('routeInput').value.trim();
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(code))));
+            db = Array.isArray(decoded) ? decoded : (decoded.clientes || []);
+            save(); hideM();
+        } catch(e) {
+            alert("Código de ruta inválido.");
         }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_v_final_all', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('ly_v_final_full_route', JSON.stringify(db)); render(); }
+    
     function add() {
-        db.push({ n: document.getElementById('n').value, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
+        const nom = document.getElementById('n').value;
+        if(!nom) return;
+        db.push({ n: nom, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
     }
+
     function showM(id) { document.getElementById(id).style.display = 'flex'; }
     function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
-    // CARPETA FUNCIONANDO
     document.getElementById('fileInput').onchange = function(e) {
         const reader = new FileReader();
         reader.onload = function(ev) {
@@ -123,7 +143,7 @@
                 const res = JSON.parse(ev.target.result);
                 db = res.clientes || (Array.isArray(res) ? res : []);
                 save(); hideM();
-            } catch(err) { alert("Archivo JSON no válido."); }
+            } catch(err) { alert("JSON no válido."); }
         };
         reader.readAsText(e.target.files[0]);
     };
