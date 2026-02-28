@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LLEGA YA ELITE | COMPLETO</title>
+    <title>LLEGA YA ELITE | FINAL</title>
     <style>
-        :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
+        :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; --purple: #8b5cf6; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background: var(--bg); color: white; padding-bottom: 100px; }
-        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; }
+        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
+        .sort-bar { padding: 10px; background: #0f172a; border-bottom: 1px solid #334155; }
+        .btn-sort { background: var(--purple); width: 100%; padding: 14px; border-radius: 10px; border: none; color: white; font-weight: bold; cursor: pointer; }
         #list { padding: 10px; }
         .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); }
         .card.done { border-left-color: var(--green); opacity: 0.5; }
@@ -19,7 +21,7 @@
         .btn-wa { background: #25d366; }
         .row { display: flex; gap: 8px; }
         .btn-s { flex: 1; padding: 12px; border-radius: 8px; border: none; color: white; font-weight: bold; }
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; padding: 25px; z-index: 1000; justify-content: center; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; padding: 25px; z-index: 1000; justify-content: center; overflow-y: auto; }
         input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
         .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
         .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -28,6 +30,11 @@
 <body>
 
 <header><h1>LLEGA YA ELITE 🛵</h1></header>
+
+<div class="sort-bar">
+    <button class="btn-sort" onclick="sortNearest()">⚡ ORDENAR POR CERCANÍA</button>
+</div>
+
 <div id="list"></div>
 
 <div class="float">
@@ -35,18 +42,18 @@
     <button class="circle" style="background: var(--blue)" onclick="showM('cfgM')">⚙️</button>
 </div>
 
-<div id="pasteM" class="modal">
-    <h2 style="color:var(--orange);">Pegar Ubicación</h2><br>
-    <textarea id="coordsInput" rows="5" placeholder="Pega el link de WhatsApp o coordenadas aquí..."></textarea>
-    <input type="hidden" id="targetId">
-    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR UBICACIÓN</button>
+<div id="filePasteM" class="modal">
+    <h2 style="color:var(--blue);">Pegar Contenido del Archivo</h2><br>
+    <textarea id="fileInputContent" rows="10" placeholder="Pega aquí el texto del JSON o el código de la ruta..."></textarea>
+    <button class="btn" style="background:var(--green)" onclick="processFileContent()">CARGAR RUTA</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
 </div>
 
-<div id="routeM" class="modal">
-    <h2 style="color:var(--blue);">Pegar Código de Ruta</h2><br>
-    <textarea id="routeInput" rows="8" placeholder="Pega el código largo de la ruta aquí..."></textarea>
-    <button class="btn" style="background:var(--green)" onclick="loadRouteCode()">SUBIR RUTA</button>
+<div id="pasteM" class="modal">
+    <h2 style="color:var(--orange);">Pegar Ubicación</h2><br>
+    <textarea id="coordsInput" rows="5" placeholder="Pega el link o coordenadas..."></textarea>
+    <input type="hidden" id="targetId">
+    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR PIN</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
 </div>
 
@@ -54,27 +61,24 @@
     <h2>Nuevo Cliente</h2><br>
     <input type="text" id="n" placeholder="Nombre">
     <input type="tel" id="t" placeholder="WhatsApp">
-    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR CLIENTE</button>
+    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CERRAR</button>
 </div>
 
 <div id="cfgM" class="modal">
-    <h2>Opciones de Carga</h2><br>
-    <button class="btn" style="background:#6366f1" onclick="document.getElementById('fileInput').click()">📂 CARGAR JSON (Archivo)</button>
-    <button class="btn" style="background:var(--orange); color:black;" onclick="hideM(); showM('routeM')">📋 PEGAR CÓDIGO RUTA</button>
+    <h2>Opciones</h2><br>
+    <button class="btn" style="background:var(--blue)" onclick="hideM(); showM('filePasteM')">📋 PEGAR ARCHIVO / CÓDIGO</button>
     <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
     <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
 </div>
 
-<input type="file" id="fileInput" style="display:none" accept=".json">
-
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_v_final_full_route')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_master_final')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
-        if (db.length === 0) div.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.5;">Sin ruta. Usa ⚙️ para cargar.</p>';
+        if (db.length === 0) div.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.5;">Vacío. Usa ⚙️ para pegar tu archivo.</p>';
         
         db.forEach((c, i) => {
             const lat = c.lt || c.lat || 0;
@@ -97,56 +101,56 @@
         });
     }
 
-    function openPastePanel(i) { document.getElementById('targetId').value = i; showM('pasteM'); }
-
-    function saveManualLocation() {
-        const i = document.getElementById('targetId').value;
-        const text = document.getElementById('coordsInput').value;
-        const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
-        const m = text.match(reg);
-        if (m) {
-            db[i].lt = parseFloat(m[1]); 
-            db[i].lg = parseFloat(m[2]);
+    // PROCESAR LO QUE SE PEGA EN EL CUADRO GRANDE
+    function processFileContent() {
+        const raw = document.getElementById('fileInputContent').value.trim();
+        try {
+            let data;
+            if (raw.startsWith('[') || raw.startsWith('{')) {
+                data = JSON.parse(raw);
+            } else {
+                data = JSON.parse(decodeURIComponent(escape(atob(raw))));
+            }
+            db = Array.isArray(data) ? data : (data.clientes || []);
             save(); hideM();
-        } else { alert("No se encontraron coordenadas."); }
+        } catch(e) { alert("Error: El contenido no es válido."); }
     }
 
-    // FUNCIÓN PARA CARGAR LA RUTA PEGADA
-    function loadRouteCode() {
-        const code = document.getElementById('routeInput').value.trim();
-        try {
-            const decoded = JSON.parse(decodeURIComponent(escape(atob(code))));
-            db = Array.isArray(decoded) ? decoded : (decoded.clientes || []);
-            save(); hideM();
-        } catch(e) {
-            alert("Código de ruta inválido.");
-        }
+    function sortNearest() {
+        if (!navigator.geolocation) return alert("Activa el GPS");
+        navigator.geolocation.getCurrentPosition(pos => {
+            let lat = pos.coords.latitude, lng = pos.coords.longitude;
+            let p = [...db.filter(x => x.s !== 'ok')], d = [...db.filter(x => x.s === 'ok')], s = [];
+            while(p.length > 0) {
+                let idx = 0, min = Infinity;
+                p.forEach((c, i) => {
+                    let dist = Math.sqrt(Math.pow((c.lt||0)-lat,2) + Math.pow((c.lg||0)-lng,2));
+                    if(dist < min) { min = dist; idx = i; }
+                });
+                let n = p.splice(idx, 1)[0];
+                s.push(n); lat = n.lt || lat; lng = n.lg || lng;
+            }
+            db = [...s, ...d]; save();
+        });
+    }
+
+    function openPastePanel(i) { document.getElementById('targetId').value = i; showM('pasteM'); }
+    function saveManualLocation() {
+        const i = document.getElementById('targetId').value;
+        const txt = document.getElementById('coordsInput').value;
+        const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
+        const m = txt.match(reg);
+        if(m) { db[i].lt = parseFloat(m[1]); db[i].lg = parseFloat(m[2]); save(); hideM(); }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_v_final_full_route', JSON.stringify(db)); render(); }
-    
+    function save() { localStorage.setItem('ly_master_final', JSON.stringify(db)); render(); }
     function add() {
-        const nom = document.getElementById('n').value;
-        if(!nom) return;
-        db.push({ n: nom, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
+        db.push({ n: document.getElementById('n').value, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
     }
-
     function showM(id) { document.getElementById(id).style.display = 'flex'; }
     function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-
-    document.getElementById('fileInput').onchange = function(e) {
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            try {
-                const res = JSON.parse(ev.target.result);
-                db = res.clientes || (Array.isArray(res) ? res : []);
-                save(); hideM();
-            } catch(err) { alert("JSON no válido."); }
-        };
-        reader.readAsText(e.target.files[0]);
-    };
 
     render();
 </script>
