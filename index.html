@@ -14,10 +14,10 @@ header { background: var(–card); padding: 14px 16px; border-bottom: 1px solid 
 header h1 { font-size: 1.1rem; }
 .stats { font-size: 0.75rem; color: #94a3b8; }
 
-.toolbar { display: flex; gap: 8px; padding: 10px; background: #0f172a; border-bottom: 1px solid var(–border); }
+.toolbar { display: flex; gap: 8px; padding: 10px; background: #0f172a; border-bottom: 1px solid var(–border); position: sticky; top: 53px; z-index: 49; }
 .toolbar button { flex: 1; padding: 10px 6px; border-radius: 8px; border: none; font-weight: bold; font-size: 0.8rem; cursor: pointer; color: white; }
 
-.tabs { display: flex; border-bottom: 1px solid var(–border); background: var(–card); }
+.tabs { display: flex; border-bottom: 1px solid var(–border); background: var(–card); position: sticky; top: 106px; z-index: 48; }
 .tab { flex: 1; padding: 10px; text-align: center; font-size: 0.85rem; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; color: #94a3b8; }
 .tab.active { color: var(–blue); border-bottom-color: var(–blue); }
 
@@ -130,6 +130,19 @@ header h1 { font-size: 1.1rem; }
       <button style="background:var(--green)" onclick="guardarUbicacion()">GUARDAR</button>
       <button style="background:var(--border)" onclick="closeModal('modalUbi')">CANCELAR</button>
     </div>
+  </div>
+</div>
+
+<div class="fab">
+  <button style="background:#475569" onclick="openModal('modalConfig')">⚙️</button>
+</div>
+
+<div class="overlay" id="modalConfig">
+  <div class="modal">
+    <h2>⚙️ Opciones</h2>
+    <br>
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todos los clientes? Esto no se puede deshacer.')){localStorage.removeItem('llega_ya_clientes');clientes=[];guardar();closeModal('modalConfig');}">🗑️ Borrar Todo (fin del día)</button>
+    <button class="btn" style="background:#475569;margin-top:8px" onclick="closeModal('modalConfig')">CERRAR</button>
   </div>
 </div>
 
