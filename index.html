@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Sistema Profesional Elite</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Llega Ya | Elite Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-main: #020617;
@@ -15,261 +14,202 @@
             --accent-warning: #f59e0b;
             --accent-danger: #ef4444;
             --glass-border: rgba(255, 255, 255, 0.1);
-            --font-main: 'Figtree', sans-serif;
-            --font-data: 'JetBrains Mono', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-main); color: white; font-family: 'Figtree', sans-serif; min-height: 100vh; padding-bottom: 120px; }
 
-        body {
-            background-color: var(--bg-main);
-            background-image: radial-gradient(rgba(59,130,246,0.07) 1px, transparent 1px);
-            background-size: 22px 22px;
-            color: white;
-            font-family: var(--font-main);
-            min-height: 100vh;
-            padding-bottom: 120px;
-        }
+        header { padding: 20px; background: var(--bg-card); backdrop-filter: blur(16px); border-bottom: 1px solid var(--glass-border); position: sticky; top: 0; z-index: 100; text-align: center; }
+        .logo { font-family: 'JetBrains Mono', monospace; font-weight: bold; font-size: 1.6rem; color: var(--accent-primary); }
 
-        header {
-            padding: 20px;
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--glass-border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            text-align: center;
-        }
-
-        .logo {
-            font-family: var(--font-data);
-            font-weight: bold; font-size: 1.6rem;
-            color: var(--accent-primary);
-            text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-            letter-spacing: 1px;
-        }
-
-        .gps-status {
-            font-size: 0.75rem; margin-top: 5px;
-            display: flex; justify-content: center; align-items: center; gap: 6px;
-        }
-
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-success); box-shadow: 0 0 8px var(--accent-success); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        .dashboard { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 20px; }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
         .kpi-card { background: var(--bg-card); border: 1px solid var(--glass-border); padding: 15px; border-radius: 16px; text-align: center; }
-        .kpi-val { font-family: var(--font-data); font-size: 1.3rem; display: block; color: var(--accent-primary); }
-        .kpi-label { font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; font-weight: 700; }
+        .kpi-val { font-family: 'JetBrains Mono'; font-size: 1.2rem; color: var(--accent-primary); display: block; }
 
-        .section-label { padding: 10px 25px; font-size: 0.8rem; font-weight: bold; opacity: 0.4; letter-spacing: 1px; }
-
-        .card {
-            background: var(--bg-card); margin: 0 20px 15px; padding: 20px;
-            border-radius: 16px; border: 1px solid var(--glass-border);
-            position: relative; overflow: hidden; animation: slideUp 0.4s ease-out;
-        }
-
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
+        .card { background: var(--bg-card); margin: 0 20px 15px; padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border); position: relative; }
         .status-strip { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
-        .status-pendiente { background: var(--accent-primary); }
-        .status-entregado { background: var(--accent-success); box-shadow: 2px 0 10px var(--accent-success); }
-        .status-rechazado { background: var(--accent-danger); box-shadow: 2px 0 10px var(--accent-danger); }
+        .st-entregado { background: var(--accent-success); }
+        .st-pendiente { background: var(--accent-primary); }
 
         .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; display: block; }
-        .card-detail { font-family: var(--font-data); font-size: 0.85rem; opacity: 0.7; margin-bottom: 15px; }
+        .card-detail { font-size: 0.85rem; opacity: 0.7; margin-bottom: 15px; font-family: 'JetBrains Mono'; }
 
-        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .states { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-
-        button { padding: 12px; border-radius: 10px; border: none; font-weight: 700; font-family: var(--font-main); color: white; cursor: pointer; touch-action: manipulation; }
+        /* --- LOS BOTONES QUE PEDISTE --- */
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        button { padding: 12px; border-radius: 10px; border: none; font-weight: 700; color: white; cursor: pointer; font-size: 0.8rem; }
+        
+        .btn-maps { background: var(--accent-primary); width: 100%; margin-bottom: 10px; font-size: 1rem; }
         .btn-wa { background: #25d366; }
-        .btn-gps { background: var(--accent-primary); }
+        /* EL BOTÓN DE ACTUALIZAR UBICACIÓN */
+        .btn-update-gps { background: var(--accent-warning); color: #000; } 
+        
+        .states { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .btn-ok { background: var(--accent-success); }
         .btn-no { background: var(--accent-danger); }
-        .btn-rev { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); }
+        .btn-rev { background: rgba(255,255,255,0.1); }
 
-        /* Botones Flotantes */
+        /* Controles Flotantes */
         .float-btns { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 15px; z-index: 200; }
         .btn-round { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
         .modal-content { background: #0f172a; border: 1px solid var(--glass-border); padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; }
         input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 14px; border-radius: 10px; color: white; margin-bottom: 10px; }
-        .hidden-input { display: none; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">LLEGA YA</div>
-        <div class="gps-status">
-            <div class="dot"></div>
-            <span id="gps-text">Buscando señal GPS...</span>
-        </div>
+        <div class="logo">LLEGA YA ELITE</div>
+        <div id="gps-status" style="font-size: 0.7rem; color: var(--accent-success); margin-top:5px;">🛰️ GPS ACTIVADO</div>
     </header>
 
     <div class="dashboard">
-        <div class="kpi-card">
-            <span class="kpi-label">Entregas</span>
-            <span id="stat-progreso" class="kpi-val">0/0</span>
-        </div>
-        <div class="kpi-card">
-            <span class="kpi-label">Recaudado</span>
-            <span id="stat-monto" class="kpi-val">RD$ 0</span>
-        </div>
+        <div class="kpi-card"><span class="kpi-label" style="font-size:0.7rem; opacity:0.5;">LISTO</span><span id="stat-p" class="kpi-val">0/0</span></div>
+        <div class="kpi-card"><span class="kpi-label" style="font-size:0.7rem; opacity:0.5;">DINERO</span><span id="stat-m" class="kpi-val">RD$ 0</span></div>
     </div>
 
-    <div id="main-container">
-        <div style="text-align: center; padding: 50px 20px; opacity: 0.5;">
-            <p>No hay ruta activa.</p><br>
-            <button class="btn-gps" onclick="document.getElementById('file-picker').click()">📂 Cargar JSON</button>
-        </div>
-    </div>
+    <div id="main-list"></div>
 
     <div class="float-btns">
-        <div class="btn-round" style="background: var(--accent-success)" onclick="toggleModal('add-modal', true)">➕</div>
-        <div class="btn-round" style="background: var(--accent-primary)" onclick="toggleModal('config-modal', true)">⚙️</div>
+        <div class="btn-round" style="background: var(--accent-success)" onclick="openMod('add-modal')">➕</div>
+        <div class="btn-round" style="background: var(--accent-primary)" onclick="openMod('config-modal')">⚙️</div>
     </div>
-
-    <input type="file" id="file-picker" class="hidden-input" accept=".json">
 
     <div id="add-modal" class="modal">
         <div class="modal-content">
-            <h2>Nuevo Pedido</h2><br>
+            <h2>Nuevo Cliente</h2><br>
             <input type="text" id="add-nom" placeholder="Nombre">
-            <input type="tel" id="add-tel" placeholder="WhatsApp">
+            <input type="tel" id="add-tel" placeholder="Teléfono">
             <input type="number" id="add-cod" placeholder="Monto RD$">
-            <p style="font-size: 0.7rem; opacity: 0.5; margin-bottom: 10px;">Se guardará con tu ubicación actual.</p>
-            <button class="btn-ok" style="width:100%" onclick="agregarManual()">Guardar Cliente</button>
-            <button class="btn-rev" style="width:100%; margin-top:10px" onclick="toggleModal('add-modal', false)">Cerrar</button>
+            <button class="btn-ok" style="width:100%" onclick="addCli()">GUARDAR CON MI GPS</button>
+            <button class="btn-rev" style="width:100%; margin-top:10px" onclick="closeMod()">CERRAR</button>
         </div>
     </div>
 
     <div id="config-modal" class="modal">
         <div class="modal-content">
-            <h2>Panel Control</h2><br>
-            <button class="btn-gps" style="width:100%; margin-bottom:10px" onclick="document.getElementById('file-picker').click()">🔄 Cargar Nueva Ruta</button>
-            <button class="btn-wa" style="width:100%; margin-bottom:10px" onclick="generarLink()">🔗 Copiar Link de Ruta</button>
-            <button class="btn-no" style="width:100%; margin-bottom:10px" onclick="limpiarDatos()">🗑️ Borrar Todo</button>
-            <button class="btn-rev" style="width:100%" onclick="toggleModal('config-modal', false)">Cerrar</button>
+            <h2>Opciones</h2><br>
+            <button class="btn-maps" onclick="document.getElementById('f-in').click()">📂 METER ARCHIVO JSON</button>
+            <button class="btn-wa" style="width:100%; margin-bottom:10px" onclick="copyLink()">🔗 COPIAR LINK DE RUTA</button>
+            <button class="btn-no" style="width:100%" onclick="clearAll()">🗑️ BORRAR TODO</button>
+            <button class="btn-rev" style="width:100%; margin-top:10px" onclick="closeMod()">CERRAR</button>
         </div>
     </div>
 
-    <script>
-        let db = JSON.parse(localStorage.getItem('llega_ya_v3')) || { clientes: [] };
-        let miPos = { lat: 0, lng: 0 };
+    <input type="file" id="f-in" style="display:none" accept=".json">
 
-        function activarGPS() {
-            if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(p => {
-                    miPos = { lat: p.coords.latitude, lng: p.coords.longitude };
-                    document.getElementById('gps-text').innerText = `GPS Activo`;
-                    render();
-                }, null, { enableHighAccuracy: true });
+    <script>
+        let db = JSON.parse(localStorage.getItem('ly_v4')) || { clientes: [] };
+        let pos = { lat: 0, lng: 0 };
+
+        function init() {
+            navigator.geolocation.watchPosition(p => { 
+                pos = { lat: p.coords.latitude, lng: p.coords.longitude }; 
+                render(); 
+            }, null, {enableHighAccuracy:true});
+
+            // Lector de archivos
+            document.getElementById('f-in').addEventListener('change', (e) => {
+                const r = new FileReader();
+                r.onload = (ev) => {
+                    const data = JSON.parse(ev.target.result);
+                    db.clientes = [...(data.clientes || []), ...(data.sin_ubicacion || [])];
+                    save(); closeMod();
+                };
+                r.readAsText(e.target.files[0]);
+            });
+
+            // Carga por Link
+            const p = new URLSearchParams(window.location.search);
+            if(p.get('ruta')) {
+                db.clientes = JSON.parse(decodeURIComponent(atob(p.get('ruta')))).clientes;
+                save(); window.history.replaceState({}, '', window.location.pathname);
             }
+            render();
         }
 
         function render() {
-            const container = document.getElementById('main-container');
-            if (db.clientes.length === 0) return;
+            const box = document.getElementById('main-list');
+            if (db.clientes.length === 0) {
+                box.innerHTML = '<p style="text-align:center; opacity:0.3; margin-top:50px;">Carga un archivo o agrega un cliente.</p>';
+                return;
+            }
 
-            // Ordenar por cercanía (los entregados van al final)
-            const lista = db.clientes.sort((a, b) => {
-                if(a.estado === 'entregado' && b.estado !== 'entregado') return 1;
-                if(a.estado !== 'entregado' && b.estado === 'entregado') return -1;
-                if(!a.lat) return 1; if(!b.lat) return -1;
-                return Math.hypot(a.lat - miPos.lat, a.lng - miPos.lng) - Math.hypot(b.lat - miPos.lat, b.lng - miPos.lng);
-            });
-
-            let html = '<div class="section-label">📍 RUTA ACTIVA</div>';
-            lista.forEach((c, i) => {
-                const st = c.estado || 'pendiente';
-                const tieneUbi = c.lat && c.lat !== 0;
+            let html = '';
+            db.clientes.sort((a,b) => (a.estado==='entregado'?1:-1)).forEach(c => {
+                const done = c.estado === 'entregado';
                 html += `
-                    <div class="card">
-                        <div class="status-strip status-${st}"></div>
-                        <span class="card-title">${c.nombre}</span>
-                        <div class="card-detail">📞 ${c.telefono} | COD: RD$ ${Number(c.cod).toLocaleString()}</div>
-                        <div class="actions">
-                            <button class="btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">WhatsApp</button>
-                            ${tieneUbi ? 
-                                `<button class="btn-gps" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=motorcycle')">Navegar</button>` : 
-                                `<button class="btn-no" onclick="fijarGPS(${c.id})">📍 FIJAR GPS</button>`}
-                        </div>
-                        <div class="states">
-                            <button class="btn-ok" onclick="cambiarEstado(${c.id}, 'entregado')">OK</button>
-                            <button class="btn-no" onclick="cambiarEstado(${c.id}, 'rechazado')">NO</button>
-                            <button class="btn-rev" onclick="fijarGPS(${c.id})">📍</button>
-                        </div>
+                <div class="card">
+                    <div class="status-strip ${done ? 'st-entregado' : 'st-pendiente'}"></div>
+                    <span class="card-title">${c.nombre}</span>
+                    <div class="card-detail">📞 ${c.telefono} | RD$ ${Number(c.cod).toLocaleString()}</div>
+                    
+                    <button class="btn-maps" onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}&travelmode=motorcycle')">🚀 IR AL MAPA</button>
+                    
+                    <div class="btn-grid">
+                        <button class="btn-wa" onclick="window.open('https://wa.me/${c.telefono}')">WHATSAPP</button>
+                        <button class="btn-update-gps" onclick="updUbi(${c.id})">📍 ACTUALIZAR UBICACIÓN</button>
                     </div>
-                `;
+
+                    <div class="states">
+                        <button class="btn-ok" onclick="st(${c.id},'entregado')">OK</button>
+                        <button class="btn-no" onclick="st(${c.id},'rechazado')">NO</button>
+                        <button class="btn-rev" onclick="st(${c.id},'pendiente')">↩</button>
+                    </div>
+                </div>`;
             });
-            container.innerHTML = html;
-            actualizarStats();
+            box.innerHTML = html;
+            stats();
         }
 
-        function agregarManual() {
+        // --- LAS 4 FUNCIONES CLAVE ---
+
+        // 1. ACTUALIZAR UBICACIÓN
+        function updUbi(id) {
+            if(!pos.lat) return alert("Buscando GPS...");
+            if(confirm("¿Quieres cambiar la ubicación del cliente a tu posición actual?")) {
+                db.clientes.find(x => x.id === id).lat = pos.lat;
+                db.clientes.find(x => x.id === id).lng = pos.lng;
+                save();
+                alert("¡Ubicación actualizada!");
+            }
+        }
+
+        // 2. AGREGAR CLIENTE MANUAL
+        function addCli() {
             const n = document.getElementById('add-nom').value;
             const t = document.getElementById('add-tel').value;
             const c = document.getElementById('add-cod').value;
-            if(!n || !t) return alert("Faltan datos");
-            db.clientes.unshift({ id: Date.now(), nombre: n, telefono: t, cod: c, lat: miPos.lat, lng: miPos.lng, estado: 'pendiente' });
-            save();
-            toggleModal('add-modal', false);
+            if(!n || !t) return alert("Nombre y Tel obligatorios");
+            db.clientes.unshift({ id: Date.now(), nombre: n, telefono: t, cod: c, lat: pos.lat, lng: pos.lng, estado: 'pendiente' });
+            save(); closeMod();
             document.querySelectorAll('input').forEach(i => i.value = '');
         }
 
-        function fijarGPS(id) {
-            if(!miPos.lat) return alert("Esperando GPS...");
-            const c = db.clientes.find(x => x.id === id);
-            c.lat = miPos.lat; c.lng = miPos.lng;
-            save();
-            alert("¡Ubicación fijada con éxito!");
-        }
-
-        function generarLink() {
+        // 3. COPIAR LINK
+        function copyLink() {
             const b64 = btoa(encodeURIComponent(JSON.stringify(db)));
             const link = `${window.location.href.split('?')[0]}?ruta=${b64}`;
             navigator.clipboard.writeText(link);
-            alert("¡Link de ruta copiado!");
+            alert("¡Link copiado! Pégalo en WhatsApp.");
         }
 
-        function cambiarEstado(id, nuevo) { db.clientes.find(c => c.id === id).estado = nuevo; save(); }
-        function actualizarStats() {
+        // 4. METER ARCHIVOS (Está en el modal de configuración)
+
+        function st(id, s) { db.clientes.find(x => x.id === id).estado = s; save(); }
+        function stats() {
             const ok = db.clientes.filter(c => c.estado === 'entregado');
-            const totalMonto = ok.reduce((a, b) => a + (Number(b.cod) || 0), 0);
-            document.getElementById('stat-progreso').innerText = `${ok.length}/${db.clientes.length}`;
-            document.getElementById('stat-monto').innerText = `RD$ ${totalMonto.toLocaleString()}`;
+            document.getElementById('stat-p').innerText = `${ok.length}/${db.clientes.length}`;
+            document.getElementById('stat-m').innerText = `RD$ ${ok.reduce((a,b)=>a+(Number(b.cod)||0),0).toLocaleString()}`;
         }
 
-        function save() { localStorage.setItem('llega_ya_v3', JSON.stringify(db)); render(); }
-        function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
-        
-        document.getElementById('file-picker').addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const data = JSON.parse(ev.target.result);
-                db.clientes = [...(data.clientes || []), ...(data.sin_ubicacion || [])];
-                save();
-                toggleModal('config-modal', false);
-            };
-            reader.readAsText(e.target.files[0]);
-        });
+        function save() { localStorage.setItem('ly_v4', JSON.stringify(db)); render(); }
+        function openMod(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeMod() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+        function clearAll() { if(confirm('¿Borrar todo?')) { localStorage.removeItem('ly_v4'); location.reload(); } }
 
-        // Carga por URL
-        const params = new URLSearchParams(window.location.search);
-        if(params.get('ruta')) {
-            db.clientes = JSON.parse(decodeURIComponent(atob(params.get('ruta')))).clientes;
-            save();
-            window.history.replaceState({}, '', window.location.pathname);
-        }
-
-        function limpiarDatos() { if (confirm('¿Borrar todo?')) { localStorage.removeItem('llega_ya_v3'); location.reload(); } }
-
-        window.onload = () => { activarGPS(); render(); };
+        init();
     </script>
 </body>
 </html>
