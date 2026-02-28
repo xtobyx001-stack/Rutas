@@ -3,26 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LLEGA YA | FIX CARGA</title>
+    <title>LLEGA YA | RUTA OPTIMIZADA</title>
     <style>
         :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; --purple: #8b5cf6; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background: var(--bg); color: white; padding-bottom: 100px; }
         header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
+        
         .sort-bar { padding: 10px; background: #0f172a; position: sticky; top: 60px; z-index: 90; }
-        .btn-sort { background: var(--purple); width: 100%; padding: 12px; border-radius: 10px; border: none; color: white; font-weight: bold; font-size: 0.9rem; }
+        .btn-sort { background: var(--purple); width: 100%; padding: 12px; border-radius: 10px; border: none; color: white; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+
         #list { padding: 10px; }
         .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); }
         .card.done { border-left-color: var(--green); opacity: 0.5; }
+        
         h3 { font-size: 1.3rem; margin-bottom: 10px; text-transform: uppercase; }
+
         .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 1rem; }
         .btn-paste { background: var(--orange); color: black; } 
         .btn-maps { background: var(--blue); }
         .btn-wa { background: #25d366; }
+        
         .row { display: flex; gap: 8px; }
         .btn-s { flex: 1; padding: 12px; border-radius: 8px; border: none; color: white; font-weight: bold; }
+
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; padding: 25px; z-index: 1000; justify-content: center; backdrop-filter: blur(5px); }
         input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
+
         .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
         .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.8rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
     </style>
@@ -32,7 +39,7 @@
 <header><h1>LLEGA YA ELITE 🛵</h1></header>
 
 <div class="sort-bar">
-    <button class="btn-sort" onclick="sortNearest()">⚡ ORDENAR POR CERCANÍA</button>
+    <button class="btn-sort" onclick="sortNearest()">⚡ ORDENAR RUTA MÁS CERCANA</button>
 </div>
 
 <div id="list"></div>
@@ -59,42 +66,30 @@
 </div>
 
 <div id="cfgM" class="modal">
+    <h2>Opciones</h2><br>
     <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 CARGAR ARCHIVO JSON</button>
-    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
+    <button class="btn btn-wa" onclick="shareRoute()">🔗 COPIAR LINK RUTA</button>
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
     <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
 </div>
 
 <input type="file" id="file" style="display:none" accept=".json">
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_v_final_secure')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_final_ultra')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
-        
-        if (db.length === 0) {
-            div.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">No hay clientes en la ruta. Carga un archivo o usa el botón (+).</p>';
-            return;
-        }
-
         db.forEach((c, i) => {
-            const nombre = c.n || c.nombre || c.Nombre || "Sin Nombre";
-            const telefono = c.t || c.telefono || c.tel || "";
-            const lat = c.lt || c.lat || 0;
-            const lng = c.lg || c.lng || 0;
-
             const card = document.createElement('div');
             card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
-            
-            // Link de Google Maps estándar
-            const mapsLink = (lat != 0) ? `https://www.google.com/maps?q=${lat},${lng}` : "#";
-
+            const mapsLink = (c.lt && c.lg) ? `https://www.google.com/maps/search/?api=1&query=${c.lt},${c.lg}` : "#";
             card.innerHTML = `
-                <h3>${nombre}</h3>
+                <h3>${c.n || "Sin Nombre"}</h3>
                 <button class="btn btn-paste" onclick="openPastePanel(${i})">📋 PEGAR UBICACIÓN</button>
                 <a class="btn btn-maps" href="${mapsLink}" target="_blank">🚀 IR AL MAPA</a>
-                <a class="btn btn-wa" href="https://wa.me/${telefono}" target="_blank">💬 WHATSAPP</a>
+                <a class="btn btn-wa" href="https://wa.me/${c.t}" target="_blank">💬 WHATSAPP</a>
                 <div class="row">
                     <button class="btn-s" style="background:var(--green)" onclick="status(${i},'ok')">LISTO</button>
                     <button class="btn-s" style="background:var(--red)" onclick="status(${i},'no')">FALLO</button>
@@ -104,25 +99,34 @@
         });
     }
 
+    // --- LÓGICA DE CERCANÍA ---
     function sortNearest() {
         if (!navigator.geolocation) return alert("Activa el GPS");
+        
         navigator.geolocation.getCurrentPosition(pos => {
             let lat = pos.coords.latitude;
             let lng = pos.coords.longitude;
-            let pend = [...db.filter(x => x.s !== 'ok')];
-            let listos = [...db.filter(x => x.s === 'ok')];
+            let tempDb = [...db.filter(x => x.s !== 'ok')];
+            let finished = [...db.filter(x => x.s === 'ok')];
             let sorted = [];
-            while (pend.length > 0) {
-                let idx = 0; let min = Infinity;
-                pend.forEach((c, i) => {
-                    let d = Math.sqrt(Math.pow((c.lt||0)-lat,2) + Math.pow((c.lg||0)-lng,2));
-                    if (d < min) { min = d; idx = i; }
+
+            while (tempDb.length > 0) {
+                let closest = 0;
+                let minDist = Infinity;
+
+                tempDb.forEach((c, idx) => {
+                    if (c.lt && c.lg) {
+                        let d = Math.sqrt(Math.pow(c.lt - lat, 2) + Math.pow(c.lg - lng, 2));
+                        if (d < minDist) { minDist = d; closest = idx; }
+                    }
                 });
-                let nxt = pend.splice(idx, 1)[0];
-                sorted.push(nxt);
-                lat = nxt.lt || lat; lng = nxt.lg || lng;
+
+                let next = tempDb.splice(closest, 1)[0];
+                sorted.push(next);
+                lat = next.lt || lat;
+                lng = next.lg || lng;
             }
-            db = [...sorted, ...listos];
+            db = [...sorted, ...finished];
             save();
         });
     }
@@ -142,26 +146,32 @@
             db[i].lt = parseFloat(match[1]); 
             db[i].lg = parseFloat(match[2]);
             save(); hideM();
-        } else { alert("Pega coordenadas válidas."); }
+        } else { alert("Error de coordenadas."); }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_v_final_secure', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('ly_final_ultra', JSON.stringify(db)); render(); }
+    
     function add() {
         db.push({ n: document.getElementById('n').value, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
     }
+
+    function shareRoute() {
+        const str = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
+        const url = window.location.origin + window.location.pathname + '?r=' + str;
+        navigator.clipboard.writeText(url).then(() => alert("Copiado."));
+    }
+
     function showM(id) { document.getElementById(id).style.display = 'flex'; }
     function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
     document.getElementById('file').addEventListener('change', e => {
         const reader = new FileReader();
         reader.onload = ev => { 
-            try {
-                const res = JSON.parse(ev.target.result);
-                db = res.clientes || (Array.isArray(res) ? res : []); 
-                save(); hideM(); 
-            } catch(err) { alert("Error en el archivo JSON"); }
+            const res = JSON.parse(ev.target.result);
+            db = res.clientes || res; 
+            save(); hideM(); 
         };
         reader.readAsText(e.target.files[0]);
     });
