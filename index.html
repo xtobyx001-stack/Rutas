@@ -3,150 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Manual Fix</title>
+    <title>Llega Ya | Fix Final</title>
     <style>
         :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background: var(--bg); color: white; padding-bottom: 100px; }
         
-        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; }
-        .stats { display: flex; justify-content: space-around; padding: 10px; background: #0f172a; font-weight: bold; font-size: 0.9rem; }
+        header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
+        .stats { display: flex; justify-content: space-around; padding: 10px; background: #0f172a; font-weight: bold; font-size: 0.9rem; border-bottom: 1px solid #334155; }
 
-        .card { background: var(--card); margin: 15px; padding: 15px; border-radius: 12px; border-left: 5px solid var(--blue); }
-        .card.done { border-left-color: var(--green); opacity: 0.5; }
+        #list { padding: 10px; }
+        .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .card.done { border-left-color: var(--green); opacity: 0.6; }
         
-        .btn { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; }
+        h3 { font-size: 1.2rem; margin-bottom: 5px; color: #fff; text-transform: uppercase; }
+        .info { font-size: 0.9rem; margin-bottom: 12px; color: #94a3b8; font-weight: bold; }
+
+        .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 0.9rem; }
+        .btn-paste { background: var(--orange); color: black; } 
         .btn-maps { background: var(--blue); }
-        .btn-paste { background: var(--orange); color: black; } /* ESTE ABRE EL CUADRO PARA PEGAR */
+        .btn-wa { background: #25d366; }
         
-        .row { display: flex; gap: 5px; }
+        .row { display: flex; gap: 8px; }
         .btn-s { flex: 1; padding: 12px; border-radius: 8px; border: none; color: white; font-weight: bold; }
 
-        /* VENTANA PARA PEGAR (MODAL) */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; padding: 20px; z-index: 1000; justify-content: center; }
-        textarea { width: 100%; padding: 15px; border-radius: 10px; background: #0f172a; color: white; border: 1px solid var(--blue); font-size: 1rem; margin-bottom: 10px; }
-        
-        .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.5rem; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; padding: 25px; z-index: 1000; justify-content: center; backdrop-filter: blur(5px); }
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: white; font-size: 1rem; }
+
+        .float { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 99; }
+        .circle { width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-<header><h1>LLEGA YA ELITE</h1></header>
+<header><h1>LLEGA YA ELITE 🛵</h1></header>
 <div class="stats">
     <div>PEDIDOS: <span id="count">0/0</span></div>
-    <div>RD$: <span id="cash">0</span></div>
+    <div>TOTAL: <span id="cash">RD$ 0</span></div>
 </div>
 
 <div id="list"></div>
 
 <div class="float">
-    <button class="circle" style="background: var(--green)" onclick="openM('addM')">+</button>
-    <button class="circle" style="background: var(--blue)" onclick="openM('cfgM')">⚙️</button>
+    <button class="circle" style="background: var(--green)" onclick="showM('addM')">＋</button>
+    <button class="circle" style="background: var(--blue)" onclick="showM('cfgM')">⚙️</button>
 </div>
 
-<div id="pasteModal" class="modal">
-    <h2 style="margin-bottom:10px">Pegar Nueva Ubicación</h2>
-    <p style="font-size:0.8rem; margin-bottom:10px; opacity:0.7">Pega el link de WhatsApp o las coordenadas aquí:</p>
-    <textarea id="inputUbi" rows="5" placeholder="Pega aquí el link de Google Maps..."></textarea>
-    <input type="hidden" id="activeIdx">
-    <button class="btn" style="background:var(--green)" onclick="confirmarUbi()">GUARDAR UBICACIÓN NUEVA</button>
-    <button class="btn" style="background:var(--red)" onclick="closeM()">CANCELAR</button>
+<div id="pasteM" class="modal">
+    <h2 style="color:var(--orange); margin-bottom:10px;">Actualizar Destino</h2>
+    <p style="margin-bottom:15px; opacity:0.8;">Pega el link de Google Maps o las coordenadas aquí:</p>
+    <textarea id="coordsInput" rows="4" placeholder="Pega el link aquí..."></textarea>
+    <input type="hidden" id="targetId">
+    <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR UBICACIÓN</button>
+    <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
 </div>
 
 <div id="addM" class="modal">
     <h2>Nuevo Cliente</h2><br>
-    <input type="text" id="newN" placeholder="Nombre" style="width:100%; padding:10px; margin-bottom:10px;">
-    <input type="number" id="newM" placeholder="Monto RD$" style="width:100%; padding:10px; margin-bottom:10px;">
-    <button class="btn" style="background:var(--green)" onclick="agregar()">AÑADIR</button>
-    <button class="btn" style="background:var(--red)" onclick="closeM()">CERRAR</button>
+    <input type="text" id="n" placeholder="Nombre del Cliente">
+    <input type="tel" id="t" placeholder="Teléfono / WhatsApp">
+    <input type="number" id="m" placeholder="Monto RD$">
+    <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR A RUTA</button>
+    <button class="btn" style="background:var(--red)" onclick="hideM()">CERRAR</button>
 </div>
 
 <div id="cfgM" class="modal">
-    <button class="btn btn-maps" onclick="document.getElementById('f').click()">📂 CARGAR RUTA JSON</button>
-    <button class="btn" style="background:var(--red)" onclick="localStorage.clear(); location.reload()">🗑️ BORRAR TODO</button>
-    <button class="btn" style="background:var(--card)" onclick="closeM()">CERRAR</button>
+    <h2>Opciones</h2><br>
+    <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 CARGAR ARCHIVO JSON</button>
+    <button class="btn btn-wa" onclick="shareRoute()">🔗 COPIAR LINK DE RUTA</button>
+    <hr style="border: 0; border-top: 1px solid #334155; margin: 15px 0;">
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
+    <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
 </div>
 
-<input type="file" id="f" style="display:none">
+<input type="file" id="file" style="display:none" accept=".json">
 
 <script>
-    let clientes = JSON.parse(localStorage.getItem('ly_v12')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_fixed_v3')) || [];
 
     function render() {
-        const box = document.getElementById('list');
-        box.innerHTML = '';
-        clientes.forEach((c, i) => {
-            const div = document.createElement('div');
-            div.className = `card ${c.s === 'ok' ? 'done' : ''}`;
-            div.innerHTML = `
-                <h3>${c.n}</h3>
-                <p>RD$ ${c.m || 0}</p>
+        const div = document.getElementById('list');
+        div.innerHTML = '';
+        
+        db.forEach((c, i) => {
+            // Arreglo para leer cualquier formato de nombre/teléfono del JSON
+            const nombre = c.n || c.nombre || "Sin Nombre";
+            const telefono = c.t || c.telefono || "Sin Teléfono";
+            const monto = c.m || c.cod || c.monto || 0;
+            const lat = c.lt || c.lat || 0;
+            const lng = c.lg || c.lng || 0;
+
+            const card = document.createElement('div');
+            card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
+            card.innerHTML = `
+                <h3>${nombre}</h3>
+                <div class="info">RD$ ${Number(monto).toLocaleString()} | 📞 ${telefono}</div>
                 
-                <button class="btn btn-paste" onclick="abrirPegar(${i})">📋 PEGAR NUEVA UBICACIÓN</button>
+                <button class="btn btn-paste" onclick="openPastePanel(${i})">📍 PEGAR NUEVA UBICACIÓN</button>
                 
-                <a class="btn btn-maps" href="https://www.google.com/maps/dir/?api=1&destination=${c.lt},${c.lg}&travelmode=motorcycle" target="_blank">🚀 IR AL MAPA</a>
+                <a class="btn btn-maps" href="https://www.google.com/maps?q=$${lat},${lng}&travelmode=motorcycle" target="_blank">🚀 IR AL MAPA</a>
+                <a class="btn btn-wa" href="https://wa.me/${telefono}" target="_blank">💬 WHATSAPP</a>
                 
                 <div class="row">
-                    <button class="btn-s" style="background:var(--green)" onclick="cambiarEstado(${i},'ok')">LISTO</button>
-                    <button class="btn-s" style="background:var(--red)" onclick="cambiarEstado(${i},'no')">NO</button>
+                    <button class="btn-s" style="background:var(--green)" onclick="status(${i},'ok')">LISTO</button>
+                    <button class="btn-s" style="background:var(--red)" onclick="status(${i},'no')">FALLÓ</button>
                 </div>
             `;
-            box.appendChild(div);
+            div.appendChild(card);
         });
-        actualizarStats();
+        updateStats();
     }
 
-    // ABRE EL MODAL Y TE DA EL CAMPO PARA PEGAR
-    function abrirPegar(i) {
-        document.getElementById('activeIdx').value = i;
-        document.getElementById('inputUbi').value = '';
-        document.getElementById('pasteModal').style.display = 'flex';
+    function openPastePanel(i) {
+        document.getElementById('targetId').value = i;
+        document.getElementById('coordsInput').value = '';
+        showM('pasteM');
     }
 
-    function confirmarUbi() {
-        const i = document.getElementById('activeIdx').value;
-        const texto = document.getElementById('inputUbi').value;
-        
-        // Busca coordenadas en el texto pegado
+    function saveManualLocation() {
+        const i = document.getElementById('targetId').value;
+        const text = document.getElementById('coordsInput').value;
         const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
-        const match = texto.match(reg);
+        const match = text.match(reg);
         
-        if(match) {
-            clientes[i].lt = match[1];
-            clientes[i].lg = match[2];
-            guardar();
-            closeM();
-            alert("Ubicación actualizada correctamente.");
+        if (match) {
+            db[i].lt = match[1]; db[i].lg = match[2];
+            save(); hideM();
+            alert("Ubicación actualizada.");
         } else {
-            alert("No se encontraron coordenadas. Pega el link completo o números como: 18.4, -69.9");
+            alert("No se hallaron coordenadas. Pega un link de Google Maps válido.");
         }
     }
 
-    function cambiarEstado(i, s) { clientes[i].s = s; guardar(); }
-    function guardar() { localStorage.setItem('ly_v12', JSON.stringify(clientes)); render(); }
-    
-    function agregar() {
-        const n = document.getElementById('newN').value;
-        if(!n) return;
-        clientes.push({ n: n, m: document.getElementById('newM').value, lt: 0, lg: 0, s: 'p' });
-        guardar(); closeM();
+    function status(i, s) { db[i].s = s; save(); }
+    function save() { localStorage.setItem('ly_fixed_v3', JSON.stringify(db)); render(); }
+
+    function add() {
+        const nom = document.getElementById('n').value;
+        if(!nom) return;
+        db.push({ n: nom, t: document.getElementById('t').value, m: document.getElementById('m').value, lt: 0, lg: 0, s: 'p' });
+        save(); hideM();
     }
 
-    function actualizarStats() {
-        const ok = clientes.filter(x => x.s === 'ok');
-        document.getElementById('count').innerText = `${ok.length}/${clientes.length}`;
-        document.getElementById('cash').innerText = ok.reduce((a,b) => a + Number(b.m || 0), 0);
+    function updateStats() {
+        const ok = db.filter(x => x.s === 'ok');
+        document.getElementById('count').innerText = `${ok.length}/${db.length}`;
+        document.getElementById('cash').innerText = `RD$ ${ok.reduce((a, b) => a + Number(b.m || b.cod || 0), 0).toLocaleString()}`;
     }
 
-    function openM(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+    function shareRoute() {
+        const str = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
+        const url = window.location.origin + window.location.pathname + '?r=' + str;
+        navigator.clipboard.writeText(url).then(() => alert("🔗 Link de ruta copiado."));
+    }
 
-    document.getElementById('f').addEventListener('change', e => {
-        const r = new FileReader();
-        r.onload = ev => { clientes = JSON.parse(ev.target.result).clientes || JSON.parse(ev.target.result); guardar(); closeM(); };
-        r.readAsText(e.target.files[0]);
+    function showM(id) { document.getElementById(id).style.display = 'flex'; }
+    function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+
+    document.getElementById('file').addEventListener('change', e => {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const data = JSON.parse(ev.target.result);
+            db = data.clientes || data;
+            save(); hideM();
+        };
+        reader.readAsText(e.target.files[0]);
     });
+
+    const urlP = new URLSearchParams(window.location.search);
+    if(urlP.get('r')) {
+        try {
+            db = JSON.parse(decodeURIComponent(escape(atob(urlP.get('r')))));
+            save();
+            window.history.replaceState({}, '', window.location.pathname);
+        } catch(e) {}
+    }
 
     render();
 </script>
