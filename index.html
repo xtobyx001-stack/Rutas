@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LLEGA YA | FIX CARGA</title>
+    <title>Llega Ya | Optimizador de Ruta</title>
     <style>
-        :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; --purple: #8b5cf6; }
+        :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
         body { background: var(--bg); color: white; padding-bottom: 100px; }
         header { background: var(--card); padding: 15px; text-align: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
-        .sort-bar { padding: 10px; background: #0f172a; position: sticky; top: 60px; z-index: 90; }
-        .btn-sort { background: var(--purple); width: 100%; padding: 12px; border-radius: 10px; border: none; color: white; font-weight: bold; font-size: 0.9rem; }
+        .btn-sort { background: #8b5cf6; margin: 10px; width: calc(100% - 20px); }
         #list { padding: 10px; }
         .card { background: var(--card); margin-bottom: 15px; padding: 15px; border-radius: 15px; border-left: 5px solid var(--blue); }
-        .card.done { border-left-color: var(--green); opacity: 0.5; }
-        h3 { font-size: 1.3rem; margin-bottom: 10px; text-transform: uppercase; }
+        .card.done { border-left-color: var(--green); opacity: 0.6; }
+        h3 { font-size: 1.3rem; margin-bottom: 10px; }
         .btn { width: 100%; padding: 14px; border-radius: 10px; border: none; font-weight: bold; color: white; cursor: pointer; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; font-size: 1rem; }
         .btn-paste { background: var(--orange); color: black; } 
         .btn-maps { background: var(--blue); }
@@ -31,9 +30,7 @@
 
 <header><h1>LLEGA YA ELITE 🛵</h1></header>
 
-<div class="sort-bar">
-    <button class="btn-sort" onclick="sortNearest()">⚡ ORDENAR POR CERCANÍA</button>
-</div>
+<button class="btn btn-sort" onclick="optimizeRoute()">⚡ ORDENAR RUTA POR CERCANÍA</button>
 
 <div id="list"></div>
 
@@ -43,15 +40,15 @@
 </div>
 
 <div id="pasteM" class="modal">
-    <h2 style="color:var(--orange);">Pegar Ubicación</h2><br>
-    <textarea id="coordsInput" rows="5" placeholder="Pega el link de WhatsApp o coordenadas aquí..."></textarea>
+    <h2 style="color:var(--orange); margin-bottom:10px;">Pegar Ubicación</h2>
+    <textarea id="coordsInput" rows="5" placeholder="Pega el link de Maps aquí..."></textarea>
     <input type="hidden" id="targetId">
     <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
 </div>
 
 <div id="addM" class="modal">
-    <h2>Nuevo Cliente</h2><br>
+    <h2>Nuevo Cliente</h2>
     <input type="text" id="n" placeholder="Nombre">
     <input type="tel" id="t" placeholder="WhatsApp">
     <button class="btn" style="background:var(--green)" onclick="add()">AÑADIR</button>
@@ -59,42 +56,29 @@
 </div>
 
 <div id="cfgM" class="modal">
-    <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 CARGAR ARCHIVO JSON</button>
-    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR TODO</button>
+    <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 CARGAR JSON</button>
+    <button class="btn btn-wa" onclick="shareRoute()">🔗 COPIAR LINK RUTA</button>
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR</button>
     <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
 </div>
 
 <input type="file" id="file" style="display:none" accept=".json">
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_v_final_secure')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_route_opt')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
-        
-        if (db.length === 0) {
-            div.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">No hay clientes en la ruta. Carga un archivo o usa el botón (+).</p>';
-            return;
-        }
-
         db.forEach((c, i) => {
-            const nombre = c.n || c.nombre || c.Nombre || "Sin Nombre";
-            const telefono = c.t || c.telefono || c.tel || "";
-            const lat = c.lt || c.lat || 0;
-            const lng = c.lg || c.lng || 0;
-
             const card = document.createElement('div');
             card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
-            
-            // Link de Google Maps estándar
-            const mapsLink = (lat != 0) ? `https://www.google.com/maps?q=${lat},${lng}` : "#";
-
+            const mapsUrl = (c.lt && c.lg) ? `https://www.google.com/maps?q=${c.lt},${c.lg}` : "#";
             card.innerHTML = `
-                <h3>${nombre}</h3>
+                <h3>${c.n || "Sin Nombre"}</h3>
                 <button class="btn btn-paste" onclick="openPastePanel(${i})">📋 PEGAR UBICACIÓN</button>
-                <a class="btn btn-maps" href="${mapsLink}" target="_blank">🚀 IR AL MAPA</a>
-                <a class="btn btn-wa" href="https://wa.me/${telefono}" target="_blank">💬 WHATSAPP</a>
+                <a class="btn btn-maps" href="${mapsUrl}" target="_blank">🚀 IR AL MAPA</a>
+                <a class="btn btn-wa" href="https://wa.me/${c.t}" target="_blank">💬 WHATSAPP</a>
                 <div class="row">
                     <button class="btn-s" style="background:var(--green)" onclick="status(${i},'ok')">LISTO</button>
                     <button class="btn-s" style="background:var(--red)" onclick="status(${i},'no')">FALLO</button>
@@ -104,26 +88,42 @@
         });
     }
 
-    function sortNearest() {
+    // --- LÓGICA DE OPTIMIZACIÓN ---
+    function getDist(lat1, lon1, lat2, lon2) {
+        return Math.sqrt(Math.pow(lat2 - lat1, 2) + Math.pow(lon2 - lon1, 2));
+    }
+
+    function optimizeRoute() {
         if (!navigator.geolocation) return alert("Activa el GPS");
+        
         navigator.geolocation.getCurrentPosition(pos => {
-            let lat = pos.coords.latitude;
-            let lng = pos.coords.longitude;
-            let pend = [...db.filter(x => x.s !== 'ok')];
-            let listos = [...db.filter(x => x.s === 'ok')];
+            let currentLat = pos.coords.latitude;
+            let currentLng = pos.coords.longitude;
+            let unvisited = [...db.filter(c => c.s !== 'ok')];
+            let visited = [...db.filter(c => c.s === 'ok')];
             let sorted = [];
-            while (pend.length > 0) {
-                let idx = 0; let min = Infinity;
-                pend.forEach((c, i) => {
-                    let d = Math.sqrt(Math.pow((c.lt||0)-lat,2) + Math.pow((c.lg||0)-lng,2));
-                    if (d < min) { min = d; idx = i; }
+
+            while (unvisited.length > 0) {
+                let nearestIdx = 0;
+                let minDist = Infinity;
+
+                unvisited.forEach((c, i) => {
+                    let d = getDist(currentLat, currentLng, c.lt || 0, c.lg || 0);
+                    if (d < minDist) {
+                        minDist = d;
+                        nearestIdx = i;
+                    }
                 });
-                let nxt = pend.splice(idx, 1)[0];
-                sorted.push(nxt);
-                lat = nxt.lt || lat; lng = nxt.lg || lng;
+
+                let nearest = unvisited.splice(nearestIdx, 1)[0];
+                sorted.push(nearest);
+                currentLat = nearest.lt;
+                currentLng = nearest.lg;
             }
-            db = [...sorted, ...listos];
+
+            db = [...sorted, ...visited];
             save();
+            alert("Ruta optimizada: del más cercano al más lejano.");
         });
     }
 
@@ -142,11 +142,11 @@
             db[i].lt = parseFloat(match[1]); 
             db[i].lg = parseFloat(match[2]);
             save(); hideM();
-        } else { alert("Pega coordenadas válidas."); }
+        }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_v_final_secure', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('ly_route_opt', JSON.stringify(db)); render(); }
     function add() {
         db.push({ n: document.getElementById('n').value, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
@@ -156,13 +156,7 @@
 
     document.getElementById('file').addEventListener('change', e => {
         const reader = new FileReader();
-        reader.onload = ev => { 
-            try {
-                const res = JSON.parse(ev.target.result);
-                db = res.clientes || (Array.isArray(res) ? res : []); 
-                save(); hideM(); 
-            } catch(err) { alert("Error en el archivo JSON"); }
-        };
+        reader.onload = ev => { db = JSON.parse(ev.target.result); save(); hideM(); };
         reader.readAsText(e.target.files[0]);
     });
 
