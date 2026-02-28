@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Llega Ya | Ubicación Fix</title>
+    <title>Llega Ya | Mapa Fix</title>
     <style>
         :root { --bg: #020617; --card: #1e293b; --blue: #3b82f6; --green: #10b981; --orange: #f59e0b; --red: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
@@ -38,7 +38,7 @@
 
 <div id="pasteM" class="modal">
     <h2 style="color:var(--orange); margin-bottom:10px;">Pegar Ubicación</h2>
-    <textarea id="coordsInput" rows="5" placeholder="Pega el link de Maps aquí..."></textarea>
+    <textarea id="coordsInput" rows="5" placeholder="Pega el link de WhatsApp o coordenadas aquí..."></textarea>
     <input type="hidden" id="targetId">
     <button class="btn" style="background:var(--green)" onclick="saveManualLocation()">GUARDAR UBICACIÓN</button>
     <button class="btn" style="background:var(--red)" onclick="hideM()">CANCELAR</button>
@@ -55,29 +55,29 @@
 <div id="cfgM" class="modal">
     <button class="btn" style="background:#6366f1" onclick="document.getElementById('file').click()">📂 SUBIR ARCHIVO JSON</button>
     <button class="btn btn-wa" onclick="shareRoute()">🔗 COPIAR LINK RUTA</button>
-    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR</button>
+    <button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todo?')){localStorage.clear(); location.reload();}">🗑️ LIMPIAR</button>
     <button class="btn" style="background:var(--card)" onclick="hideM()">CERRAR</button>
 </div>
 
 <input type="file" id="file" style="display:none" accept=".json">
 
 <script>
-    let db = JSON.parse(localStorage.getItem('ly_v_final_ubi')) || [];
+    let db = JSON.parse(localStorage.getItem('ly_master_fix')) || [];
 
     function render() {
         const div = document.getElementById('list');
         div.innerHTML = '';
         db.forEach((c, i) => {
-            const nombre = c.n || c.nombre || "Sin Nombre";
-            const telefono = c.t || c.telefono || "";
+            const nombre = c.n || c.nombre || c.Nombre || "Sin Nombre";
+            const telefono = c.t || c.telefono || c.tel || "";
             const lat = c.lt || c.lat || 0;
             const lng = c.lg || c.lng || 0;
 
             const card = document.createElement('div');
             card.className = `card ${c.s === 'ok' ? 'done' : ''}`;
             
-            // CORRECCIÓN DE UBICACIÓN: Formato de Google Maps oficial
-            const mapsUrl = (lat != 0) ? `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=motorcycle` : "#";
+            // ENLACE CORREGIDO: Formato estándar para Google Maps
+            const mapsUrl = (lat != 0) ? `https://www.google.com/maps?q=${lat},${lng}` : "#";
 
             card.innerHTML = `
                 <h3>${nombre}</h3>
@@ -102,37 +102,57 @@
     function saveManualLocation() {
         const i = document.getElementById('targetId').value;
         const text = document.getElementById('coordsInput').value;
+        
+        // Regex mejorada para capturar coordenadas de links o texto plano
         const reg = /(-?\d+\.\d+)\s*,\s*(-?\d+\.\d+)/;
         const match = text.match(reg);
+        
         if (match) {
-            db[i].lt = match[1]; db[i].lg = match[2];
-            save(); hideM();
-        } else { alert("Pega coordenadas válidas."); }
+            db[i].lt = match[1]; 
+            db[i].lg = match[2];
+            save(); 
+            hideM();
+        } else {
+            alert("No se encontraron coordenadas. Pega el link completo o números como: 18.4, -69.9");
+        }
     }
 
     function status(i, s) { db[i].s = s; save(); }
-    function save() { localStorage.setItem('ly_v_final_ubi', JSON.stringify(db)); render(); }
+    function save() { localStorage.setItem('ly_master_fix', JSON.stringify(db)); render(); }
+    
     function add() {
-        db.push({ n: document.getElementById('n').value, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
+        const nom = document.getElementById('n').value;
+        if(!nom) return;
+        db.push({ n: nom, t: document.getElementById('t').value, lt: 0, lg: 0, s: 'p' });
         save(); hideM();
     }
+
     function shareRoute() {
         const str = btoa(unescape(encodeURIComponent(JSON.stringify(db))));
         const url = window.location.origin + window.location.pathname + '?r=' + str;
-        navigator.clipboard.writeText(url).then(() => alert("Link copiado."));
+        navigator.clipboard.writeText(url).then(() => alert("Copiado al portapapeles."));
     }
+
     function showM(id) { document.getElementById(id).style.display = 'flex'; }
     function hideM() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
 
     document.getElementById('file').addEventListener('change', e => {
         const reader = new FileReader();
-        reader.onload = ev => { db = JSON.parse(ev.target.result).clientes || JSON.parse(ev.target.result); save(); hideM(); };
+        reader.onload = ev => {
+            const data = JSON.parse(ev.target.result);
+            db = data.clientes || data;
+            save(); hideM();
+        };
         reader.readAsText(e.target.files[0]);
     });
 
     const urlP = new URLSearchParams(window.location.search);
     if(urlP.get('r')) {
-        try { db = JSON.parse(decodeURIComponent(escape(atob(urlP.get('r'))))); save(); } catch(e) {}
+        try {
+            db = JSON.parse(decodeURIComponent(escape(atob(urlP.get('r')))));
+            save();
+            window.history.replaceState({}, '', window.location.pathname);
+        } catch(e) {}
     }
 
     render();
