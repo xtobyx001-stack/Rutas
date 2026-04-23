@@ -41,8 +41,11 @@ header h1{font-size:1.1rem;}
 .fab button{width:56px;height:56px;border-radius:50%;border:none;font-size:1.5rem;cursor:pointer;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:bold;margin-left:6px;}
 .badge-orange{background:var(--orange);color:black;}.empty{text-align:center;padding:40px 20px;color:#64748b;}
-.export-panel{padding:20px;text-align:center;}.export-panel p{color:#94a3b8;margin-bottom:20px;font-size:0.9rem;line-height:1.5;}
-.export-panel .big-btn{padding:16px 24px;border-radius:12px;border:none;font-weight:bold;font-size:1rem;cursor:pointer;color:white;width:100%;margin-bottom:10px;}</style>
+.export-panel{padding:20px;text-align:center;}.export-panel p{color:#94a3b8;margin-bottom:16px;font-size:0.9rem;line-height:1.5;}
+.export-panel .big-btn{padding:16px 24px;border-radius:12px;border:none;font-weight:bold;font-size:1rem;cursor:pointer;color:white;width:100%;margin-bottom:10px;}
+.export-card{background:var(--card);border-radius:12px;margin-bottom:10px;border-left:4px solid #f59e0b;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
+.export-card .ec-info{font-size:0.9rem;font-weight:bold;}.export-card .ec-sub{font-size:0.78rem;color:#94a3b8;margin-top:2px;}
+.export-card .ec-btn{background:var(--red);border:none;color:white;border-radius:6px;padding:6px 10px;font-size:0.75rem;cursor:pointer;font-weight:bold;}</style>
 </head>
 <body>
 <header><h1>🛵 LLEGA YA</h1></header>
@@ -83,8 +86,9 @@ header h1{font-size:1.1rem;}
 </div></div>
 <script>
 let clientes=JSON.parse(localStorage.getItem('llega_ya_clientes')||'[]');
+let exportados=JSON.parse(localStorage.getItem('llega_ya_exportados')||'[]');
 let tabActual='pendientes';
-function guardar(){localStorage.setItem('llega_ya_clientes',JSON.stringify(clientes));render();}
+function guardar(){localStorage.setItem('llega_ya_clientes',JSON.stringify(clientes));localStorage.setItem('llega_ya_exportados',JSON.stringify(exportados));render();}
 function getDatos(){
 if(tabActual==='pendientes')return clientes.filter(c=>c.estado==='pendiente'&&c.lat&&c.lng);
 if(tabActual==='sin_ubicacion')return clientes.filter(c=>(!c.lat||!c.lng)&&c.estado==='pendiente');
@@ -130,25 +134,34 @@ ${waUrl?`<a class="btn-sm" style="background:#25d366" href="${waUrl}" target="_b
 <button class="btn-sm" style="background:#334155" onclick="editarCliente(${c.id})">✏️ Editar</button>
 </div>
 <div class="btn-row">${btnC}</div>
+<div class="btn-row">
+<button class="btn-sm" style="background:var(--orange);color:black" onclick="enviarExportar(${c.id})">📤 Exportar</button>
+<button class="btn-sm" style="background:var(--red)" onclick="eliminarCliente(${c.id})">🗑️ Eliminar</button>
+</div>
 </div></div>`;
 }).join('');
 }
 function renderExportar(){
 const list=document.getElementById('list');
-const total=clientes.length;
-const conUbi=clientes.filter(c=>c.lat&&c.lng).length;
-list.innerHTML=`<div class="export-panel">
-<p>📦 <strong style="color:#f1f5f9">${total} clientes</strong> en total<br>${conUbi} con ubicación · ${total-conUbi} sin ubicación</p>
-<button class="big-btn" style="background:var(--green)" onclick="descargarJSON()">⬇️ Descargar JSON</button>
-<p style="font-size:0.78rem;margin-top:8px">El archivo incluye nombre, teléfono, monto, coordenadas y estado de cada cliente.</p>
+if(exportados.length===0){list.innerHTML='<div class="empty">No hay contactos en la lista de exportar.<br><br>Usa el botón 📤 Exportar en cada tarjeta para añadirlos aquí.</div>';return;}
+list.innerHTML=`<div style="padding:10px">
+<button class="btn" style="background:var(--green);margin-bottom:12px" onclick="descargarJSON()">⬇️ Descargar JSON (${exportados.length} contactos)</button>
+<button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm('¿Limpiar lista de exportar?')){exportados=[];guardar()}">🗑️ Limpiar lista</button>
+${exportados.map(c=>`<div class="export-card">
+<div><div class="ec-info">${c.nombre||'Sin nombre'}</div><div class="ec-sub">RD$ ${(c.cod||0).toLocaleString()} · ${c.telefono||'—'}</div></div>
+<button class="ec-btn" onclick="quitarExportar(${c.id})">✕ Quitar</button>
+</div>`).join('')}
 </div>`;
 }
 function descargarJSON(){
-const data={clientes:clientes.map(c=>({id:c.id,nombre:c.nombre||'',telefono:c.telefono||'',cod:c.cod||0,lat:c.lat||null,lng:c.lng||null,estado:c.estado||'pendiente'}))};
+const data={clientes:exportados.map(c=>({id:c.id,nombre:c.nombre||'',telefono:c.telefono||'',cod:c.cod||0,lat:c.lat||null,lng:c.lng||null,estado:'pendiente'}))};
 const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);
 a.download=`llega_ya_${new Date().toISOString().slice(0,10)}.json`;a.click();
 }
+function enviarExportar(id){const c=clientes.find(x=>x.id===id);if(!c)return;if(exportados.find(x=>x.id===id))return alert('Este contacto ya está en la lista de exportar.');exportados.push({...c});guardar();alert(`✅ ${c.nombre} añadido a Exportar`);}
+function quitarExportar(id){exportados=exportados.filter(x=>x.id!==id);guardar();}
+function eliminarCliente(id){if(!confirm('¿Eliminar este cliente?'))return;clientes=clientes.filter(x=>x.id!==id);exportados=exportados.filter(x=>x.id!==id);guardar();}
 function switchTab(tab){tabActual=tab;document.getElementById('busqueda').value='';document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===tab);});render();}
 function completar(id){const c=clientes.find(x=>x.id===id);if(!c)return;c.estado='completado';const idx=clientes.findIndex(x=>x.id===id);const[r]=clientes.splice(idx,1);clientes.push(r);guardar();}
 function devolverPendiente(id){const c=clientes.find(x=>x.id===id);if(c){c.estado='pendiente';guardar();}}
