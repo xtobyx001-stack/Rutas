@@ -52,7 +52,8 @@ header h1{font-size:1.1rem;}
 <div class="toolbar">
 <button style="background:var(--blue)" onclick="openModal('modalCargar')">📂 Cargar JSON</button>
 <button style="background:var(--purple)" onclick="sortNearest()">⚡ Cercanía</button>
-<button style="background:var(--green)" onclick="openModal('modalCliente')">+ Cliente</button>
+<!-- FIX ERROR 1 & 2: Llamar abrirNuevoCliente() en vez de openModal() directamente -->
+<button style="background:var(--green)" onclick="abrirNuevoCliente()">+ Cliente</button>
 </div>
 <div class="search-bar"><div class="search-wrap"><span class="lupa">🔍</span><input type="text" id="busqueda" placeholder="Buscar por nombre o teléfono..." oninput="render()"></div></div>
 <div class="tabs">
@@ -112,8 +113,6 @@ list.innerHTML=datos.map((c,idx)=>{
 const mapsUrl=c.lat&&c.lng?`https://www.google.com/maps?q=${c.lat},${c.lng}`:null;
 const waUrl=c.telefono?`https://wa.me/${c.telefono.replace(/\D/g,'')}`:null;
 const sinUbi=!c.lat||!c.lng;
-const esSinUbi=tabActual==='sin_ubicacion';
-const esCompleto=tabActual==='completados';
 const btnC=c.estado==='completado'
 ?`<button class="btn-sm" style="background:#065f46" onclick="devolverPendiente(${c.id})">↩️ Pendiente</button>`
 :`<button class="btn-sm" style="background:var(--green)" onclick="completar(${c.id})">✅ Completado</button>`;
@@ -159,54 +158,100 @@ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
 const a=document.createElement('a');a.href=URL.createObjectURL(blob);
 a.download=`llega_ya_${new Date().toISOString().slice(0,10)}.json`;a.click();
 }
-function enviarExportar(id){const c=clientes.find(x=>x.id===id);if(!c)return;if(exportados.find(x=>x.id===id))return alert('Este contacto ya está en la lista de exportar.');exportados.push({...c});guardar();alert(`✅ ${c.nombre} añadido a Exportar`);}
-function quitarExportar(id){exportados=exportados.filter(x=>x.id!==id);guardar();}
-function eliminarCliente(id){if(!confirm('¿Eliminar este cliente?'))return;clientes=clientes.filter(x=>x.id!==id);exportados=exportados.filter(x=>x.id!==id);guardar();}
-function switchTab(tab){tabActual=tab;document.getElementById('busqueda').value='';document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===tab);});render();}
-function completar(id){const c=clientes.find(x=>x.id===id);if(!c)return;c.estado='completado';const idx=clientes.findIndex(x=>x.id===id);const[r]=clientes.splice(idx,1);clientes.push(r);guardar();}
-function devolverPendiente(id){const c=clientes.find(x=>x.id===id);if(c){c.estado='pendiente';guardar();}}
+
+// FIX ERROR 3: Al exportar → marcar como completado. Al quitar de exportar → devolver a pendiente.
+function enviarExportar(id){
+const c=clientes.find(x=>x.id===id);
+if(!c)return;
+if(exportados.find(x=>x.id===id))return alert(‘Este contacto ya está en la lista de exportar.’);
+exportados.push({…c});
+// Mover a completado en la lista principal
+c.estado=‘completado’;
+const idx=clientes.findIndex(x=>x.id===id);
+const[r]=clientes.splice(idx,1);
+clientes.push(r);
+guardar();
+alert(`✅ ${c.nombre} exportado y movido a Completados`);
+}
+function quitarExportar(id){
+exportados=exportados.filter(x=>x.id!==id);
+// Devolver a pendiente en la lista principal
+const c=clientes.find(x=>x.id===id);
+if(c) c.estado=‘pendiente’;
+guardar();
+}
+
+function eliminarCliente(id){if(!confirm(’¿Eliminar este cliente?’))return;clientes=clientes.filter(x=>x.id!==id);exportados=exportados.filter(x=>x.id!==id);guardar();}
+function switchTab(tab){tabActual=tab;document.getElementById(‘busqueda’).value=’’;document.querySelectorAll(’.tab’).forEach((t,i)=>{t.classList.toggle(‘active’,[‘pendientes’,‘sin_ubicacion’,‘completados’,‘exportar’][i]===tab);});render();}
+function completar(id){const c=clientes.find(x=>x.id===id);if(!c)return;c.estado=‘completado’;const idx=clientes.findIndex(x=>x.id===id);const[r]=clientes.splice(idx,1);clientes.push(r);guardar();}
+function devolverPendiente(id){const c=clientes.find(x=>x.id===id);if(c){c.estado=‘pendiente’;guardar();}}
 function sortNearest(){
-const pendientes=clientes.filter(c=>c.estado==='pendiente'&&c.lat&&c.lng);
-const resto=clientes.filter(c=>!(c.estado==='pendiente'&&c.lat&&c.lng));
-if(pendientes.length===0)return alert('No hay clientes con ubicación pendientes.');
+const pendientes=clientes.filter(c=>c.estado===‘pendiente’&&c.lat&&c.lng);
+const resto=clientes.filter(c=>!(c.estado===‘pendiente’&&c.lat&&c.lng));
+if(pendientes.length===0)return alert(‘No hay clientes con ubicación pendientes.’);
 const hav=(a,b,c,d)=>{const R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dG/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));};
 const ORIGEN={lat:19.2917,lng:-70.2558};
-const ord=(o)=>{let la=o.lat,ln=o.lng,p=[...pendientes],r=[];while(p.length){let i=0,m=Infinity;p.forEach((c,j)=>{const d=hav(la,ln,c.lat,c.lng);if(d<m){m=d;i=j;}});const n=p.splice(i,1)[0];r.push(n);la=n.lat;ln=n.lng;}return r;};
-if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{clientes=[...ord({lat:p.coords.latitude,lng:p.coords.longitude}),...resto];switchTab('pendientes');guardar();},()=>{clientes=[...ord(ORIGEN),...resto];switchTab('pendientes');guardar();},{timeout:5000});}
-else{clientes=[...ord(ORIGEN),...resto];switchTab('pendientes');guardar();}
+const ord=(o)=>{let la=o.lat,ln=o.lng,p=[…pendientes],r=[];while(p.length){let i=0,m=Infinity;p.forEach((c,j)=>{const d=hav(la,ln,c.lat,c.lng);if(d<m){m=d;i=j;}});const n=p.splice(i,1)[0];r.push(n);la=n.lat;ln=n.lng;}return r;};
+if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{clientes=[…ord({lat:p.coords.latitude,lng:p.coords.longitude}),…resto];switchTab(‘pendientes’);guardar();},()=>{clientes=[…ord(ORIGEN),…resto];switchTab(‘pendientes’);guardar();},{timeout:5000});}
+else{clientes=[…ord(ORIGEN),…resto];switchTab(‘pendientes’);guardar();}
 }
 function cargarArchivo(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>procesarJSON(ev.target.result);r.readAsText(f);}
-function cargarPegado(){const t=document.getElementById('jsonPaste').value.trim();if(!t)return alert('Pega el contenido JSON primero');procesarJSON(t);}
-function procesarJSON(txt){try{const data=JSON.parse(txt);let lista=Array.isArray(data)?data:[...(data.clientes||[]),...(data.sin_ubicacion||[])];lista.forEach(n=>{const e=clientes.find(c=>c.id===n.id);if(e){Object.assign(e,n,{estado:e.estado});}else{clientes.push({...n,estado:n.estado||'pendiente'});}});guardar();closeModal('modalCargar');alert(`✅ ${lista.length} clientes cargados`);}catch(e){alert('Error: JSON no válido');}}
-let nextId=()=>Math.max(0,...clientes.map(c=>c.id||0))+1;
-function editarCliente(id){const c=clientes.find(x=>x.id===id);if(!c)return;document.getElementById('editId').value=id;document.getElementById('modalClienteTitulo').textContent='✏️ Editar Cliente';['cNombre','cTel','cCod','cCoords'].forEach(i=>document.getElementById(i).value='');openModal('modalCliente');}
+function cargarPegado(){const t=document.getElementById(‘jsonPaste’).value.trim();if(!t)return alert(‘Pega el contenido JSON primero’);procesarJSON(t);}
+function procesarJSON(txt){try{const data=JSON.parse(txt);let lista=Array.isArray(data)?data:[…(data.clientes||[]),…(data.sin_ubicacion||[])];lista.forEach(n=>{const e=clientes.find(c=>c.id===n.id);if(e){Object.assign(e,n,{estado:e.estado});}else{clientes.push({…n,estado:n.estado||‘pendiente’});}});guardar();closeModal(‘modalCargar’);alert(`✅ ${lista.length} clientes cargados`);}catch(e){alert(‘Error: JSON no válido’);}}
+let nextId=()=>Math.max(0,…clientes.map(c=>c.id||0))+1;
+
+// FIX ERROR 1 & 2: Función dedicada para abrir modal de NUEVO cliente, limpiando todo correctamente
+function abrirNuevoCliente(){
+document.getElementById(‘editId’).value=’’;
+document.getElementById(‘modalClienteTitulo’).textContent=‘➕ Nuevo Cliente’;
+document.getElementById(‘cNombre’).value=’’;
+document.getElementById(‘cTel’).value=’’;
+document.getElementById(‘cCod’).value=’’;
+document.getElementById(‘cCoords’).value=’’;
+document.getElementById(‘modalCliente’).classList.add(‘open’);
+}
+
+function editarCliente(id){
+const c=clientes.find(x=>x.id===id);
+if(!c)return;
+document.getElementById(‘editId’).value=id;
+document.getElementById(‘modalClienteTitulo’).textContent=‘✏️ Editar Cliente’;
+// FIX ERROR 2: Limpiar campos antes de editar (no pre-rellenar para mantener el placeholder)
+document.getElementById(‘cNombre’).value=’’;
+document.getElementById(‘cTel’).value=’’;
+document.getElementById(‘cCod’).value=’’;
+document.getElementById(‘cCoords’).value=’’;
+document.getElementById(‘modalCliente’).classList.add(‘open’);
+}
+
 function guardarCliente(){
-const editId=document.getElementById('editId').value;
-const nombre=document.getElementById('cNombre').value.trim();
-const telefono=document.getElementById('cTel').value.trim();
-const codVal=document.getElementById('cCod').value.trim();
-const coordsVal=document.getElementById('cCoords').value.trim();
+const editId=document.getElementById(‘editId’).value;
+const nombre=document.getElementById(‘cNombre’).value.trim();
+const telefono=document.getElementById(‘cTel’).value.trim();
+const codVal=document.getElementById(‘cCod’).value.trim();
+const coordsVal=document.getElementById(‘cCoords’).value.trim();
 if(editId){
 const c=clientes.find(x=>x.id==editId);
 if(c){
 if(nombre)c.nombre=nombre;
 if(telefono)c.telefono=telefono;
 if(codVal)c.cod=parseFloat(codVal);
-if(coordsVal){const m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(m){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);}}
+if(coordsVal){const m=coordsVal.match(/(-?\d+.?\d*)[,\s]+(-?\d+.?\d*)/);if(m){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);}}
 }
 }else{
-if(!nombre)return alert('El nombre es requerido');
-const cm=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-clientes.push({id:nextId(),nombre,telefono,cod:parseFloat(codVal)||0,lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
+if(!nombre)return alert(‘El nombre es requerido’);
+const cm=coordsVal.match(/(-?\d+.?\d*)[,\s]+(-?\d+.?\d*)/);
+clientes.push({id:nextId(),nombre,telefono,cod:parseFloat(codVal)||0,lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:‘pendiente’});
 }
-guardar();closeModal('modalCliente');
+guardar();closeModal(‘modalCliente’);
 }
-function abrirUbi(id){document.getElementById('ubiId').value=id;document.getElementById('ubiInput').value='';openModal('modalUbi');}
-function guardarUbicacion(){const id=document.getElementById('ubiId').value;const txt=document.getElementById('ubiInput').value;const m=txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(!m)return alert('No se encontraron coordenadas.');const c=clientes.find(x=>x.id==id);if(c){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);guardar();closeModal('modalUbi');}}
-function openModal(id){if(id==='modalCliente'&&!document.getElementById('editId').value){document.getElementById('modalClienteTitulo').textContent='➕ Nuevo Cliente';['cNombre','cTel','cCod','cCoords'].forEach(i=>document.getElementById(i).value='');}document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+function abrirUbi(id){document.getElementById(‘ubiId’).value=id;document.getElementById(‘ubiInput’).value=’’;openModal(‘modalUbi’);}
+function guardarUbicacion(){const id=document.getElementById(‘ubiId’).value;const txt=document.getElementById(‘ubiInput’).value;const m=txt.match(/(-?\d+.?\d*)[,\s]+(-?\d+.?\d*)/);if(!m)return alert(‘No se encontraron coordenadas.’);const c=clientes.find(x=>x.id==id);if(c){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);guardar();closeModal(‘modalUbi’);}}
+function openModal(id){document.getElementById(id).classList.add(‘open’);}
+function closeModal(id){document.getElementById(id).classList.remove(‘open’);}
+document.querySelectorAll(’.overlay’).forEach(o=>o.addEventListener(‘click’,e=>{if(e.target===o)o.classList.remove(‘open’);}));
 render();
 </script>
+
 </body>
 </html>
