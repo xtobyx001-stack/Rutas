@@ -108,7 +108,6 @@ function normTel(tel) {
   return (tel || '').replace(/\D/g, '');
 }
 
-// Migrar registros viejos sin _uid
 clientes = clientes.map(c => c._uid ? c : { ...c, _uid: generarId() });
 
 function guardar() {
@@ -164,7 +163,6 @@ function render() {
       ? `<button class="btn-sm" style="background:#065f46" onclick="devolverPendiente('${uid}')">↩️ Pendiente</button>`
       : `<button class="btn-sm" style="background:#10b981" onclick="completar('${uid}')">✅ Completado</button>`;
 
-    // Notas: multi-pedido o simple
     let notasHtml = '';
     if (esMulti) {
       notasHtml = `<div class="notas-multi">${c.pedidos.map((p, i) =>
@@ -285,16 +283,34 @@ function sortNearest() {
   const pendientes = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
   const resto = clientes.filter(c => !(c.estado === 'pendiente' && c.lat && c.lng));
   if (pendientes.length === 0) return alert('No hay clientes con ubicación pendientes.');
-  const hav = (a, b, c, d) => { const R = 6371, dL = (c - a) * Math.PI / 180, dG = (d - b) * Math.PI / 180, x = Math.sin(dL / 2) ** 2 + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(dG / 2) ** 2; return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x)); };
-  const ORIGEN = { lat: 19.2917, lng: -70.2558 };
-  const ord = (o) => { let la = o.lat, ln = o.lng, p = [...pendientes], r = []; while (p.length) { let i = 0, m = Infinity; p.forEach((c, j) => { const d = hav(la, ln, c.lat, c.lng); if (d < m) { m = d; i = j; } }); const n = p.splice(i, 1)[0]; r.push(n); la = n.lat; ln = n.lng; } return r; };
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      p => { clientes = [...ord({ lat: p.coords.latitude, lng: p.coords.longitude }), ...resto]; switchTab('pendientes'); guardar(); },
-      () => { clientes = [...ord(ORIGEN), ...resto]; switchTab('pendientes'); guardar(); },
-      { timeout: 5000 }
-    );
-  } else { clientes = [...ord(ORIGEN), ...resto]; switchTab('pendientes'); guardar(); }
+  if (!navigator.geolocation) return alert('Tu dispositivo no soporta GPS.');
+
+  const hav = (a, b, c, d) => {
+    const R = 6371, dL = (c - a) * Math.PI / 180, dG = (d - b) * Math.PI / 180,
+      x = Math.sin(dL / 2) ** 2 + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(dG / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+  };
+
+  const ord = (origen) => {
+    let la = origen.lat, ln = origen.lng, p = [...pendientes], r = [];
+    while (p.length) {
+      let i = 0, m = Infinity;
+      p.forEach((c, j) => { const d = hav(la, ln, c.lat, c.lng); if (d < m) { m = d; i = j; } });
+      const n = p.splice(i, 1)[0];
+      r.push(n); la = n.lat; ln = n.lng;
+    }
+    return r;
+  };
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      clientes = [...ord({ lat: pos.coords.latitude, lng: pos.coords.longitude }), ...resto];
+      switchTab('pendientes');
+      guardar();
+    },
+    () => alert('No se pudo obtener tu ubicación. Verifica que el GPS esté activo y que hayas dado permiso.'),
+    { timeout: 10000, enableHighAccuracy: true }
+  );
 }
 
 function cargarArchivo(e) {
@@ -316,27 +332,22 @@ function procesarJSON(txt) {
     const data = JSON.parse(txt);
     let lista = Array.isArray(data) ? data : [...(data.clientes || []), ...(data.sin_ubicacion || [])];
 
-    // PASO 1: Agrupar pedidos múltiples del mismo archivo por teléfono
     const mapaArchivo = new Map();
     lista.forEach(n => {
       const tel = normTel(n.telefono);
       const key = tel || ('_sin_tel_' + generarId());
-
       if (!tel || !mapaArchivo.has(tel)) {
         mapaArchivo.set(key, { ...n, _uid: n._uid || generarId(), estado: n.estado || 'pendiente' });
       } else {
-        // Mismo teléfono en el archivo → agrupar como pedido adicional
         const base = mapaArchivo.get(tel);
         if (!base.pedidos) {
           base.pedidos = [{ nota: base.nota || '', cod: base.cod || 0 }];
-          delete base.nota;
-          delete base.cod;
+          delete base.nota; delete base.cod;
         }
         base.pedidos.push({ nota: n.nota || '', cod: n.cod || 0 });
       }
     });
 
-    // PASO 2: Merge con clientes existentes en la app
     const telExistentes = new Map(
       clientes.filter(c => normTel(c.telefono)).map(c => [normTel(c.telefono), c])
     );
@@ -345,33 +356,18 @@ function procesarJSON(txt) {
 
     mapaArchivo.forEach((nuevo, key) => {
       const tel = key.startsWith('_sin_tel_') ? '' : key;
-
-      if (!tel) {
-        clientes.push(nuevo);
-        agregados++;
-        return;
-      }
-
+      if (!tel) { clientes.push(nuevo); agregados++; return; }
       if (telExistentes.has(tel)) {
         const existente = telExistentes.get(tel);
-        // Si el existente no tiene ubicación y el nuevo sí → actualizar
         if ((!existente.lat || !existente.lng) && nuevo.lat && nuevo.lng) {
-          existente.lat = nuevo.lat;
-          existente.lng = nuevo.lng;
-          actualizados++;
-        } else {
-          omitidos++;
-        }
+          existente.lat = nuevo.lat; existente.lng = nuevo.lng; actualizados++;
+        } else { omitidos++; }
       } else {
-        clientes.push(nuevo);
-        telExistentes.set(tel, nuevo);
-        agregados++;
+        clientes.push(nuevo); telExistentes.set(tel, nuevo); agregados++;
       }
     });
 
-    // Asegurar _uid en todos
     clientes = clientes.map(c => c._uid ? c : { ...c, _uid: generarId() });
-
     guardar();
     closeModal('modalCargar');
 
@@ -379,7 +375,6 @@ function procesarJSON(txt) {
     if (actualizados > 0) msg += `\n📍 ${actualizados} ubicaciones actualizadas`;
     if (omitidos > 0) msg += `\n⚠️ ${omitidos} duplicados omitidos`;
     alert(msg);
-
   } catch (e) { alert('Error: JSON no válido'); }
 }
 
