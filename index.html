@@ -5,23 +5,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LLEGA YA 🛵</title>
-<style>:root{--bg:#0f172a;--card:#1e293b;--blue:#3b82f6;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--border:#334155;}*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}body{background:var(--bg);color:#f1f5f9;min-height:100vh;padding-bottom:80px;}
-header{background:var(--card);padding:14px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+<style>:root{--bg:#0f172a;--card:#1e293b;--blue:#3b82f6;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--border:#334155;}*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}body{background:#0f172a;color:#f1f5f9;min-height:100vh;padding-bottom:80px;}
+header{background:#1e293b;padding:14px 16px;border-bottom:1px solid #334155;position:sticky;top:0;z-index:50;}
 header h1{font-size:1.1rem;}
-.toolbar{display:flex;gap:8px;padding:10px;background:#0f172a;border-bottom:1px solid var(--border);position:sticky;top:53px;z-index:49;}
+.toolbar{display:flex;gap:8px;padding:10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:53px;z-index:49;}
 .toolbar button{flex:1;padding:10px 6px;border-radius:8px;border:none;font-weight:bold;font-size:0.8rem;cursor:pointer;color:white;}
-.search-bar{padding:8px 10px;background:#0f172a;border-bottom:1px solid var(--border);position:sticky;top:106px;z-index:48;}
-.search-bar input{width:100%;padding:10px 14px 10px 36px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:#f1f5f9;font-size:0.9rem;-webkit-text-fill-color:#f1f5f9;-webkit-box-shadow:0 0 0px 1000px #1e293b inset;}
+.search-bar{padding:8px 10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:106px;z-index:48;}
+.search-bar input{width:100%;padding:10px 14px 10px 36px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f1f5f9;font-size:0.9rem;-webkit-text-fill-color:#f1f5f9;-webkit-box-shadow:0 0 0px 1000px #1e293b inset;}
 .search-bar input::placeholder{color:#64748b;-webkit-text-fill-color:#64748b;}
-.search-bar input:focus{-webkit-box-shadow:0 0 0px 1000px #1e293b inset;outline:2px solid var(--blue);}
+.search-bar input:focus{-webkit-box-shadow:0 0 0px 1000px #1e293b inset;outline:2px solid #3b82f6;}
 .search-wrap{position:relative;}.search-wrap .lupa{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;}
-.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:159px;z-index:47;}
+.tabs{display:flex;border-bottom:1px solid #334155;background:#1e293b;position:sticky;top:159px;z-index:47;}
 .tab{flex:1;padding:10px;text-align:center;font-size:0.78rem;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;color:#94a3b8;}
-.tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.tab.active{color:#3b82f6;border-bottom-color:#3b82f6;}
 #list{padding:10px;}
-.card{background:var(--card);border-radius:12px;margin-bottom:12px;border-left:4px solid var(--blue);overflow:hidden;}
-.card.completado{border-left-color:var(--green);opacity:0.6;}.card.sin-ubi{border-left-color:var(--orange);}
-.card.sin-ubi.completado{border-left-color:var(--green);opacity:0.4;}
+.card{background:#1e293b;border-radius:12px;margin-bottom:12px;border-left:4px solid #3b82f6;overflow:hidden;}
+.card.completado{border-left-color:#10b981;opacity:0.6;}.card.sin-ubi{border-left-color:#f59e0b;}
+.card.sin-ubi.completado{border-left-color:#10b981;opacity:0.4;}
 .card-header{padding:12px 14px 4px;display:flex;align-items:flex-start;justify-content:space-between;}
 .card-header .info{flex:1;}.card-header .nombre{font-weight:bold;font-size:1rem;}.card-header .cod{font-size:0.8rem;color:#94a3b8;margin-top:2px;}
 .order-btns{display:flex;flex-direction:column;gap:2px;margin-left:8px;}
@@ -31,28 +31,26 @@ header h1{font-size:1.1rem;}
 .btn{padding:10px;border-radius:8px;border:none;font-weight:bold;font-size:0.82rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:block;width:100%;}
 .btn-sm{flex:1;padding:9px 4px;border-radius:8px;border:none;font-weight:bold;font-size:0.78rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:block;}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;}
-.overlay.open{display:flex;}.modal{background:var(--card);border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
+.overlay.open{display:flex;}.modal{background:#1e293b;border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
 .modal h2{margin-bottom:16px;font-size:1.1rem;}.field{margin-bottom:12px;}
 .field label{display:block;font-size:0.8rem;color:#94a3b8;margin-bottom:4px;}
-.field input,.field textarea{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:#0f172a;color:white;font-size:0.95rem;}
+.field input,.field textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;font-size:0.95rem;}
 .field textarea{resize:vertical;min-height:80px;}.modal-btns{display:flex;gap:8px;margin-top:16px;}
 .modal-btns button{flex:1;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;font-size:0.9rem;}
 .fab{position:fixed;bottom:20px;right:16px;display:flex;flex-direction:column;gap:10px;z-index:49;}
 .fab button{width:56px;height:56px;border-radius:50%;border:none;font-size:1.5rem;cursor:pointer;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:bold;margin-left:6px;}
-.badge-orange{background:var(--orange);color:black;}.empty{text-align:center;padding:40px 20px;color:#64748b;}
-.export-panel{padding:20px;text-align:center;}.export-panel p{color:#94a3b8;margin-bottom:16px;font-size:0.9rem;line-height:1.5;}
-.export-panel .big-btn{padding:16px 24px;border-radius:12px;border:none;font-weight:bold;font-size:1rem;cursor:pointer;color:white;width:100%;margin-bottom:10px;}
-.export-card{background:var(--card);border-radius:12px;margin-bottom:10px;border-left:4px solid #f59e0b;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
+.badge-orange{background:#f59e0b;color:black;}.empty{text-align:center;padding:40px 20px;color:#64748b;}
+.export-card{background:#1e293b;border-radius:12px;margin-bottom:10px;border-left:4px solid #f59e0b;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
 .export-card .ec-info{font-size:0.9rem;font-weight:bold;}.export-card .ec-sub{font-size:0.78rem;color:#94a3b8;margin-top:2px;}
-.export-card .ec-btn{background:var(--red);border:none;color:white;border-radius:6px;padding:6px 10px;font-size:0.75rem;cursor:pointer;font-weight:bold;}</style>
+.export-card .ec-btn{background:#ef4444;border:none;color:white;border-radius:6px;padding:6px 10px;font-size:0.75rem;cursor:pointer;font-weight:bold;}</style>
 </head>
 <body>
 <header><h1>🛵 LLEGA YA</h1></header>
 <div class="toolbar">
-<button style="background:var(--blue)" onclick="openModal('modalCargar')">📂 Cargar JSON</button>
-<button style="background:var(--purple)" onclick="sortNearest()">⚡ Cercanía</button>
-<button style="background:var(--green)" onclick="abrirNuevoCliente()">+ Cliente</button>
+<button style="background:#3b82f6" onclick="openModal('modalCargar')">📂 Cargar JSON</button>
+<button style="background:#8b5cf6" onclick="sortNearest()">⚡ Cercanía</button>
+<button style="background:#10b981" onclick="abrirNuevoCliente()">+ Cliente</button>
 </div>
 <div class="search-bar"><div class="search-wrap"><span class="lupa">🔍</span><input type="text" id="busqueda" placeholder="Buscar por nombre o teléfono..." oninput="render()"></div></div>
 <div class="tabs">
@@ -62,184 +60,326 @@ header h1{font-size:1.1rem;}
 <div class="tab" onclick="switchTab('exportar')">📤 Exportar</div>
 </div>
 <div id="list"></div>
+
 <div class="overlay" id="modalCargar"><div class="modal"><h2>📂 Cargar Archivo JSON</h2>
 <div class="field"><label>Selecciona tu archivo .json</label><input type="file" id="fileInput" accept=".json" onchange="cargarArchivo(event)"></div>
 <div class="field"><label>O pega el contenido JSON aquí</label><textarea id="jsonPaste" placeholder='{ "clientes": [...] }'></textarea></div>
-<div class="modal-btns"><button style="background:var(--green)" onclick="cargarPegado()">CARGAR</button><button style="background:var(--border)" onclick="closeModal('modalCargar')">CANCELAR</button></div>
+<div class="modal-btns"><button style="background:#10b981" onclick="cargarPegado()">CARGAR</button><button style="background:#334155" onclick="closeModal('modalCargar')">CANCELAR</button></div>
 </div></div>
+
 <div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">➕ Nuevo Cliente</h2><input type="hidden" id="editId">
 <div class="field"><label>Nombre</label><input type="text" id="cNombre" placeholder="Dejar vacío para no cambiar"></div>
 <div class="field"><label>Teléfono / WhatsApp</label><input type="tel" id="cTel" placeholder="Dejar vacío para no cambiar"></div>
 <div class="field"><label>Monto (RD$)</label><input type="number" id="cCod" placeholder="Dejar vacío para no cambiar"></div>
 <div class="field"><label>Coordenadas</label><input type="text" id="cCoords" placeholder="Dejar vacío para no cambiar"></div>
-<div class="modal-btns"><button style="background:var(--green)" onclick="guardarCliente()">GUARDAR</button><button style="background:var(--border)" onclick="closeModal('modalCliente')">CANCELAR</button></div>
+<div class="modal-btns"><button style="background:#10b981" onclick="guardarCliente()">GUARDAR</button><button style="background:#334155" onclick="closeModal('modalCliente')">CANCELAR</button></div>
 </div></div>
+
 <div class="overlay" id="modalUbi"><div class="modal"><h2>📍 Actualizar Ubicación</h2><input type="hidden" id="ubiId">
 <p style="font-size:0.85rem;color:#94a3b8;margin-bottom:12px;">Pega las coordenadas o un link de Google Maps</p>
 <div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558&#10;o&#10;https://maps.google.com/?q=19.2917,-70.2558"></textarea></div>
-<div class="modal-btns"><button style="background:var(--green)" onclick="guardarUbicacion()">GUARDAR</button><button style="background:var(--border)" onclick="closeModal('modalUbi')">CANCELAR</button></div>
+<div class="modal-btns"><button style="background:#10b981" onclick="guardarUbicacion()">GUARDAR</button><button style="background:#334155" onclick="closeModal('modalUbi')">CANCELAR</button></div>
 </div></div>
+
 <div class="fab"><button style="background:#475569" onclick="openModal('modalConfig')">⚙️</button></div>
 <div class="overlay" id="modalConfig"><div class="modal"><h2>⚙️ Opciones</h2><br>
-<button class="btn" style="background:var(--red)" onclick="if(confirm('¿Borrar todos los clientes?')){localStorage.removeItem('llega_ya_clientes');clientes=[];guardar();closeModal('modalConfig');}">🗑️ Borrar Todo (fin del día)</button>
+<button class="btn" style="background:#ef4444" onclick="if(confirm('¿Borrar todos los clientes?')){localStorage.removeItem('llega_ya_clientes');clientes=[];guardar();closeModal('modalConfig');}">🗑️ Borrar Todo (fin del día)</button>
 <button class="btn" style="background:#475569;margin-top:8px" onclick="closeModal('modalConfig')">CERRAR</button>
 </div></div>
+
 <script>
-let clientes=JSON.parse(localStorage.getItem('llega_ya_clientes')||'[]');
-let exportados=JSON.parse(localStorage.getItem('llega_ya_exportados')||'[]');
-let tabActual='pendientes';
-function guardar(){localStorage.setItem('llega_ya_clientes',JSON.stringify(clientes));localStorage.setItem('llega_ya_exportados',JSON.stringify(exportados));render();}
-function getDatos(){
-if(tabActual==='pendientes')return clientes.filter(c=>c.estado==='pendiente'&&c.lat&&c.lng);
-if(tabActual==='sin_ubicacion')return clientes.filter(c=>(!c.lat||!c.lng)&&c.estado==='pendiente');
-if(tabActual==='completados')return clientes.filter(c=>c.estado==='completado');
-return[];
+let clientes = JSON.parse(localStorage.getItem('llega_ya_clientes') || '[]');
+let exportados = JSON.parse(localStorage.getItem('llega_ya_exportados') || '[]');
+let tabActual = 'pendientes';
+
+// --- ID único robusto ---
+function generarId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
-function mover(id,dir){
-const datos=getDatos();const pos=datos.findIndex(x=>x.id===id);const newPos=pos+dir;
-if(newPos<0||newPos>=datos.length)return;
-const ia=clientes.findIndex(x=>x.id===datos[pos].id);const ib=clientes.findIndex(x=>x.id===datos[newPos].id);
-[clientes[ia],clientes[ib]]=[clientes[ib],clientes[ia]];guardar();
+
+// Normaliza teléfono para comparación
+function normTel(tel) {
+  return (tel || '').replace(/\D/g, '');
 }
-function render(){
-if(tabActual==='exportar'){renderExportar();return;}
-const list=document.getElementById('list');
-const busqueda=document.getElementById('busqueda').value.toLowerCase().trim();
-let datos=getDatos();
-if(busqueda)datos=datos.filter(c=>(c.nombre||'').toLowerCase().includes(busqueda)||(c.telefono||'').includes(busqueda));
-if(datos.length===0){list.innerHTML='<div class="empty">No hay clientes en esta sección</div>';return;}
-list.innerHTML=datos.map((c,idx)=>{
-const mapsUrl=c.lat&&c.lng?`https://www.google.com/maps?q=${c.lat},${c.lng}`:null;
-const waUrl=c.telefono?`https://wa.me/${c.telefono.replace(/\D/g,'')}`:null;
-const sinUbi=!c.lat||!c.lng;
-const btnC=c.estado==='completado'
-?`<button class="btn-sm" style="background:#065f46" onclick="devolverPendiente(${c.id})">↩️ Pendiente</button>`
-:`<button class="btn-sm" style="background:var(--green)" onclick="completar(${c.id})">✅ Completado</button>`;
-return`<div class="card ${sinUbi?'sin-ubi':''} ${c.estado==='completado'?'completado':''}">
+
+// Migrar IDs numéricos viejos a string únicos al arrancar
+clientes = clientes.map(c => {
+  if (!c._uid) c._uid = generarId();
+  return c;
+});
+
+function guardar() {
+  localStorage.setItem('llega_ya_clientes', JSON.stringify(clientes));
+  localStorage.setItem('llega_ya_exportados', JSON.stringify(exportados));
+  render();
+}
+
+function getDatos() {
+  if (tabActual === 'pendientes') return clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
+  if (tabActual === 'sin_ubicacion') return clientes.filter(c => (!c.lat || !c.lng) && c.estado === 'pendiente');
+  if (tabActual === 'completados') return clientes.filter(c => c.estado === 'completado');
+  return [];
+}
+
+function mover(uid, dir) {
+  const datos = getDatos();
+  const pos = datos.findIndex(x => x._uid === uid);
+  const newPos = pos + dir;
+  if (newPos < 0 || newPos >= datos.length) return;
+  const ia = clientes.findIndex(x => x._uid === datos[pos]._uid);
+  const ib = clientes.findIndex(x => x._uid === datos[newPos]._uid);
+  [clientes[ia], clientes[ib]] = [clientes[ib], clientes[ia]];
+  guardar();
+}
+
+function render() {
+  if (tabActual === 'exportar') { renderExportar(); return; }
+  const list = document.getElementById('list');
+  const busqueda = document.getElementById('busqueda').value.toLowerCase().trim();
+  let datos = getDatos();
+  if (busqueda) datos = datos.filter(c =>
+    (c.nombre || '').toLowerCase().includes(busqueda) ||
+    (c.telefono || '').includes(busqueda)
+  );
+  if (datos.length === 0) { list.innerHTML = '<div class="empty">No hay clientes en esta sección</div>'; return; }
+  list.innerHTML = datos.map((c, idx) => {
+    const mapsUrl = c.lat && c.lng ? `https://www.google.com/maps?q=${c.lat},${c.lng}` : null;
+    const waUrl = c.telefono ? `https://wa.me/${c.telefono.replace(/\D/g, '')}` : null;
+    const sinUbi = !c.lat || !c.lng;
+    const uid = c._uid;
+    const btnC = c.estado === 'completado'
+      ? `<button class="btn-sm" style="background:#065f46" onclick="devolverPendiente('${uid}')">↩️ Pendiente</button>`
+      : `<button class="btn-sm" style="background:#10b981" onclick="completar('${uid}')">✅ Completado</button>`;
+    return `<div class="card ${sinUbi ? 'sin-ubi' : ''} ${c.estado === 'completado' ? 'completado' : ''}">
 <div class="card-header"><div class="info">
-<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#${idx+1}</span>${c.nombre||'Sin nombre'}${sinUbi?'<span class="badge badge-orange">Sin GPS</span>':''}</div>
-<div class="cod">RD$ ${(c.cod||0).toLocaleString()} · Tel: ${c.telefono||'—'}</div>
+<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#${idx + 1}</span>${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}</div>
+<div class="cod">RD$ ${(c.cod || 0).toLocaleString()} · Tel: ${c.telefono || '—'}</div>
 </div>
-<div class="order-btns"><button onclick="mover(${c.id},-1)">▲</button><button onclick="mover(${c.id},1)">▼</button></div>
+<div class="order-btns"><button onclick="mover('${uid}',-1)">▲</button><button onclick="mover('${uid}',1)">▼</button></div>
 </div>
 <div class="card-body">
 <div class="btn-row">
-${mapsUrl?`<a class="btn-sm" style="background:var(--blue)" href="${mapsUrl}" target="_blank">🗺️ Mapa</a>`:''}
-${waUrl?`<a class="btn-sm" style="background:#25d366" href="${waUrl}" target="_blank">💬 WhatsApp</a>`:''}
+${mapsUrl ? `<a class="btn-sm" style="background:#3b82f6" href="${mapsUrl}" target="_blank">🗺️ Mapa</a>` : ''}
+${waUrl ? `<a class="btn-sm" style="background:#25d366" href="${waUrl}" target="_blank">💬 WhatsApp</a>` : ''}
 </div>
 <div class="btn-row">
-<button class="btn-sm" style="background:var(--purple)" onclick="abrirUbi(${c.id})">📍 Ubicación</button>
-<button class="btn-sm" style="background:#334155" onclick="editarCliente(${c.id})">✏️ Editar</button>
+<button class="btn-sm" style="background:#8b5cf6" onclick="abrirUbi('${uid}')">📍 Ubicación</button>
+<button class="btn-sm" style="background:#334155" onclick="editarCliente('${uid}')">✏️ Editar</button>
 </div>
 <div class="btn-row">${btnC}</div>
 <div class="btn-row">
-<button class="btn-sm" style="background:var(--orange);color:black" onclick="enviarExportar(${c.id})">📤 Exportar</button>
-<button class="btn-sm" style="background:var(--red)" onclick="eliminarCliente(${c.id})">🗑️ Eliminar</button>
+<button class="btn-sm" style="background:#f59e0b;color:black" onclick="enviarExportar('${uid}')">📤 Exportar</button>
+<button class="btn-sm" style="background:#ef4444" onclick="eliminarCliente('${uid}')">🗑️ Eliminar</button>
 </div>
 </div></div>`;
-}).join('');
+  }).join('');
 }
-function renderExportar(){
-const list=document.getElementById('list');
-if(exportados.length===0){list.innerHTML='<div class="empty">No hay contactos en la lista de exportar.<br><br>Usa el botón 📤 Exportar en cada tarjeta para añadirlos aquí.</div>';return;}
-list.innerHTML=`<div style="padding:10px">
-<button class="btn" style="background:var(--green);margin-bottom:12px" onclick="descargarJSON()">⬇️ Descargar JSON (${exportados.length} contactos)</button>
+
+function renderExportar() {
+  const list = document.getElementById('list');
+  if (exportados.length === 0) { list.innerHTML = '<div class="empty">No hay contactos en la lista de exportar.<br><br>Usa el botón 📤 Exportar en cada tarjeta para añadirlos aquí.</div>'; return; }
+  list.innerHTML = `<div style="padding:10px">
+<button class="btn" style="background:#10b981;margin-bottom:12px" onclick="descargarJSON()">⬇️ Descargar JSON (${exportados.length} contactos)</button>
 <button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm('¿Limpiar lista de exportar?')){exportados=[];guardar()}">🗑️ Limpiar lista</button>
-${exportados.map(c=>`<div class="export-card">
-<div><div class="ec-info">${c.nombre||'Sin nombre'}</div><div class="ec-sub">RD$ ${(c.cod||0).toLocaleString()} · ${c.telefono||'—'}</div></div>
-<button class="ec-btn" onclick="quitarExportar(${c.id})">✕ Quitar</button>
+${exportados.map(c => `<div class="export-card">
+<div><div class="ec-info">${c.nombre || 'Sin nombre'}</div><div class="ec-sub">RD$ ${(c.cod || 0).toLocaleString()} · ${c.telefono || '—'}</div></div>
+<button class="ec-btn" onclick="quitarExportar('${c._uid}')">✕ Quitar</button>
 </div>`).join('')}
 </div>`;
 }
-function descargarJSON(){
-const data={clientes:exportados.map(c=>({id:c.id,nombre:c.nombre||'',telefono:c.telefono||'',cod:c.cod||0,lat:c.lat||null,lng:c.lng||null,estado:'pendiente'}))};
-const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-a.download=`llega_ya_${new Date().toISOString().slice(0,10)}.json`;a.click();
+
+function descargarJSON() {
+  const data = {
+    clientes: exportados.map(c => ({
+      _uid: c._uid,
+      nombre: c.nombre || '',
+      telefono: c.telefono || '',
+      cod: c.cod || 0,
+      lat: c.lat || null,
+      lng: c.lng || null,
+      estado: 'pendiente'
+    }))
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `llega_ya_${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
 }
-function enviarExportar(id){
-const c=clientes.find(x=>x.id===id);
-if(!c)return;
-if(exportados.find(x=>x.id===id))return alert('Este contacto ya está en la lista de exportar.');
-exportados.push({...c});
-c.estado='completado';
-const idx=clientes.findIndex(x=>x.id===id);
-const[r]=clientes.splice(idx,1);
-clientes.push(r);
-guardar();
-alert(`✅ ${c.nombre} exportado y movido a Completados`);
+
+function enviarExportar(uid) {
+  const c = clientes.find(x => x._uid === uid);
+  if (!c) return;
+  if (exportados.find(x => x._uid === uid)) return alert('Este contacto ya está en la lista de exportar.');
+  exportados.push({ ...c });
+  c.estado = 'completado';
+  const idx = clientes.findIndex(x => x._uid === uid);
+  const [r] = clientes.splice(idx, 1);
+  clientes.push(r);
+  guardar();
+  alert(`✅ ${c.nombre} exportado y movido a Completados`);
 }
-function quitarExportar(id){
-exportados=exportados.filter(x=>x.id!==id);
-const c=clientes.find(x=>x.id===id);
-if(c) c.estado='pendiente';
-guardar();
+
+function quitarExportar(uid) {
+  exportados = exportados.filter(x => x._uid !== uid);
+  const c = clientes.find(x => x._uid === uid);
+  if (c) c.estado = 'pendiente';
+  guardar();
 }
-function eliminarCliente(id){if(!confirm('¿Eliminar este cliente?'))return;clientes=clientes.filter(x=>x.id!==id);exportados=exportados.filter(x=>x.id!==id);guardar();}
-function switchTab(tab){tabActual=tab;document.getElementById('busqueda').value='';document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===tab);});render();}
-function completar(id){const c=clientes.find(x=>x.id===id);if(!c)return;c.estado='completado';const idx=clientes.findIndex(x=>x.id===id);const[r]=clientes.splice(idx,1);clientes.push(r);guardar();}
-function devolverPendiente(id){const c=clientes.find(x=>x.id===id);if(c){c.estado='pendiente';guardar();}}
-function sortNearest(){
-const pendientes=clientes.filter(c=>c.estado==='pendiente'&&c.lat&&c.lng);
-const resto=clientes.filter(c=>!(c.estado==='pendiente'&&c.lat&&c.lng));
-if(pendientes.length===0)return alert('No hay clientes con ubicación pendientes.');
-const hav=(a,b,c,d)=>{const R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dG/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));};
-const ORIGEN={lat:19.2917,lng:-70.2558};
-const ord=(o)=>{let la=o.lat,ln=o.lng,p=[...pendientes],r=[];while(p.length){let i=0,m=Infinity;p.forEach((c,j)=>{const d=hav(la,ln,c.lat,c.lng);if(d<m){m=d;i=j;}});const n=p.splice(i,1)[0];r.push(n);la=n.lat;ln=n.lng;}return r;};
-if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{clientes=[...ord({lat:p.coords.latitude,lng:p.coords.longitude}),...resto];switchTab('pendientes');guardar();},()=>{clientes=[...ord(ORIGEN),...resto];switchTab('pendientes');guardar();},{timeout:5000});}
-else{clientes=[...ord(ORIGEN),...resto];switchTab('pendientes');guardar();}
+
+function eliminarCliente(uid) {
+  if (!confirm('¿Eliminar este cliente?')) return;
+  clientes = clientes.filter(x => x._uid !== uid);
+  exportados = exportados.filter(x => x._uid !== uid);
+  guardar();
 }
-function cargarArchivo(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>procesarJSON(ev.target.result);r.readAsText(f);}
-function cargarPegado(){const t=document.getElementById('jsonPaste').value.trim();if(!t)return alert('Pega el contenido JSON primero');procesarJSON(t);}
-function procesarJSON(txt){try{const data=JSON.parse(txt);let lista=Array.isArray(data)?data:[...(data.clientes||[]),...(data.sin_ubicacion||[])];lista.forEach(n=>{const e=clientes.find(c=>c.id===n.id);if(e){Object.assign(e,n,{estado:e.estado});}else{clientes.push({...n,estado:n.estado||'pendiente'});}});guardar();closeModal('modalCargar');alert(`✅ ${lista.length} clientes cargados`);}catch(e){alert('Error: JSON no válido');}}
-let nextId=()=>Math.max(0,...clientes.map(c=>c.id||0))+1;
-function abrirNuevoCliente(){
-document.getElementById('editId').value='';
-document.getElementById('modalClienteTitulo').textContent='➕ Nuevo Cliente';
-document.getElementById('cNombre').value='';
-document.getElementById('cTel').value='';
-document.getElementById('cCod').value='';
-document.getElementById('cCoords').value='';
-document.getElementById('modalCliente').classList.add('open');
+
+function switchTab(tab) {
+  tabActual = tab;
+  document.getElementById('busqueda').value = '';
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['pendientes', 'sin_ubicacion', 'completados', 'exportar'][i] === tab);
+  });
+  render();
 }
-function editarCliente(id){
-const c=clientes.find(x=>x.id===id);
-if(!c)return;
-document.getElementById('editId').value=id;
-document.getElementById('modalClienteTitulo').textContent='✏️ Editar Cliente';
-document.getElementById('cNombre').value='';
-document.getElementById('cTel').value='';
-document.getElementById('cCod').value='';
-document.getElementById('cCoords').value='';
-document.getElementById('modalCliente').classList.add('open');
+
+function completar(uid) {
+  const c = clientes.find(x => x._uid === uid);
+  if (!c) return;
+  c.estado = 'completado';
+  const idx = clientes.findIndex(x => x._uid === uid);
+  const [r] = clientes.splice(idx, 1);
+  clientes.push(r);
+  guardar();
 }
-function guardarCliente(){
-const editId=document.getElementById('editId').value;
-const nombre=document.getElementById('cNombre').value.trim();
-const telefono=document.getElementById('cTel').value.trim();
-const codVal=document.getElementById('cCod').value.trim();
-const coordsVal=document.getElementById('cCoords').value.trim();
-if(editId){
-const c=clientes.find(x=>x.id==editId);
-if(c){
-if(nombre)c.nombre=nombre;
-if(telefono)c.telefono=telefono;
-if(codVal)c.cod=parseFloat(codVal);
-if(coordsVal){const m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(m){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);}}
+
+function devolverPendiente(uid) {
+  const c = clientes.find(x => x._uid === uid);
+  if (c) { c.estado = 'pendiente'; guardar(); }
 }
-}else{
-if(!nombre)return alert('El nombre es requerido');
-const cm=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-clientes.push({id:nextId(),nombre,telefono,cod:parseFloat(codVal)||0,lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
+
+function sortNearest() {
+  const pendientes = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
+  const resto = clientes.filter(c => !(c.estado === 'pendiente' && c.lat && c.lng));
+  if (pendientes.length === 0) return alert('No hay clientes con ubicación pendientes.');
+  const hav = (a, b, c, d) => { const R = 6371, dL = (c - a) * Math.PI / 180, dG = (d - b) * Math.PI / 180, x = Math.sin(dL / 2) ** 2 + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(dG / 2) ** 2; return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x)); };
+  const ORIGEN = { lat: 19.2917, lng: -70.2558 };
+  const ord = (o) => { let la = o.lat, ln = o.lng, p = [...pendientes], r = []; while (p.length) { let i = 0, m = Infinity; p.forEach((c, j) => { const d = hav(la, ln, c.lat, c.lng); if (d < m) { m = d; i = j; } }); const n = p.splice(i, 1)[0]; r.push(n); la = n.lat; ln = n.lng; } return r; };
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      p => { clientes = [...ord({ lat: p.coords.latitude, lng: p.coords.longitude }), ...resto]; switchTab('pendientes'); guardar(); },
+      () => { clientes = [...ord(ORIGEN), ...resto]; switchTab('pendientes'); guardar(); },
+      { timeout: 5000 }
+    );
+  } else { clientes = [...ord(ORIGEN), ...resto]; switchTab('pendientes'); guardar(); }
 }
-guardar();closeModal('modalCliente');
+
+function cargarArchivo(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => procesarJSON(ev.target.result);
+  r.readAsText(f);
 }
-function abrirUbi(id){document.getElementById('ubiId').value=id;document.getElementById('ubiInput').value='';openModal('modalUbi');}
-function guardarUbicacion(){const id=document.getElementById('ubiId').value;const txt=document.getElementById('ubiInput').value;const m=txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(!m)return alert('No se encontraron coordenadas.');const c=clientes.find(x=>x.id==id);if(c){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);guardar();closeModal('modalUbi');}}
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+function cargarPegado() {
+  const t = document.getElementById('jsonPaste').value.trim();
+  if (!t) return alert('Pega el contenido JSON primero');
+  procesarJSON(t);
+}
+
+function procesarJSON(txt) {
+  try {
+    const data = JSON.parse(txt);
+    let lista = Array.isArray(data) ? data : [...(data.clientes || []), ...(data.sin_ubicacion || [])];
+
+    // Mapa de teléfonos existentes para dedup
+    const telExistentes = new Set(clientes.map(c => normTel(c.telefono)));
+
+    let agregados = 0;
+    let omitidos = 0;
+
+    lista.forEach(n => {
+      const tel = normTel(n.telefono);
+      if (tel && telExistentes.has(tel)) {
+        omitidos++;
+      } else {
+        // Asignar _uid único (preservar si ya viene del JSON exportado)
+        const nuevo = { ...n, estado: n.estado || 'pendiente', _uid: n._uid || generarId() };
+        clientes.push(nuevo);
+        if (tel) telExistentes.add(tel);
+        agregados++;
+      }
+    });
+
+    // Asegurar que todos tengan _uid (migración)
+    clientes = clientes.map(c => c._uid ? c : { ...c, _uid: generarId() });
+
+    guardar();
+    closeModal('modalCargar');
+    alert(`✅ ${agregados} clientes agregados${omitidos > 0 ? `\n⚠️ ${omitidos} duplicados omitidos` : ''}`);
+  } catch (e) { alert('Error: JSON no válido'); }
+}
+
+function abrirNuevoCliente() {
+  document.getElementById('editId').value = '';
+  document.getElementById('modalClienteTitulo').textContent = '➕ Nuevo Cliente';
+  ['cNombre', 'cTel', 'cCod', 'cCoords'].forEach(id => document.getElementById(id).value = '');
+  openModal('modalCliente');
+}
+
+function editarCliente(uid) {
+  const c = clientes.find(x => x._uid === uid);
+  if (!c) return;
+  document.getElementById('editId').value = uid;
+  document.getElementById('modalClienteTitulo').textContent = '✏️ Editar Cliente';
+  ['cNombre', 'cTel', 'cCod', 'cCoords'].forEach(id => document.getElementById(id).value = '');
+  openModal('modalCliente');
+}
+
+function guardarCliente() {
+  const editId = document.getElementById('editId').value;
+  const nombre = document.getElementById('cNombre').value.trim();
+  const telefono = document.getElementById('cTel').value.trim();
+  const codVal = document.getElementById('cCod').value.trim();
+  const coordsVal = document.getElementById('cCoords').value.trim();
+  if (editId) {
+    const c = clientes.find(x => x._uid === editId);
+    if (c) {
+      if (nombre) c.nombre = nombre;
+      if (telefono) c.telefono = telefono;
+      if (codVal) c.cod = parseFloat(codVal);
+      if (coordsVal) { const m = coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/); if (m) { c.lat = parseFloat(m[1]); c.lng = parseFloat(m[2]); } }
+    }
+  } else {
+    if (!nombre) return alert('El nombre es requerido');
+    const cm = coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+    clientes.push({ _uid: generarId(), nombre, telefono, cod: parseFloat(codVal) || 0, lat: cm ? parseFloat(cm[1]) : null, lng: cm ? parseFloat(cm[2]) : null, estado: 'pendiente' });
+  }
+  guardar(); closeModal('modalCliente');
+}
+
+function abrirUbi(uid) {
+  document.getElementById('ubiId').value = uid;
+  document.getElementById('ubiInput').value = '';
+  openModal('modalUbi');
+}
+
+function guardarUbicacion() {
+  const uid = document.getElementById('ubiId').value;
+  const txt = document.getElementById('ubiInput').value;
+  const m = txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+  if (!m) return alert('No se encontraron coordenadas.');
+  const c = clientes.find(x => x._uid === uid);
+  if (c) { c.lat = parseFloat(m[1]); c.lng = parseFloat(m[2]); guardar(); closeModal('modalUbi'); }
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+
 render();
 </script>
+
 </body>
 </html>
