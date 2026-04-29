@@ -20,10 +20,17 @@ header h1{font-size:1.1rem;}
 .tab.active{color:#3b82f6;border-bottom-color:#3b82f6;}
 #list{padding:10px;}
 .card{background:#1e293b;border-radius:12px;margin-bottom:12px;border-left:4px solid #3b82f6;overflow:hidden;}
-.card.completado{border-left-color:#10b981;opacity:0.6;}.card.sin-ubi{border-left-color:#f59e0b;}
+.card.completado{border-left-color:#10b981;opacity:0.6;}
+.card.sin-ubi{border-left-color:#f59e0b;}
 .card.sin-ubi.completado{border-left-color:#10b981;opacity:0.4;}
+.card.multi{border-left-color:#8b5cf6;}
 .card-header{padding:12px 14px 4px;display:flex;align-items:flex-start;justify-content:space-between;}
-.card-header .info{flex:1;}.card-header .nombre{font-weight:bold;font-size:1rem;}.card-header .cod{font-size:0.8rem;color:#94a3b8;margin-top:2px;}
+.card-header .info{flex:1;}
+.card-header .nombre{font-weight:bold;font-size:1rem;}
+.card-header .cod{font-size:0.8rem;color:#94a3b8;margin-top:2px;}
+.badge-pedidos{display:inline-block;background:#7c3aed;color:white;padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:bold;margin-left:6px;vertical-align:middle;}
+.notas-multi{margin-top:6px;border-top:1px solid #334155;padding-top:6px;}
+.nota-item{font-size:0.82rem;color:#cbd5e1;padding:2px 0;}
 .order-btns{display:flex;flex-direction:column;gap:2px;margin-left:8px;}
 .order-btns button{background:#334155;border:none;color:white;border-radius:4px;width:28px;height:24px;font-size:0.75rem;cursor:pointer;}
 .card-body{padding:8px 14px 12px;display:flex;flex-direction:column;gap:6px;}
@@ -40,7 +47,8 @@ header h1{font-size:1.1rem;}
 .fab{position:fixed;bottom:20px;right:16px;display:flex;flex-direction:column;gap:10px;z-index:49;}
 .fab button{width:56px;height:56px;border-radius:50%;border:none;font-size:1.5rem;cursor:pointer;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:bold;margin-left:6px;}
-.badge-orange{background:#f59e0b;color:black;}.empty{text-align:center;padding:40px 20px;color:#64748b;}
+.badge-orange{background:#f59e0b;color:black;}
+.empty{text-align:center;padding:40px 20px;color:#64748b;}
 .export-card{background:#1e293b;border-radius:12px;margin-bottom:10px;border-left:4px solid #f59e0b;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
 .export-card .ec-info{font-size:0.9rem;font-weight:bold;}.export-card .ec-sub{font-size:0.78rem;color:#94a3b8;margin-top:2px;}
 .export-card .ec-btn{background:#ef4444;border:none;color:white;border-radius:6px;padding:6px 10px;font-size:0.75rem;cursor:pointer;font-weight:bold;}</style>
@@ -92,26 +100,27 @@ let clientes = JSON.parse(localStorage.getItem('llega_ya_clientes') || '[]');
 let exportados = JSON.parse(localStorage.getItem('llega_ya_exportados') || '[]');
 let tabActual = 'pendientes';
 
-// --- ID único robusto ---
 function generarId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 }
 
-// Normaliza teléfono para comparación
 function normTel(tel) {
   return (tel || '').replace(/\D/g, '');
 }
 
-// Migrar IDs numéricos viejos a string únicos al arrancar
-clientes = clientes.map(c => {
-  if (!c._uid) c._uid = generarId();
-  return c;
-});
+// Migrar registros viejos sin _uid
+clientes = clientes.map(c => c._uid ? c : { ...c, _uid: generarId() });
 
 function guardar() {
   localStorage.setItem('llega_ya_clientes', JSON.stringify(clientes));
   localStorage.setItem('llega_ya_exportados', JSON.stringify(exportados));
   render();
+}
+
+function calcCod(c) {
+  return c.pedidos
+    ? c.pedidos.reduce((s, p) => s + (parseFloat(p.cod) || 0), 0)
+    : (parseFloat(c.cod) || 0);
 }
 
 function getDatos() {
@@ -142,18 +151,32 @@ function render() {
     (c.telefono || '').includes(busqueda)
   );
   if (datos.length === 0) { list.innerHTML = '<div class="empty">No hay clientes en esta sección</div>'; return; }
+
   list.innerHTML = datos.map((c, idx) => {
     const mapsUrl = c.lat && c.lng ? `https://www.google.com/maps?q=${c.lat},${c.lng}` : null;
     const waUrl = c.telefono ? `https://wa.me/${c.telefono.replace(/\D/g, '')}` : null;
     const sinUbi = !c.lat || !c.lng;
     const uid = c._uid;
+    const esMulti = c.pedidos && c.pedidos.length > 1;
+    const cod = calcCod(c);
+
     const btnC = c.estado === 'completado'
       ? `<button class="btn-sm" style="background:#065f46" onclick="devolverPendiente('${uid}')">↩️ Pendiente</button>`
       : `<button class="btn-sm" style="background:#10b981" onclick="completar('${uid}')">✅ Completado</button>`;
-    return `<div class="card ${sinUbi ? 'sin-ubi' : ''} ${c.estado === 'completado' ? 'completado' : ''}">
+
+    // Notas: multi-pedido o simple
+    let notasHtml = '';
+    if (esMulti) {
+      notasHtml = `<div class="notas-multi">${c.pedidos.map((p, i) =>
+        `<div class="nota-item">📦 <strong>Pedido ${i + 1}:</strong> ${p.nota || '—'}${p.cod ? ` <span style="color:#f59e0b">· RD$ ${parseFloat(p.cod).toLocaleString()}</span>` : ''}</div>`
+      ).join('')}</div>`;
+    }
+
+    return `<div class="card ${sinUbi ? 'sin-ubi' : ''} ${c.estado === 'completado' ? 'completado' : ''} ${esMulti ? 'multi' : ''}">
 <div class="card-header"><div class="info">
-<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#${idx + 1}</span>${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}</div>
-<div class="cod">RD$ ${(c.cod || 0).toLocaleString()} · Tel: ${c.telefono || '—'}</div>
+<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#${idx + 1}</span>${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}${esMulti ? `<span class="badge-pedidos">📦 ${c.pedidos.length} pedidos</span>` : ''}</div>
+<div class="cod">RD$ ${cod.toLocaleString()} · Tel: ${c.telefono || '—'}</div>
+${notasHtml}
 </div>
 <div class="order-btns"><button onclick="mover('${uid}',-1)">▲</button><button onclick="mover('${uid}',1)">▼</button></div>
 </div>
@@ -182,7 +205,7 @@ function renderExportar() {
 <button class="btn" style="background:#10b981;margin-bottom:12px" onclick="descargarJSON()">⬇️ Descargar JSON (${exportados.length} contactos)</button>
 <button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm('¿Limpiar lista de exportar?')){exportados=[];guardar()}">🗑️ Limpiar lista</button>
 ${exportados.map(c => `<div class="export-card">
-<div><div class="ec-info">${c.nombre || 'Sin nombre'}</div><div class="ec-sub">RD$ ${(c.cod || 0).toLocaleString()} · ${c.telefono || '—'}</div></div>
+<div><div class="ec-info">${c.nombre || 'Sin nombre'}</div><div class="ec-sub">RD$ ${calcCod(c).toLocaleString()} · ${c.telefono || '—'}</div></div>
 <button class="ec-btn" onclick="quitarExportar('${c._uid}')">✕ Quitar</button>
 </div>`).join('')}
 </div>`;
@@ -194,7 +217,7 @@ function descargarJSON() {
       _uid: c._uid,
       nombre: c.nombre || '',
       telefono: c.telefono || '',
-      cod: c.cod || 0,
+      cod: calcCod(c),
       lat: c.lat || null,
       lng: c.lng || null,
       estado: 'pendiente'
@@ -293,31 +316,70 @@ function procesarJSON(txt) {
     const data = JSON.parse(txt);
     let lista = Array.isArray(data) ? data : [...(data.clientes || []), ...(data.sin_ubicacion || [])];
 
-    // Mapa de teléfonos existentes para dedup
-    const telExistentes = new Set(clientes.map(c => normTel(c.telefono)));
-
-    let agregados = 0;
-    let omitidos = 0;
-
+    // PASO 1: Agrupar pedidos múltiples del mismo archivo por teléfono
+    const mapaArchivo = new Map();
     lista.forEach(n => {
       const tel = normTel(n.telefono);
-      if (tel && telExistentes.has(tel)) {
-        omitidos++;
+      const key = tel || ('_sin_tel_' + generarId());
+
+      if (!tel || !mapaArchivo.has(tel)) {
+        mapaArchivo.set(key, { ...n, _uid: n._uid || generarId(), estado: n.estado || 'pendiente' });
       } else {
-        // Asignar _uid único (preservar si ya viene del JSON exportado)
-        const nuevo = { ...n, estado: n.estado || 'pendiente', _uid: n._uid || generarId() };
+        // Mismo teléfono en el archivo → agrupar como pedido adicional
+        const base = mapaArchivo.get(tel);
+        if (!base.pedidos) {
+          base.pedidos = [{ nota: base.nota || '', cod: base.cod || 0 }];
+          delete base.nota;
+          delete base.cod;
+        }
+        base.pedidos.push({ nota: n.nota || '', cod: n.cod || 0 });
+      }
+    });
+
+    // PASO 2: Merge con clientes existentes en la app
+    const telExistentes = new Map(
+      clientes.filter(c => normTel(c.telefono)).map(c => [normTel(c.telefono), c])
+    );
+
+    let agregados = 0, actualizados = 0, omitidos = 0;
+
+    mapaArchivo.forEach((nuevo, key) => {
+      const tel = key.startsWith('_sin_tel_') ? '' : key;
+
+      if (!tel) {
         clientes.push(nuevo);
-        if (tel) telExistentes.add(tel);
+        agregados++;
+        return;
+      }
+
+      if (telExistentes.has(tel)) {
+        const existente = telExistentes.get(tel);
+        // Si el existente no tiene ubicación y el nuevo sí → actualizar
+        if ((!existente.lat || !existente.lng) && nuevo.lat && nuevo.lng) {
+          existente.lat = nuevo.lat;
+          existente.lng = nuevo.lng;
+          actualizados++;
+        } else {
+          omitidos++;
+        }
+      } else {
+        clientes.push(nuevo);
+        telExistentes.set(tel, nuevo);
         agregados++;
       }
     });
 
-    // Asegurar que todos tengan _uid (migración)
+    // Asegurar _uid en todos
     clientes = clientes.map(c => c._uid ? c : { ...c, _uid: generarId() });
 
     guardar();
     closeModal('modalCargar');
-    alert(`✅ ${agregados} clientes agregados${omitidos > 0 ? `\n⚠️ ${omitidos} duplicados omitidos` : ''}`);
+
+    let msg = `✅ ${agregados} clientes agregados`;
+    if (actualizados > 0) msg += `\n📍 ${actualizados} ubicaciones actualizadas`;
+    if (omitidos > 0) msg += `\n⚠️ ${omitidos} duplicados omitidos`;
+    alert(msg);
+
   } catch (e) { alert('Error: JSON no válido'); }
 }
 
