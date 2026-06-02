@@ -1,441 +1,722 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html lang="es">
 
-<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LLEGA YA 🛵</title>
-<style>:root{--bg:#0f172a;--card:#1e293b;--blue:#3b82f6;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--border:#334155;}*{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}body{background:#0f172a;color:#f1f5f9;min-height:100vh;padding-bottom:80px;}
-header{background:#1e293b;padding:14px 16px;border-bottom:1px solid #334155;position:sticky;top:0;z-index:50;}
-header h1{font-size:1.1rem;}
-.toolbar{display:flex;gap:8px;padding:10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:53px;z-index:49;}
-.toolbar button{flex:1;padding:10px 6px;border-radius:8px;border:none;font-weight:bold;font-size:0.8rem;cursor:pointer;color:white;}
-.search-bar{padding:8px 10px;background:#0f172a;border-bottom:1px solid #334155;position:sticky;top:106px;z-index:48;}
-.search-bar input{width:100%;padding:10px 14px 10px 36px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#f1f5f9;font-size:0.9rem;-webkit-text-fill-color:#f1f5f9;-webkit-box-shadow:0 0 0px 1000px #1e293b inset;}
-.search-bar input::placeholder{color:#64748b;-webkit-text-fill-color:#64748b;}
-.search-bar input:focus{-webkit-box-shadow:0 0 0px 1000px #1e293b inset;outline:2px solid #3b82f6;}
-.search-wrap{position:relative;}.search-wrap .lupa{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;}
-.tabs{display:flex;border-bottom:1px solid #334155;background:#1e293b;position:sticky;top:159px;z-index:47;}
-.tab{flex:1;padding:10px;text-align:center;font-size:0.78rem;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;color:#94a3b8;}
-.tab.active{color:#3b82f6;border-bottom-color:#3b82f6;}
-#list{padding:10px;}
-.card{background:#1e293b;border-radius:12px;margin-bottom:12px;border-left:4px solid #3b82f6;overflow:hidden;}
-.card.completado{border-left-color:#10b981;opacity:0.6;}
-.card.sin-ubi{border-left-color:#f59e0b;}
-.card.sin-ubi.completado{border-left-color:#10b981;opacity:0.4;}
-.card.multi{border-left-color:#8b5cf6;}
-.card-header{padding:12px 14px 4px;display:flex;align-items:flex-start;justify-content:space-between;}
-.card-header .info{flex:1;}
-.card-header .nombre{font-weight:bold;font-size:1rem;}
-.card-header .cod{font-size:0.8rem;color:#94a3b8;margin-top:2px;}
-.badge-pedidos{display:inline-block;background:#7c3aed;color:white;padding:2px 8px;border-radius:12px;font-size:0.7rem;font-weight:bold;margin-left:6px;vertical-align:middle;}
-.notas-multi{margin-top:6px;border-top:1px solid #334155;padding-top:6px;}
-.nota-item{font-size:0.82rem;color:#cbd5e1;padding:2px 0;}
-.order-btns{display:flex;flex-direction:column;gap:2px;margin-left:8px;}
-.order-btns button{background:#334155;border:none;color:white;border-radius:4px;width:28px;height:24px;font-size:0.75rem;cursor:pointer;}
-.card-body{padding:8px 14px 12px;display:flex;flex-direction:column;gap:6px;}
-.btn-row{display:flex;gap:6px;}
-.btn{padding:10px;border-radius:8px;border:none;font-weight:bold;font-size:0.82rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:block;width:100%;}
-.btn-sm{flex:1;padding:9px 4px;border-radius:8px;border:none;font-weight:bold;font-size:0.78rem;cursor:pointer;color:white;text-align:center;text-decoration:none;display:block;}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;}
-.overlay.open{display:flex;}.modal{background:#1e293b;border-radius:16px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
-.modal h2{margin-bottom:16px;font-size:1.1rem;}.field{margin-bottom:12px;}
-.field label{display:block;font-size:0.8rem;color:#94a3b8;margin-bottom:4px;}
-.field input,.field textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;font-size:0.95rem;}
-.field textarea{resize:vertical;min-height:80px;}.modal-btns{display:flex;gap:8px;margin-top:16px;}
-.modal-btns button{flex:1;padding:12px;border-radius:8px;border:none;font-weight:bold;cursor:pointer;color:white;font-size:0.9rem;}
-.fab{position:fixed;bottom:20px;right:16px;display:flex;flex-direction:column;gap:10px;z-index:49;}
-.fab button{width:56px;height:56px;border-radius:50%;border:none;font-size:1.5rem;cursor:pointer;color:white;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.7rem;font-weight:bold;margin-left:6px;}
-.badge-orange{background:#f59e0b;color:black;}
-.empty{text-align:center;padding:40px 20px;color:#64748b;}
-.export-card{background:#1e293b;border-radius:12px;margin-bottom:10px;border-left:4px solid #f59e0b;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;}
-.export-card .ec-info{font-size:0.9rem;font-weight:bold;}.export-card .ec-sub{font-size:0.78rem;color:#94a3b8;margin-top:2px;}
-.export-card .ec-btn{background:#ef4444;border:none;color:white;border-radius:6px;padding:6px 10px;font-size:0.75rem;cursor:pointer;font-weight:bold;}</style>
+<title>LLEGA YA — Rutas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent !important;}
+body{background:#f0f4f8 !important;color:#0f172a !important;min-height:100vh;padding-bottom:80px;overflow-x:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;}
+/* ── HEADER ── */
+header{background:#ffffff !important;padding:0 16px;height:58px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.05) !important;}
+.header-title{display:flex;align-items:center;gap:8px;}
+.header-title .app-badge{font-size:.65rem;font-weight:700;background:#eff6ff !important;color:#2563eb !important;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
+header h1{font-size:.95rem;font-weight:800;color:#0f172a !important;letter-spacing:-.2px;}
+/* ── BOTONES ── */
+.btn-pill{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:13px 16px;border-radius:18px;font-weight:700;font-size:.85rem;cursor:pointer;text-decoration:none;text-align:center;border-width:1.5px;border-style:solid;transition:opacity .15s;width:100%;}
+.btn-pill:active{opacity:.75;}
+.btn-green {background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
+.btn-blue  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
+.btn-purple{background:#ede7f6 !important;border-color:#b39ddb !important;color:#5e35b1 !important;}
+.btn-gray  {background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
+/* ── BARRA ADMIN ── */
+.adm-bar{display:flex;gap:8px;padding:12px 14px;background:#ffffff !important;border-bottom:1px solid #e2e8f0;position:sticky;top:58px;z-index:49;}
+.adm-bar button{flex:1;padding:13px 6px;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;border-width:1.5px;border-style:solid;letter-spacing:.1px;}
+.adm-search{padding:10px 14px;background:#f0f4f8 !important;border-bottom:1px solid #e2e8f0;position:sticky;top:120px;z-index:48;}
+.adm-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none !important;background:#ffffff !important;color:#0f172a !important;font-size:.88rem;box-shadow:0 1px 4px rgba(0,0,0,.07) !important;-webkit-text-fill-color:#0f172a !important;-webkit-box-shadow:0 0 0 1000px #ffffff inset !important;}
+.adm-search input::placeholder{color:#94a3b8 !important;-webkit-text-fill-color:#94a3b8 !important;}
+.adm-search input:focus{outline:2px solid #2563eb !important;}
+.adm-tabs{display:flex;background:#ffffff !important;border-bottom:2px solid #e2e8f0;position:sticky;top:185px;z-index:47;}
+.adm-tabs .tab{flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8 !important;margin-bottom:-2px;letter-spacing:.2px;text-transform:uppercase;}
+.adm-tabs .tab.active{color:#2563eb !important;border-bottom-color:#2563eb !important;}
+.sw{position:relative;}
+.sw .lupa{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none;color:#94a3b8 !important;}
+/* ── CARDS ── */
+#list-admin{padding:14px;}
+.card-v2{background:#ffffff !important;border-radius:22px;margin-bottom:12px;border:1px solid #e8edf4 !important;box-shadow:0 2px 10px rgba(15,23,42,.07),0 6px 20px rgba(15,23,42,.04) !important;display:flex;overflow:hidden;transition:transform .12s;}
+.card-v2:active{transform:scale(.985);}
+.card-v2-done{opacity:.6;}
+.card-v2-nogps{border-color:#fde68a !important;}
+.cv2-left-bar{width:5px;flex-shrink:0;}
+.cv2-bar-blue{background:#2563eb !important;}
+.cv2-bar-green{background:#16a34a !important;}
+.cv2-bar-yellow{background:#d97706 !important;}
+.cv2-bar-purple{background:#7c3aed !important;}
+.cv2-body{flex:1;padding:14px 13px 13px;min-width:0;}
+.cv2-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
+.cv2-header-left{flex:1;min-width:0;}
+.cv2-num{font-size:.65rem;font-weight:700;color:#94a3b8 !important;margin-bottom:2px;}
+.cv2-name{font-size:1rem;font-weight:800;color:#0f172a !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cv2-tag{display:inline-block;font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;}
+.cv2-tag-gps{background:#fef3c7 !important;color:#92400e !important;}
+.cv2-tag-multi{background:#ede9fe !important;color:#7c3aed !important;}
+.cv2-sub{font-size:.8rem;color:#475569 !important;margin-top:4px;}
+.cv2-sort{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+.cv2-sort-btn{background:#f1f5f9 !important;border:none !important;color:#94a3b8 !important;border-radius:9px;width:28px;height:25px;font-size:.65rem;cursor:pointer;}
+.card-notes{margin:6px 0 8px;background:#f8fafc !important;border-radius:12px;padding:9px 11px;border:1px solid #e8edf4 !important;}
+.note-line{font-size:.78rem;color:#334155 !important;padding:2px 0;}
+.note-simple{font-size:.78rem;color:#334155 !important;padding:4px 0 8px;}
+.cv2-actions{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.cv2-row-main{display:flex;gap:8px;}
+.cv2-row-secondary{display:flex;align-items:center;gap:7px;}
+.cv2-btn{flex:1;padding:12px 6px;border-radius:18px;font-weight:700;font-size:.8rem;cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;border-width:1.5px;border-style:solid;}
+.cv2-btn-blue  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
+.cv2-btn-wa    {background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
+.card-action-pill{flex:1;padding:12px 8px;border-radius:18px;border-width:1.5px;border-style:solid;font-weight:700;font-size:.8rem;cursor:pointer;text-align:center;}
+.pill-green {background:#e8f5e9 !important;border-color:#81c784 !important;color:#2e7d32 !important;}
+.pill-gray  {background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
+.pill-orange{background:#fff3e0 !important;border-color:#ffb74d !important;color:#e65100 !important;}
+.pill-red   {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
+.cv2-icon-btn{background:#f1f5f9 !important;border:1.5px solid #cbd5e1 !important;color:#475569 !important;border-radius:13px;width:40px;height:40px;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+/* ── MAPA ── */
+#route-map-wrap{display:none;margin:10px 14px 0;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.10);position:relative;}
+/* ── FAB ── */
+.fab{position:fixed;bottom:22px;right:16px;display:flex;flex-direction:column;gap:10px;z-index:49;}
+.fab button{width:52px;height:52px;border-radius:50%;font-size:1.2rem;cursor:pointer;background:#e3f0ff !important;border:1.5px solid #90bbf5 !important;color:#1a56c4 !important;}
+/* ── MODALS ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55) !important;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;}
+.overlay.open{display:flex;}
+.modal{background:#ffffff !important;border-radius:24px;padding:24px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.2) !important;}
+.modal h2{margin-bottom:16px;font-size:1.05rem;font-weight:800;color:#0f172a !important;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:.72rem;color:#334155 !important;margin-bottom:5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.field input,.field textarea{width:100%;padding:12px 13px;border-radius:13px;border:1.5px solid #e2e8f0 !important;background:#f8fafc !important;color:#0f172a !important;font-size:.9rem;}
+.field input:focus,.field textarea:focus{outline:none !important;border-color:#2563eb !important;}
+.field textarea{resize:vertical;min-height:80px;}
+.modal-btns{display:flex;gap:9px;margin-top:16px;}
+.modal-btns button{flex:1;padding:13px;border-radius:16px;border-width:1.5px !important;border-style:solid !important;font-weight:700;cursor:pointer;font-size:.9rem;}
+.ibtn{display:block;width:100%;padding:14px;border-radius:18px;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;margin-top:12px;border-width:1.5px;border-style:solid;}
+.ibtn-primary  {background:#e3f0ff !important;border-color:#90bbf5 !important;color:#1a56c4 !important;}
+.ibtn-secondary{background:#f1f5f9 !important;border-color:#cbd5e1 !important;color:#475569 !important;}
+.ibtn-danger   {background:#fce8e8 !important;border-color:#ef9a9a !important;color:#c62828 !important;}
+.export-card{background:#ffffff !important;border-radius:16px;margin-bottom:10px;border:1px solid #e8edf4 !important;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;}
+.ec-info{font-size:.87rem;font-weight:700;color:#0f172a !important;}
+.ec-sub{font-size:.73rem;color:#334155 !important;margin-top:2px;}
+.ec-btn{background:#fce8e8 !important;border:1.5px solid #ef9a9a !important;color:#c62828 !important;border-radius:12px;padding:6px 11px;font-size:.71rem;cursor:pointer;font-weight:700;}
+.empty{text-align:center;padding:52px 20px;color:#94a3b8 !important;}
+.empty p{font-size:.88rem;margin-top:8px;}
+.empty-icon{font-size:2.6rem;display:block;margin-bottom:8px;}
+/* ── WA MODAL ── */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.wa-estado-btn{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;transition:all .15s;}
+.wa-estado-btn.active-pendiente{background:#f1f5f9;border-color:#cbd5e1;color:#475569;}
+.wa-estado-btn.active-proceso{background:#fff7ed;border-color:#fb923c;color:#ea580c;}
+.wa-estado-btn.active-transito{background:#eff6ff;border-color:#3b82f6;color:#1d4ed8;}
+.wa-estado-btn.active-entregado{background:#dcfce7;border-color:#16a34a;color:#166534;}
+.wa-estado-btn.active-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
+.wa-estado-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0;}
+/* ── TOAST ── */
+.toast-inv{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:700;z-index:400;transition:transform .3s ease;white-space:nowrap;color:#fff !important;}
+.toast-inv.show{transform:translateX(-50%) translateY(0);}
+.toast-inv.success{background:#2e7d32 !important;}
+.toast-inv.error  {background:#c62828 !important;}
+.toast-inv.info   {background:#1a56c4 !important;}
+</style>
 </head>
 <body>
-<header><h1>🛵 LLEGA YA</h1></header>
-<div class="toolbar">
-<button style="background:#3b82f6" onclick="openModal('modalCargar')">📂 Cargar JSON</button>
-<button style="background:#8b5cf6" onclick="sortNearest()">⚡ Cercanía</button>
-<button style="background:#10b981" onclick="abrirNuevoCliente()">+ Cliente</button>
+
+<!-- HEADER -->
+
+<header>
+  <div class="header-title">
+    <h1>&#128506; LLEGA YA &mdash; Rutas</h1>
+    <span class="app-badge">Admin</span>
+  </div>
+</header>
+
+<!-- APP RUTAS -->
+
+<div id="app-admin">
+  <div class="adm-bar">
+    <button class="btn-blue" onclick="document.getElementById('fileInputAdminXlsx').click()">&#128202; Excel</button>
+    <button class="btn-green" style="background:#059669;color:#fff;border-color:#059669;" onclick="document.getElementById('fileInputAdminJSON').click()">&#123;&#125; JSON</button>
+    <button class="btn-purple" onclick="sortNearest()">&#9889; Cercan&#237;a</button>
+    <button class="btn-green" onclick="abrirNuevoCliente()">&#43; Cliente</button>
+  </div>
+  <input type="file" id="fileInputAdminXlsx" accept=".xlsx,.xls" style="display:none" onchange="cargarExcelAdmin(event)">
+  <input type="file" id="fileInputAdminJSON" accept=".json" style="display:none" onchange="cargarJSON(event)">
+
+  <!-- MAPA -->
+
+  <div id="route-map-wrap">
+    <canvas id="route-map-canvas" style="width:100%;display:block;border-radius:18px;"></canvas>
+    <div style="position:absolute;bottom:10px;right:10px;">
+      <button onclick="abrirGoogleMapsRuta()" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,.35);">&#127758; Abrir en Maps</button>
+    </div>
+    <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#0f172a;" id="route-map-info"></div>
+  </div>
+
+  <div class="adm-search">
+    <div class="sw"><span class="lupa">&#128269;</span>
+      <input type="text" id="busqueda" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderAdmin()">
+    </div>
+  </div>
+  <div class="adm-tabs" id="admin-tabs">
+    <div class="tab active" onclick="switchTabAdmin('pendientes')">Rutas</div>
+    <div class="tab" onclick="switchTabAdmin('sin_ubicacion')">Sin GPS</div>
+    <div class="tab" onclick="switchTabAdmin('completados')">No Contesta</div>
+    <div class="tab" onclick="switchTabAdmin('exportar')">&#128228; Exportar</div>
+  </div>
+  <div id="list-admin"></div>
+
+  <div class="fab" id="fab-admin">
+    <button onclick="openModal('modalConfigAdmin')">&#9881;&#65039;</button>
+  </div>
 </div>
-<div class="search-bar"><div class="search-wrap"><span class="lupa">🔍</span><input type="text" id="busqueda" placeholder="Buscar por nombre o teléfono..." oninput="render()"></div></div>
-<div class="tabs">
-<div class="tab active" onclick="switchTab('pendientes')">Pendientes</div>
-<div class="tab" onclick="switchTab('sin_ubicacion')">Sin Ubicación</div>
-<div class="tab" onclick="switchTab('completados')">Completados</div>
-<div class="tab" onclick="switchTab('exportar')">📤 Exportar</div>
+
+<!-- MODAL CLIENTE -->
+
+<div class="overlay" id="modalCliente">
+  <div class="modal">
+    <h2 id="modalClienteTitulo">Nuevo Cliente</h2>
+    <input type="hidden" id="editId">
+    <div class="field"><label>Nombre</label><input type="text" id="cNombre" placeholder="Nombre completo"></div>
+    <div class="field"><label>Tel&#233;fono</label><input type="tel" id="cTel" placeholder="8093334444"></div>
+    <div class="field"><label>Monto RD$</label><input type="number" id="cCod" placeholder="0"></div>
+    <div class="field"><label>Coordenadas</label><input type="text" id="cCoords" placeholder="19.2917, -70.2558"></div>
+    <div class="modal-btns">
+      <button class="btn-green" onclick="guardarCliente()">GUARDAR</button>
+      <button class="btn-gray" onclick="closeModal('modalCliente')">CANCELAR</button>
+    </div>
+  </div>
 </div>
-<div id="list"></div>
 
-<div class="overlay" id="modalCargar"><div class="modal"><h2>📂 Cargar Archivo JSON</h2>
-<div class="field"><label>Selecciona tu archivo .json</label><input type="file" id="fileInput" accept=".json" onchange="cargarArchivo(event)"></div>
-<div class="field"><label>O pega el contenido JSON aquí</label><textarea id="jsonPaste" placeholder='{ "clientes": [...] }'></textarea></div>
-<div class="modal-btns"><button style="background:#10b981" onclick="cargarPegado()">CARGAR</button><button style="background:#334155" onclick="closeModal('modalCargar')">CANCELAR</button></div>
-</div></div>
+<!-- MODAL UBICACION -->
 
-<div class="overlay" id="modalCliente"><div class="modal"><h2 id="modalClienteTitulo">➕ Nuevo Cliente</h2><input type="hidden" id="editId">
-<div class="field"><label>Nombre</label><input type="text" id="cNombre" placeholder="Dejar vacío para no cambiar"></div>
-<div class="field"><label>Teléfono / WhatsApp</label><input type="tel" id="cTel" placeholder="Dejar vacío para no cambiar"></div>
-<div class="field"><label>Monto (RD$)</label><input type="number" id="cCod" placeholder="Dejar vacío para no cambiar"></div>
-<div class="field"><label>Coordenadas</label><input type="text" id="cCoords" placeholder="Dejar vacío para no cambiar"></div>
-<div class="modal-btns"><button style="background:#10b981" onclick="guardarCliente()">GUARDAR</button><button style="background:#334155" onclick="closeModal('modalCliente')">CANCELAR</button></div>
-</div></div>
+<div class="overlay" id="modalUbi">
+  <div class="modal">
+    <h2>&#128205; Actualizar Ubicaci&#243;n</h2>
+    <input type="hidden" id="ubiId">
+    <p style="font-size:.83rem;color:#64748b;margin-bottom:12px;">Pega coordenadas o link de Google Maps</p>
+    <div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-green" onclick="guardarUbicacion()">GUARDAR</button>
+      <button class="btn-gray" onclick="closeModal('modalUbi')">CANCELAR</button>
+    </div>
+  </div>
+</div>
 
-<div class="overlay" id="modalUbi"><div class="modal"><h2>📍 Actualizar Ubicación</h2><input type="hidden" id="ubiId">
-<p style="font-size:0.85rem;color:#94a3b8;margin-bottom:12px;">Pega las coordenadas o un link de Google Maps</p>
-<div class="field"><textarea id="ubiInput" placeholder="19.2917, -70.2558&#10;o&#10;https://maps.google.com/?q=19.2917,-70.2558"></textarea></div>
-<div class="modal-btns"><button style="background:#10b981" onclick="guardarUbicacion()">GUARDAR</button><button style="background:#334155" onclick="closeModal('modalUbi')">CANCELAR</button></div>
-</div></div>
+<!-- MODAL CONFIG -->
 
-<div class="fab"><button style="background:#475569" onclick="openModal('modalConfig')">⚙️</button></div>
-<div class="overlay" id="modalConfig"><div class="modal"><h2>⚙️ Opciones</h2><br>
-<button class="btn" style="background:#ef4444" onclick="if(confirm('¿Borrar todos los clientes?')){localStorage.removeItem('llega_ya_clientes');clientes=[];guardar();closeModal('modalConfig');}">🗑️ Borrar Todo (fin del día)</button>
-<button class="btn" style="background:#475569;margin-top:8px" onclick="closeModal('modalConfig')">CERRAR</button>
-</div></div>
+<div class="overlay" id="modalConfigAdmin">
+  <div class="modal">
+    <h2>&#9881;&#65039; Opciones &mdash; Rutas</h2><br>
+    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todos los clientes?')){clientes=[];exportados=[];guardar();closeModal('modalConfigAdmin');}">&#128465; Borrar Todo</button>
+    <button class="ibtn ibtn-secondary" onclick="closeModal('modalConfigAdmin')">CERRAR</button>
+  </div>
+</div>
+
+<!-- MODAL WA -->
+
+<div class="overlay" id="modalWA" onclick="if(event.target===this)closeModal('modalWA')">
+  <div class="modal" style="max-width:420px;padding:20px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <div style="width:40px;height:40px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">&#128172;</div>
+      <div>
+        <div style="font-size:.95rem;font-weight:800;color:#0f172a;" id="wa-modal-nombre">-</div>
+        <div style="font-size:.75rem;color:#64748b;" id="wa-modal-tel">-</div>
+      </div>
+    </div>
+    <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Nuevo Estado</div>
+    <div id="wa-estados" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
+    <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+      Mensaje (WhatsApp) <span id="wa-char-count" style="float:right;color:#2563eb;"></span>
+    </div>
+    <textarea id="wa-msg-preview" rows="4" style="width:100%;padding:12px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;font-size:.84rem;color:#0f172a;resize:none;line-height:1.5;" oninput="var n=this.value.length;var el=document.getElementById('wa-char-count');el.textContent=n+' chars';el.style.color=n>4000?'#dc2626':n>300?'#f59e0b':'#2563eb';"></textarea>
+    <button onclick="enviarMsgWA()" style="width:100%;margin-top:14px;padding:15px;background:#16a34a;color:#fff;border:none;border-radius:16px;font-size:.92rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">&#128172; Guardar y Notificar</button>
+    <button onclick="closeModal('modalWA')" style="width:100%;margin-top:8px;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:16px;font-size:.88rem;font-weight:700;cursor:pointer;">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast-inv" id="inv-toast"></div>
 
 <script>
-let clientes = JSON.parse(localStorage.getItem('llega_ya_clientes') || '[]');
-let exportados = JSON.parse(localStorage.getItem('llega_ya_exportados') || '[]');
-let tabActual = 'pendientes';
+var STORAGE_KEY = 'llega_ya_clientes';
+var EXPORT_KEY  = 'llega_ya_exportados';
 
-function generarId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+var clientes   = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+var exportados = JSON.parse(localStorage.getItem(EXPORT_KEY)  || '[]');
+var adminTab   = localStorage.getItem('llya_admintab') || 'pendientes';
+var invToastTimer;
+var waCurrentUid = null;
+var waCurrentStatus = null;
+
+function generarId(){ return Date.now().toString(36)+Math.random().toString(36).substr(2,5); }
+clientes = clientes.map(function(c){ return c._uid ? c : Object.assign({},c,{_uid:generarId()}); });
+
+function guardar(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
+  renderAdmin();
 }
 
-function normTel(tel) {
-  return (tel || '').replace(/\D/g, '');
+function calcCod(c){
+  return c.pedidos ? c.pedidos.reduce(function(s,p){ return s+(parseFloat(p.cod)||0); },0) : (parseFloat(c.cod)||0);
 }
 
-clientes = clientes.map(c => c._uid ? c : { ...c, _uid: generarId() });
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.addEventListener('click', function(e){ if(e.target.classList.contains('overlay')) e.target.classList.remove('open'); });
 
-function guardar() {
-  localStorage.setItem('llega_ya_clientes', JSON.stringify(clientes));
-  localStorage.setItem('llega_ya_exportados', JSON.stringify(exportados));
-  render();
+/* ── TABS ── */
+function switchTabAdmin(tab){
+  adminTab=tab;
+  localStorage.setItem('llya_admintab', tab);
+  document.getElementById('busqueda').value='';
+  document.querySelectorAll('#admin-tabs .tab').forEach(function(t,i){
+    t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===tab);
+  });
+  renderAdmin();
 }
 
-function calcCod(c) {
-  return c.pedidos
-    ? c.pedidos.reduce((s, p) => s + (parseFloat(p.cod) || 0), 0)
-    : (parseFloat(c.cod) || 0);
-}
-
-function getDatos() {
-  if (tabActual === 'pendientes') return clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
-  if (tabActual === 'sin_ubicacion') return clientes.filter(c => (!c.lat || !c.lng) && c.estado === 'pendiente');
-  if (tabActual === 'completados') return clientes.filter(c => c.estado === 'completado');
+/* ── DATOS ── */
+function getDatosAdmin(){
+  if(adminTab==='pendientes')    return clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
+  if(adminTab==='sin_ubicacion') return clientes.filter(function(c){ return (!c.lat||!c.lng)&&(c.estado==='pendiente'||!c.estado); });
+  if(adminTab==='completados')   return clientes.filter(function(c){ return c.estado==='completado'; });
   return [];
 }
 
-function mover(uid, dir) {
-  const datos = getDatos();
-  const pos = datos.findIndex(x => x._uid === uid);
-  const newPos = pos + dir;
-  if (newPos < 0 || newPos >= datos.length) return;
-  const ia = clientes.findIndex(x => x._uid === datos[pos]._uid);
-  const ib = clientes.findIndex(x => x._uid === datos[newPos]._uid);
-  [clientes[ia], clientes[ib]] = [clientes[ib], clientes[ia]];
-  guardar();
-}
+/* ── RENDER ── */
+function renderAdmin(){
+  if(adminTab==='exportar'){ renderExportarAdmin(); return; }
+  var mapWrap=document.getElementById('route-map-wrap');
+  var list=document.getElementById('list-admin');
+  var q=(document.getElementById('busqueda').value||'').toLowerCase().trim();
+  var datos=getDatosAdmin();
+  if(q) datos=datos.filter(function(c){ return (c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q); });
 
-function render() {
-  if (tabActual === 'exportar') { renderExportar(); return; }
-  const list = document.getElementById('list');
-  const busqueda = document.getElementById('busqueda').value.toLowerCase().trim();
-  let datos = getDatos();
-  if (busqueda) datos = datos.filter(c =>
-    (c.nombre || '').toLowerCase().includes(busqueda) ||
-    (c.telefono || '').includes(busqueda)
-  );
-  if (datos.length === 0) { list.innerHTML = '<div class="empty">No hay clientes en esta sección</div>'; return; }
+  if(adminTab==='pendientes'){
+    var conGps=clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
+    if(conGps.length>=1){
+      mapWrap.style.display='block';
+      var prevCount=mapWrap.dataset.gpsCount||'0';
+      if(prevCount!==String(conGps.length)){ mapWrap.dataset.gpsCount=String(conGps.length); drawRouteMap(null, conGps); }
+    } else { mapWrap.style.display='none'; }
+  } else { mapWrap.style.display='none'; }
 
-  list.innerHTML = datos.map((c, idx) => {
-    const mapsUrl = c.lat && c.lng ? `https://www.google.com/maps?q=${c.lat},${c.lng}` : null;
-    const waUrl = c.telefono ? `https://wa.me/${c.telefono.replace(/\D/g, '')}` : null;
-    const sinUbi = !c.lat || !c.lng;
-    const uid = c._uid;
-    const esMulti = c.pedidos && c.pedidos.length > 1;
-    const cod = calcCod(c);
+  if(!datos.length){ list.innerHTML='<div class="empty"><span class="empty-icon">&#128506;</span><p>No hay clientes en esta secci&#243;n</p></div>'; return; }
 
-    const btnC = c.estado === 'completado'
-      ? `<button class="btn-sm" style="background:#065f46" onclick="devolverPendiente('${uid}')">↩️ Pendiente</button>`
-      : `<button class="btn-sm" style="background:#10b981" onclick="completar('${uid}')">✅ Completado</button>`;
-
-    let notasHtml = '';
-    if (esMulti) {
-      notasHtml = `<div class="notas-multi">${c.pedidos.map((p, i) =>
-        `<div class="nota-item">📦 <strong>Pedido ${i + 1}:</strong> ${p.nota || '—'}${p.cod ? ` <span style="color:#f59e0b">· RD$ ${parseFloat(p.cod).toLocaleString()}</span>` : ''}</div>`
-      ).join('')}</div>`;
-    }
-
-    return `<div class="card ${sinUbi ? 'sin-ubi' : ''} ${c.estado === 'completado' ? 'completado' : ''} ${esMulti ? 'multi' : ''}">
-<div class="card-header"><div class="info">
-<div class="nombre"><span style="color:#94a3b8;font-size:0.85rem;margin-right:6px">#${idx + 1}</span>${c.nombre || 'Sin nombre'}${sinUbi ? '<span class="badge badge-orange">Sin GPS</span>' : ''}${esMulti ? `<span class="badge-pedidos">📦 ${c.pedidos.length} pedidos</span>` : ''}</div>
-<div class="cod">RD$ ${cod.toLocaleString()} · Tel: ${c.telefono || '—'}</div>
-${notasHtml}
-</div>
-<div class="order-btns"><button onclick="mover('${uid}',-1)">▲</button><button onclick="mover('${uid}',1)">▼</button></div>
-</div>
-<div class="card-body">
-<div class="btn-row">
-${mapsUrl ? `<a class="btn-sm" style="background:#3b82f6" href="${mapsUrl}" target="_blank">🗺️ Mapa</a>` : ''}
-${waUrl ? `<a class="btn-sm" style="background:#25d366" href="${waUrl}" target="_blank">💬 WhatsApp</a>` : ''}
-</div>
-<div class="btn-row">
-<button class="btn-sm" style="background:#8b5cf6" onclick="abrirUbi('${uid}')">📍 Ubicación</button>
-<button class="btn-sm" style="background:#334155" onclick="editarCliente('${uid}')">✏️ Editar</button>
-</div>
-<div class="btn-row">${btnC}</div>
-<div class="btn-row">
-<button class="btn-sm" style="background:#f59e0b;color:black" onclick="enviarExportar('${uid}')">📤 Exportar</button>
-<button class="btn-sm" style="background:#ef4444" onclick="eliminarCliente('${uid}')">🗑️ Eliminar</button>
-</div>
-</div></div>`;
+  list.innerHTML=datos.map(function(c,idx){
+    var mapsUrl=c.lat&&c.lng?'https://www.google.com/maps?q='+c.lat+','+c.lng:null;
+    var sinUbi=!c.lat||!c.lng;
+    var uid=c._uid;
+    var esMulti=c.pedidos&&c.pedidos.length>1;
+    var cod=calcCod(c);
+    var accentColor=sinUbi?'yellow':(c.estado==='completado'?'green':(esMulti?'purple':'blue'));
+    var notasHtml='';
+    if(esMulti) notasHtml='<div class="card-notes">'+c.pedidos.map(function(p,i){ return '<div class="note-line">&#128230; Pedido '+(i+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>'; }).join('')+'</div>';
+    else if(c.nota) notasHtml='<div class="note-simple">&#128230; '+c.nota+'</div>';
+    var completadoBtn=c.estado==='completado'
+      ?'<button class="card-action-pill pill-gray" onclick="devolverAdmin(\''+uid+'\')">&#8617; Volver a Rutas</button>'
+      :'<button class="card-action-pill pill-orange" onclick="completarAdmin(\''+uid+'\')">&#128222; No Contesta</button>';
+    var colorStyle=c.colorMark==='blue'?'background:#e3f0ff !important;border-color:#90bbf5 !important;':c.colorMark==='red'?'background:#fee2e2 !important;border-color:#fca5a5 !important;':'';
+    return '<div class="card-v2 '+(c.estado==='completado'?'card-v2-done':'')+(sinUbi?' card-v2-nogps':'')+'" style="'+colorStyle+'">'+
+    '<div class="cv2-left-bar cv2-bar-'+accentColor+'"></div>'+
+    '<div class="cv2-body">'+
+      '<div class="cv2-header">'+
+        '<div class="cv2-header-left">'+
+          '<div class="cv2-num">#'+(idx+1)+'</div>'+
+          '<div class="cv2-name">'+(c.nombre||'Sin nombre')+
+            (sinUbi?' <span class="cv2-tag cv2-tag-gps">Sin GPS</span>':'')+
+            (esMulti?' <span class="cv2-tag cv2-tag-multi">'+c.pedidos.length+' pedidos</span>':'')+
+          '</div>'+
+          '<div class="cv2-sub"><span>&#128222; '+(c.telefono||'&mdash;')+'</span>'+(cod?' &nbsp;&#183;&nbsp; <strong>RD$ '+cod.toLocaleString()+'</strong>':'')+'</div>'+
+        '</div>'+
+        '<div class="cv2-sort">'+
+          '<button onclick="moverAdmin(\''+uid+'\',-1)" class="cv2-sort-btn">&#9650;</button>'+
+          '<button onclick="moverAdmin(\''+uid+'\',1)" class="cv2-sort-btn">&#9660;</button>'+
+        '</div>'+
+      '</div>'+
+      notasHtml+
+      '<div class="cv2-actions">'+
+        '<div class="cv2-row-main">'+
+          (mapsUrl?'<a class="cv2-btn cv2-btn-blue" href="'+mapsUrl+'" target="_blank">&#128506; Mapa</a>':'')+
+          (c.telefono?'<button class="cv2-btn cv2-btn-wa" style="flex:2" onclick="abrirMenuWA(\''+uid+'\')">&#128172; WhatsApp</button>':'')+
+          '<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;font-size:1rem;" onclick="toggleColor(\''+uid+'\')" title="Color">&#127775;</button>'+
+          '<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="enviarExportar(\''+uid+'\')" title="Exportar GPS">&#128228;</button>'+
+        '</div>'+
+        '<div class="cv2-row-secondary">'+
+          '<button class="cv2-icon-btn" onclick="editarCliente(\''+uid+'\')" title="Editar">&#9999;&#65039;</button>'+
+          completadoBtn+
+          '<button class="card-action-pill pill-green" style="max-width:82px" onclick="marcarEntregado(\''+uid+'\')">&#10003; Entregado</button>'+
+          '<button class="card-action-pill pill-red" style="max-width:68px" onclick="marcarDevolucion(\''+uid+'\')">&#8617; Dev.</button>'+
+          '<button class="card-action-pill" style="background:#fff8e1;color:#f57f17;border:1.5px solid #ffe082;max-width:82px" onclick="eliminarCliente(\''+uid+'\')">&#128465; Borrar</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '</div>';
   }).join('');
 }
 
-function renderExportar() {
-  const list = document.getElementById('list');
-  if (exportados.length === 0) { list.innerHTML = '<div class="empty">No hay contactos en la lista de exportar.<br><br>Usa el botón 📤 Exportar en cada tarjeta para añadirlos aquí.</div>'; return; }
-  list.innerHTML = `<div style="padding:10px">
-<button class="btn" style="background:#10b981;margin-bottom:12px" onclick="descargarJSON()">⬇️ Descargar JSON (${exportados.length} contactos)</button>
-<button class="btn" style="background:#475569;margin-bottom:16px" onclick="if(confirm('¿Limpiar lista de exportar?')){exportados=[];guardar()}">🗑️ Limpiar lista</button>
-${exportados.map(c => `<div class="export-card">
-<div><div class="ec-info">${c.nombre || 'Sin nombre'}</div><div class="ec-sub">RD$ ${calcCod(c).toLocaleString()} · ${c.telefono || '—'}</div></div>
-<button class="ec-btn" onclick="quitarExportar('${c._uid}')">✕ Quitar</button>
-</div>`).join('')}
-</div>`;
+function renderExportarAdmin(){
+  var list=document.getElementById('list-admin');
+  if(!exportados.length){ list.innerHTML='<div class="empty"><span class="empty-icon">&#128228;</span><p>No hay contactos en la lista de exportar.</p></div>'; return; }
+  list.innerHTML='<div style="padding:10px">'+
+    '<button class="ibtn ibtn-primary" onclick="descargarJSON()" style="margin-bottom:8px;">&#11015; Descargar JSON ('+exportados.length+' contactos)</button>'+
+    '<button class="ibtn ibtn-danger" style="margin-bottom:16px" onclick="if(confirm(\'Limpiar lista?\')){exportados=[];guardar()}">&#128465; Limpiar lista</button>'+
+    exportados.map(function(c){ return '<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+calcCod(c).toLocaleString()+' &middot; '+(c.telefono||'&mdash;')+'</div></div><button class="ec-btn" onclick="quitarExportar(\''+c._uid+'\')">&#10005; Quitar</button></div>'; }).join('')+
+    '</div>';
 }
 
-function descargarJSON() {
-  const data = {
-    clientes: exportados.map(c => ({
-      _uid: c._uid,
-      nombre: c.nombre || '',
-      telefono: c.telefono || '',
-      cod: calcCod(c),
-      lat: c.lat || null,
-      lng: c.lng || null,
-      estado: 'pendiente'
-    }))
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `llega_ya_${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-}
-
-function enviarExportar(uid) {
-  const c = clientes.find(x => x._uid === uid);
-  if (!c) return;
-  if (exportados.find(x => x._uid === uid)) return alert('Este contacto ya está en la lista de exportar.');
-  exportados.push({ ...c });
-  c.estado = 'completado';
-  const idx = clientes.findIndex(x => x._uid === uid);
-  const [r] = clientes.splice(idx, 1);
-  clientes.push(r);
-  guardar();
-  alert(`✅ ${c.nombre} exportado y movido a Completados`);
-}
-
-function quitarExportar(uid) {
-  exportados = exportados.filter(x => x._uid !== uid);
-  const c = clientes.find(x => x._uid === uid);
-  if (c) c.estado = 'pendiente';
+/* ── ACCIONES ── */
+function moverAdmin(uid,dir){
+  var datos=getDatosAdmin();
+  var visPos=datos.findIndex(function(x){ return x._uid===uid; });
+  var visNext=visPos+dir;
+  if(visNext<0||visNext>=datos.length) return;
+  var nextUid=datos[visNext]._uid;
+  var ia=clientes.findIndex(function(x){ return x._uid===uid; });
+  var ib=clientes.findIndex(function(x){ return x._uid===nextUid; });
+  var tmp=clientes[ia]; clientes[ia]=clientes[ib]; clientes[ib]=tmp;
   guardar();
 }
 
-function eliminarCliente(uid) {
-  if (!confirm('¿Eliminar este cliente?')) return;
-  clientes = clientes.filter(x => x._uid !== uid);
-  exportados = exportados.filter(x => x._uid !== uid);
+function completarAdmin(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  c.estado='completado';
+  var idx=clientes.findIndex(function(x){ return x._uid===uid; });
+  var r=clientes.splice(idx,1)[0]; clientes.push(r); guardar();
+}
+function devolverAdmin(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(c){ c.estado='pendiente'; guardar(); }
+}
+function eliminarCliente(uid){
+  if(!confirm('¿Eliminar este cliente?')) return;
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  guardar();
+  invShowToast('Cliente eliminado','info');
+}
+function marcarEntregado(uid){
+  if(!confirm('¿Confirmar entrega?')) return;
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
+  var mw=document.getElementById('route-map-wrap'); if(mw) mw.dataset.gpsCount='';
+  renderAdmin();
+  invShowToast('&#10003; Entregado','success');
+}
+function marcarDevolucion(uid){
+  if(!confirm('¿Marcar como devolución?')) return;
+  clientes=clientes.filter(function(x){ return x._uid!==uid; });
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+  localStorage.setItem(EXPORT_KEY,  JSON.stringify(exportados));
+  var mw=document.getElementById('route-map-wrap'); if(mw) mw.dataset.gpsCount='';
+  renderAdmin();
+  invShowToast('&#8617; Devoluci\u00f3n registrada','info');
+}
+function toggleColor(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  if(!c.colorMark) c.colorMark='blue';
+  else if(c.colorMark==='blue') c.colorMark='red';
+  else c.colorMark=null;
   guardar();
 }
-
-function switchTab(tab) {
-  tabActual = tab;
-  document.getElementById('busqueda').value = '';
-  document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('active', ['pendientes', 'sin_ubicacion', 'completados', 'exportar'][i] === tab);
-  });
-  render();
+function enviarExportar(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  if(exportados.find(function(x){ return x._uid===uid; })) return invShowToast('Ya est\u00e1 en la lista','info');
+  exportados.push(Object.assign({},c));
+  c.estado='completado';
+  var idx=clientes.findIndex(function(x){ return x._uid===uid; });
+  var r=clientes.splice(idx,1)[0]; clientes.push(r);
+  guardar(); invShowToast(c.nombre+' agregado a Exportar','success');
 }
-
-function completar(uid) {
-  const c = clientes.find(x => x._uid === uid);
-  if (!c) return;
-  c.estado = 'completado';
-  const idx = clientes.findIndex(x => x._uid === uid);
-  const [r] = clientes.splice(idx, 1);
-  clientes.push(r);
+function quitarExportar(uid){
+  exportados=exportados.filter(function(x){ return x._uid!==uid; });
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(c) c.estado='pendiente';
   guardar();
 }
-
-function devolverPendiente(uid) {
-  const c = clientes.find(x => x._uid === uid);
-  if (c) { c.estado = 'pendiente'; guardar(); }
+function descargarJSON(){
+  var defaultName='llega_ya_'+new Date().toISOString().slice(0,10);
+  var nombre=prompt('Nombre del archivo:',defaultName); if(!nombre) return;
+  nombre=nombre.replace(/\.json$/i,'');
+  var data={clientes:exportados.map(function(c){ return {_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:calcCod(c),lat:c.lat||null,lng:c.lng||null,nota:c.nota||'',estado:'pendiente'}; })};
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nombre+'.json'; a.click();
 }
 
-function sortNearest() {
-  const pendientes = clientes.filter(c => c.estado === 'pendiente' && c.lat && c.lng);
-  const resto = clientes.filter(c => !(c.estado === 'pendiente' && c.lat && c.lng));
-  if (pendientes.length === 0) return alert('No hay clientes con ubicación pendientes.');
-  if (!navigator.geolocation) return alert('Tu dispositivo no soporta GPS.');
-
-  const hav = (a, b, c, d) => {
-    const R = 6371, dL = (c - a) * Math.PI / 180, dG = (d - b) * Math.PI / 180,
-      x = Math.sin(dL / 2) ** 2 + Math.cos(a * Math.PI / 180) * Math.cos(c * Math.PI / 180) * Math.sin(dG / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
-  };
-
-  const ord = (origen) => {
-    let la = origen.lat, ln = origen.lng, p = [...pendientes], r = [];
-    while (p.length) {
-      let i = 0, m = Infinity;
-      p.forEach((c, j) => { const d = hav(la, ln, c.lat, c.lng); if (d < m) { m = d; i = j; } });
-      const n = p.splice(i, 1)[0];
-      r.push(n); la = n.lat; ln = n.lng;
-    }
-    return r;
-  };
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      clientes = [...ord({ lat: pos.coords.latitude, lng: pos.coords.longitude }), ...resto];
-      switchTab('pendientes');
-      guardar();
-    },
-    () => alert('No se pudo obtener tu ubicación. Verifica que el GPS esté activo y que hayas dado permiso.'),
-    { timeout: 10000, enableHighAccuracy: true }
-  );
-}
-
-function cargarArchivo(e) {
-  const f = e.target.files[0];
-  if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => procesarJSON(ev.target.result);
-  r.readAsText(f);
-}
-
-function cargarPegado() {
-  const t = document.getElementById('jsonPaste').value.trim();
-  if (!t) return alert('Pega el contenido JSON primero');
-  procesarJSON(t);
-}
-
-function procesarJSON(txt) {
-  try {
-    const data = JSON.parse(txt);
-    let lista = Array.isArray(data) ? data : [...(data.clientes || []), ...(data.sin_ubicacion || [])];
-
-    const mapaArchivo = new Map();
-    lista.forEach(n => {
-      const tel = normTel(n.telefono);
-      const key = tel || ('_sin_tel_' + generarId());
-      if (!tel || !mapaArchivo.has(tel)) {
-        mapaArchivo.set(key, { ...n, _uid: n._uid || generarId(), estado: n.estado || 'pendiente' });
-      } else {
-        const base = mapaArchivo.get(tel);
-        if (!base.pedidos) {
-          base.pedidos = [{ nota: base.nota || '', cod: base.cod || 0 }];
-          delete base.nota; delete base.cod;
-        }
-        base.pedidos.push({ nota: n.nota || '', cod: n.cod || 0 });
-      }
-    });
-
-    const telExistentes = new Map(
-      clientes.filter(c => normTel(c.telefono)).map(c => [normTel(c.telefono), c])
-    );
-
-    let agregados = 0, actualizados = 0, omitidos = 0;
-
-    mapaArchivo.forEach((nuevo, key) => {
-      const tel = key.startsWith('_sin_tel_') ? '' : key;
-      if (!tel) { clientes.push(nuevo); agregados++; return; }
-      if (telExistentes.has(tel)) {
-        const existente = telExistentes.get(tel);
-        if ((!existente.lat || !existente.lng) && nuevo.lat && nuevo.lng) {
-          existente.lat = nuevo.lat; existente.lng = nuevo.lng; actualizados++;
-        } else { omitidos++; }
-      } else {
-        clientes.push(nuevo); telExistentes.set(tel, nuevo); agregados++;
-      }
-    });
-
-    clientes = clientes.map(c => c._uid ? c : { ...c, _uid: generarId() });
-    guardar();
-    closeModal('modalCargar');
-
-    let msg = `✅ ${agregados} clientes agregados`;
-    if (actualizados > 0) msg += `\n📍 ${actualizados} ubicaciones actualizadas`;
-    if (omitidos > 0) msg += `\n⚠️ ${omitidos} duplicados omitidos`;
-    alert(msg);
-  } catch (e) { alert('Error: JSON no válido'); }
-}
-
-function abrirNuevoCliente() {
-  document.getElementById('editId').value = '';
-  document.getElementById('modalClienteTitulo').textContent = '➕ Nuevo Cliente';
-  ['cNombre', 'cTel', 'cCod', 'cCoords'].forEach(id => document.getElementById(id).value = '');
+/* ── CLIENTE MODAL ── */
+function abrirNuevoCliente(){
+  document.getElementById('editId').value='';
+  document.getElementById('modalClienteTitulo').textContent='Nuevo Cliente';
+  ['cNombre','cTel','cCod','cCoords'].forEach(function(id){ document.getElementById(id).value=''; });
   openModal('modalCliente');
 }
-
-function editarCliente(uid) {
-  const c = clientes.find(x => x._uid === uid);
-  if (!c) return;
-  document.getElementById('editId').value = uid;
-  document.getElementById('modalClienteTitulo').textContent = '✏️ Editar Cliente';
-  ['cNombre', 'cTel', 'cCod', 'cCoords'].forEach(id => document.getElementById(id).value = '');
+function editarCliente(uid){
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  document.getElementById('editId').value=uid;
+  document.getElementById('modalClienteTitulo').textContent='Editar Cliente';
+  document.getElementById('cNombre').value=c.nombre||'';
+  document.getElementById('cTel').value=c.telefono||'';
+  document.getElementById('cCod').value=calcCod(c)||'';
+  document.getElementById('cCoords').value=(c.lat&&c.lng)?c.lat+','+c.lng:'';
   openModal('modalCliente');
 }
-
-function guardarCliente() {
-  const editId = document.getElementById('editId').value;
-  const nombre = document.getElementById('cNombre').value.trim();
-  const telefono = document.getElementById('cTel').value.trim();
-  const codVal = document.getElementById('cCod').value.trim();
-  const coordsVal = document.getElementById('cCoords').value.trim();
-  if (editId) {
-    const c = clientes.find(x => x._uid === editId);
-    if (c) {
-      if (nombre) c.nombre = nombre;
-      if (telefono) c.telefono = telefono;
-      if (codVal) c.cod = parseFloat(codVal);
-      if (coordsVal) { const m = coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/); if (m) { c.lat = parseFloat(m[1]); c.lng = parseFloat(m[2]); } }
+function guardarCliente(){
+  var editId=document.getElementById('editId').value;
+  var nombre=document.getElementById('cNombre').value.trim();
+  var telefono=document.getElementById('cTel').value.trim();
+  var codVal=document.getElementById('cCod').value.trim();
+  var coordsVal=document.getElementById('cCoords').value.trim();
+  if(editId){
+    var c=clientes.find(function(x){ return x._uid===editId; });
+    if(c){
+      if(nombre) c.nombre=nombre;
+      if(telefono) c.telefono=telefono.replace(/\D/g,'');
+      if(codVal) c.cod=parseFloat(codVal)||0;
+      if(coordsVal){ var m=coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/); if(m){ c.lat=parseFloat(m[1]); c.lng=parseFloat(m[2]); } }
     }
+    guardar(); closeModal('modalCliente'); invShowToast('Cliente actualizado','success');
   } else {
-    if (!nombre) return alert('El nombre es requerido');
-    const cm = coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-    clientes.push({ _uid: generarId(), nombre, telefono, cod: parseFloat(codVal) || 0, lat: cm ? parseFloat(cm[1]) : null, lng: cm ? parseFloat(cm[2]) : null, estado: 'pendiente' });
+    if(!nombre){ invShowToast('El nombre es requerido','error'); return; }
+    var cm=coordsVal?coordsVal.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/):null;
+    clientes.push({_uid:generarId(),nombre:nombre,telefono:telefono.replace(/\D/g,''),cod:parseFloat(codVal)||0,nota:'',lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
+    guardar(); closeModal('modalCliente'); invShowToast('Cliente agregado','success');
   }
-  guardar(); closeModal('modalCliente');
+}
+function abrirUbi(uid){ document.getElementById('ubiId').value=uid; document.getElementById('ubiInput').value=''; openModal('modalUbi'); }
+function guardarUbicacion(){
+  var uid=document.getElementById('ubiId').value;
+  var txt=document.getElementById('ubiInput').value;
+  var m=txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
+  if(!m) return alert('No se encontraron coordenadas.');
+  var c=clientes.find(function(x){ return x._uid===uid; });
+  if(c){ c.lat=parseFloat(m[1]); c.lng=parseFloat(m[2]); guardar(); closeModal('modalUbi'); }
 }
 
-function abrirUbi(uid) {
-  document.getElementById('ubiId').value = uid;
-  document.getElementById('ubiInput').value = '';
-  openModal('modalUbi');
+/* ── EXCEL / JSON ── */
+function cargarExcelAdmin(e){ var f=e.target.files[0]; if(!f) return; e.target.value=''; leerExcel(f); }
+function cargarJSON(e){
+  var f=e.target.files[0]; if(!f) return; e.target.value='';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var data=JSON.parse(ev.target.result);
+      var lista=data.clientes||data;
+      if(!Array.isArray(lista)||!lista.length){ invShowToast('JSON vacío o formato incorrecto','error'); return; }
+      var blockUids=new Set(clientes.map(function(c){ return c._uid; }));
+      var agregados=0,omitidos=0;
+      lista.forEach(function(c){
+        if(!c._uid||blockUids.has(String(c._uid))){ omitidos++; return; }
+        blockUids.add(String(c._uid));
+        clientes.push({_uid:String(c._uid),nombre:c.nombre||'',telefono:String(c.telefono||'').replace(/\D/g,''),cod:parseFloat(c.cod)||0,nota:c.nota||c.note||'',zone:c.zone||c.zona||'',lat:c.lat||null,lng:c.lng||null,estado:'pendiente'});
+        agregados++;
+      });
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(clientes));
+      renderAdmin();
+      var msg='&#10003; '+agregados+' fichas importadas';
+      if(omitidos>0) msg+=' &middot; &#9888;&#65039; '+omitidos+' duplicados';
+      invShowToast(msg,'success');
+    }catch(err){ invShowToast('Error leyendo JSON: '+err.message,'error'); }
+  };
+  reader.readAsText(f);
 }
 
-function guardarUbicacion() {
-  const uid = document.getElementById('ubiId').value;
-  const txt = document.getElementById('ubiInput').value;
-  const m = txt.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);
-  if (!m) return alert('No se encontraron coordenadas.');
-  const c = clientes.find(x => x._uid === uid);
-  if (c) { c.lat = parseFloat(m[1]); c.lng = parseFloat(m[2]); guardar(); closeModal('modalUbi'); }
+function leerExcel(file){
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'binary'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      if(!raw.length){ invShowToast('El archivo est\u00e1 vac\u00edo','error'); return; }
+      var headerIdx=-1;
+      for(var i=0;i<Math.min(raw.length,8);i++){
+        var rowStr=raw[i].join('|').toLowerCase();
+        if(rowStr.indexOf('code')!==-1||rowStr.indexOf('dropoff')!==-1||rowStr.indexOf('cod')!==-1||rowStr.indexOf('tel')!==-1){ headerIdx=i; break; }
+      }
+      if(headerIdx===-1){ invShowToast('No se encontr\u00f3 fila de encabezados','error'); return; }
+      var headers=raw[headerIdx];
+      var rows=[];
+      for(var j=headerIdx+1;j<raw.length;j++){
+        var obj={}; headers.forEach(function(h,k){ obj[String(h).trim()]=raw[j][k]||''; }); rows.push(obj);
+      }
+      function findCol(row,candidates){
+        var keys=Object.keys(row);
+        for(var ci=0;ci<candidates.length;ci++){
+          var f=keys.find(function(k){ return k.trim().toLowerCase()===candidates[ci].toLowerCase(); }); if(f) return f;
+        }
+        for(var ci=0;ci<candidates.length;ci++){
+          var f=keys.find(function(k){ return k.trim().toLowerCase().indexOf(candidates[ci].toLowerCase())!==-1; }); if(f) return f;
+        }
+        return null;
+      }
+      if(!rows.length){ invShowToast('No se encontraron filas','error'); return; }
+      var sample=rows[0];
+      var colCodigo =findCol(sample,['code','codigo','c\u00f3digo','orderid','order_no','order no','orderno','id']);
+      var colNombre =findCol(sample,['dropoff contact name','receiver','contacto','nombre','name','destinatario']);
+      var colTel    =findCol(sample,['dropoff contact','telefono','tel\u00e9fono','phone','tel','celular','whatsapp']);
+      var colCod    =findCol(sample,['cod','monto','amount','valor','precio']);
+      var colNota   =findCol(sample,['note','nota','notas','producto','descripcion','referencia']);
+      var colZone   =findCol(sample,['zone','zona','sector','area']);
+      var colCustomer=findCol(sample,['customer name','customer','cliente','shop']);
+      var usedCodes={};
+      var lista=rows.map(function(r){
+        var nombre=colNombre?String(r[colNombre]||'').trim():'';
+        var tel=colTel?String(r[colTel]||'').trim():'';
+        var cod=colCod?parseFloat(String(r[colCod]||'0').replace(/[^0-9.]/g,''))||0:0;
+        var nota=colNota?String(r[colNota]||'').trim():'';
+        var zone=colZone?String(r[colZone]||'').trim():'';
+        var customer=colCustomer?String(r[colCustomer]||'').trim():'';
+        var codigo=colCodigo?String(r[colCodigo]||'').trim():'';
+        if(nota==='-')nota='';
+        if(!nombre&&!tel)return null;
+        tel=tel.replace(/\D/g,'');
+        if(tel.length===10&&tel[0]!=='1') tel='1'+tel;
+        else if(tel.length===7) tel='1809'+tel;
+        var uid=codigo&&!usedCodes[codigo]?codigo:generarId();
+        if(codigo) usedCodes[codigo]=1;
+        return{nombre:nombre,telefono:tel,cod:cod,nota:nota,zone:zone,customer:customer,lat:null,lng:null,estado:'pendiente',_uid:uid};
+      }).filter(Boolean);
+      if(!lista.length){ invShowToast('No se encontraron clientes v\u00e1lidos','error'); return; }
+      var blockUids=new Set(clientes.map(function(c){ return c._uid; }));
+      var agregados=0,omitidos=0;
+      lista.forEach(function(nuevo){
+        if(blockUids.has(nuevo._uid)){ omitidos++; return; }
+        blockUids.add(nuevo._uid); clientes.push(nuevo); agregados++;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+      renderAdmin();
+      var msg='&#10003; '+agregados+' clientes cargados';
+      if(omitidos>0) msg+=' &middot; &#9888;&#65039; '+omitidos+' duplicados';
+      invShowToast(msg,'success');
+    }catch(err){ invShowToast('Error: '+err.message,'error'); }
+  };
+  reader.readAsBinaryString(file);
 }
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+/* ── CERCANÍA ── */
+function sortNearest(){
+  var pend=clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
+  var resto=clientes.filter(function(c){ return !((c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng); });
+  if(!pend.length){ invShowToast('No hay clientes con GPS','error'); return; }
+  if(!navigator.geolocation){ invShowToast('GPS no disponible','error'); return; }
+  function hav(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+  function twoOpt(origin,route){var improved=true;while(improved){improved=false;for(var i=0;i<route.length-1;i++){for(var j=i+2;j<route.length;j++){var a0=i===0?origin:route[i-1],a1=route[i],b0=route[j],b1=j+1<route.length?route[j+1]:null;var before=hav(a0.lat,a0.lng,a1.lat,a1.lng)+(b1?hav(b0.lat,b0.lng,b1.lat,b1.lng):0),after=hav(a0.lat,a0.lng,b0.lat,b0.lng)+(b1?hav(a1.lat,a1.lng,b1.lat,b1.lng):0);if(after<before-0.001){route=route.slice(0,i).concat(route.slice(i,j+1).reverse()).concat(route.slice(j+1));improved=true;}}}}return route;}
+  function buildRoute(origin,points){var p=points.slice(),r=[],la=origin.lat,ln=origin.lng;while(p.length){var bi=0,bm=Infinity;p.forEach(function(c,j){var d=hav(la,ln,c.lat,c.lng);if(d<bm){bm=d;bi=j;}});var n=p.splice(bi,1)[0];r.push(n);la=n.lat;ln=n.lng;}return twoOpt(origin,r);}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var origin={lat:pos.coords.latitude,lng:pos.coords.longitude};
+    var ordered=buildRoute(origin,pend);
+    clientes=ordered.concat(resto); guardar();
+    switchTabAdmin('pendientes');
+    drawRouteMap(origin,ordered);
+    document.getElementById('route-map-wrap').dataset.gpsCount=String(ordered.length);
+    invShowToast('Ruta optimizada: '+ordered.length+' paradas','success');
+  },function(){ invShowToast('No se pudo obtener tu ubicaci\u00f3n','error'); },{timeout:10000,enableHighAccuracy:true});
+}
 
-render();
+/* ── MAPA ── */
+function drawRouteMap(origin,points){
+  if(!points.length) return;
+  var wrap=document.getElementById('route-map-wrap');
+  var canvas=document.getElementById('route-map-canvas');
+  wrap.style.display='block';
+  var hasOrigin=origin&&origin.lat&&origin.lng;
+  var allPts=(hasOrigin?[origin]:[]).concat(points.map(function(c){ return {lat:c.lat,lng:c.lng}; }));
+  var minLat=Infinity,maxLat=-Infinity,minLng=Infinity,maxLng=-Infinity;
+  allPts.forEach(function(p){ minLat=Math.min(minLat,p.lat);maxLat=Math.max(maxLat,p.lat);minLng=Math.min(minLng,p.lng);maxLng=Math.max(maxLng,p.lng); });
+  var latSpan=(maxLat-minLat)||0.01,lngSpan=(maxLng-minLng)||0.01;
+  minLat-=latSpan*.18;maxLat+=latSpan*.18;minLng-=lngSpan*.18;maxLng+=lngSpan*.18;
+  var W=wrap.offsetWidth||340,H=Math.round(W*.58);
+  canvas.width=W*2;canvas.height=H*2;canvas.style.height=H+'px';
+  var ctx=canvas.getContext('2d');ctx.scale(2,2);
+  var scaleX=function(lng){ return (lng-minLng)/(maxLng-minLng)*W; };
+  var scaleY=function(lat){ return H-(lat-minLat)/(maxLat-minLat)*H; };
+  ctx.fillStyle='#eef2f7';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#dde3ec';ctx.lineWidth=.6;
+  for(var i=1;i<=4;i++){var gx=W*i/5;ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();var gy=H*i/5;ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
+  ctx.strokeStyle='rgba(37,99,235,.18)';ctx.lineWidth=7;ctx.lineJoin='round';ctx.lineCap='round';
+  ctx.beginPath();
+  if(hasOrigin) ctx.moveTo(scaleX(origin.lng),scaleY(origin.lat)); else ctx.moveTo(scaleX(points[0].lng),scaleY(points[0].lat));
+  points.forEach(function(c){ ctx.lineTo(scaleX(c.lng),scaleY(c.lat)); });ctx.stroke();
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=2.8;
+  ctx.beginPath();
+  if(hasOrigin) ctx.moveTo(scaleX(origin.lng),scaleY(origin.lat)); else ctx.moveTo(scaleX(points[0].lng),scaleY(points[0].lat));
+  points.forEach(function(c){ ctx.lineTo(scaleX(c.lng),scaleY(c.lat)); });ctx.stroke();
+  if(hasOrigin){var ox=scaleX(origin.lng),oy=scaleY(origin.lat);ctx.fillStyle='rgba(22,163,74,.2)';ctx.beginPath();ctx.arc(ox,oy,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#16a34a';ctx.beginPath();ctx.arc(ox,oy,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ox,oy,2.5,0,Math.PI*2);ctx.fill();}
+  points.forEach(function(c,i){var x=scaleX(c.lng),y=scaleY(c.lat);ctx.fillStyle='rgba(0,0,0,.13)';ctx.beginPath();ctx.arc(x+1,y+1.5,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#2563eb';ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 8.5px -apple-system,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i+1,x,y);});
+  function hav2(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+  var totalDist=0,allSeq=(hasOrigin?[origin]:[]).concat(points);
+  for(var ii=0;ii<allSeq.length-1;ii++) totalDist+=hav2(allSeq[ii].lat,allSeq[ii].lng,allSeq[ii+1].lat,allSeq[ii+1].lng);
+  document.getElementById('route-map-info').textContent=points.length+' paradas · ~'+totalDist.toFixed(1)+' km';
+}
+
+function abrirGoogleMapsRuta(){
+  var pend=clientes.filter(function(c){ return (c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng; });
+  if(!pend.length){ invShowToast('No hay paradas con GPS','error'); return; }
+  var stops=pend.slice(0,10);
+  var dest=stops[stops.length-1];
+  var waypoints=stops.slice(0,stops.length-1).map(function(c){ return c.lat+','+c.lng; }).join('|');
+  window.open('https://www.google.com/maps/dir/?api=1&destination='+dest.lat+','+dest.lng+'&waypoints='+encodeURIComponent(waypoints)+'&travelmode=driving','_blank');
+}
+
+/* ── WHATSAPP ── */
+var waEstados=[
+  {key:'pendiente',icon:'&#128230;',label:'Pendiente',color:'active-pendiente',msg:function(n,p){return '[LLEGA YA] Hola '+n+'! \uD83D\uDCE6 Tu pedido '+p+' est\u00e1 pendiente. Te notificaremos pronto.\n\nNos encantar\u00eda que compartas tu ubicaci\u00f3n para coordinar la entrega.';}},
+  {key:'proceso',icon:'&#128336;',label:'En proceso',color:'active-proceso',msg:function(n,p){return '[LLEGA YA] Hola '+n+'! \uD83D\uDCE6 Tu pedido '+p+' est\u00e1 en proceso. Te avisaremos cuando salga a ruta.\n\nNos encantar\u00eda que compartas tu ubicaci\u00f3n para coordinar la entrega.';}},
+  {key:'transito',icon:'&#128666;',label:'En tr\u00e1nsito',color:'active-transito',msg:function(n,p){return '[LLEGA YA] Hola '+n+'! \uD83D\uDE9A Tu pedido '+p+' est\u00e1 en camino. Pronto llegar\u00e1 a tu puerta. \uD83D\uDE9A';}},
+  {key:'entregado',icon:'&#9989;',label:'Entregado',color:'active-entregado',msg:function(n,p){return '[LLEGA YA] Hola '+n+'! \u2705 Tu pedido '+p+' ha sido entregado. \u00a1Gracias por tu compra!';}},
+  {key:'devuelto',icon:'&#10060;',label:'Devuelto / Cancelado',color:'active-devuelto',msg:function(n,p){return '[LLEGA YA] Hola '+n+'! \u274C Tu pedido '+p+' ha sido devuelto/cancelado. Cont\u00e1ctanos para m\u00e1s informaci\u00f3n.';}}
+];
+
+function abrirMenuWA(uid){
+  waCurrentUid=uid; waCurrentStatus=null;
+  var c=clientes.find(function(x){ return x._uid===uid; }); if(!c) return;
+  var nombre1=(c.nombre||'').split(' ')[0];
+  var producto=c.nota||c.nombre||'tu pedido';
+  document.getElementById('wa-modal-nombre').textContent=c.nombre||'Sin nombre';
+  document.getElementById('wa-modal-tel').textContent='+'+c.telefono;
+  document.getElementById('wa-estados').innerHTML=waEstados.map(function(e){
+    return '<button class="wa-estado-btn" id="wa-btn-'+e.key+'" onclick="selEstadoWA(\''+e.key+'\',\''+encodeURIComponent(nombre1)+'\',\''+encodeURIComponent(producto)+'\')">'+
+      '<span class="wa-estado-icon">'+e.icon+'</span>'+e.label+'</button>';
+  }).join('');
+  document.getElementById('wa-msg-preview').value='';
+  document.getElementById('wa-char-count').textContent='';
+  openModal('modalWA');
+}
+function selEstadoWA(key,nombre64,prod64){
+  waCurrentStatus=key;
+  var nombre=decodeURIComponent(nombre64),prod=decodeURIComponent(prod64);
+  document.querySelectorAll('.wa-estado-btn').forEach(function(b){ b.className='wa-estado-btn'; });
+  var btn=document.getElementById('wa-btn-'+key);
+  var estado=waEstados.find(function(e){ return e.key===key; });
+  if(btn&&estado) btn.classList.add(estado.color);
+  var msg=estado.msg(nombre,prod);
+  document.getElementById('wa-msg-preview').value=msg;
+  document.getElementById('wa-char-count').textContent=msg.length+' chars';
+}
+function enviarMsgWA(){
+  if(!waCurrentStatus){ invShowToast('Selecciona un estado primero','error'); return; }
+  var c=clientes.find(function(x){ return x._uid===waCurrentUid; });
+  if(!c||!c.telefono){ invShowToast('Sin n\u00famero de tel\u00e9fono','error'); return; }
+  var msg=document.getElementById('wa-msg-preview').value;
+  var tel=c.telefono.replace(/\D/g,'');
+  var waWin=window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+  if(!waWin){ invShowToast('Permite ventanas emergentes para abrir WhatsApp','error'); return; }
+  c.waEstado=waCurrentStatus; guardar(); closeModal('modalWA');
+  invShowToast('Mensaje enviado','success');
+}
+
+/* ── TOAST ── */
+function invShowToast(msg,type){
+  type=type||'info';
+  var t=document.getElementById('inv-toast');
+  t.innerHTML=msg; t.className='toast-inv '+type+' show';
+  clearTimeout(invToastTimer);
+  invToastTimer=setTimeout(function(){ t.classList.remove('show'); },2800);
+}
+
+/* ── INIT ── */
+(function(){
+  document.querySelectorAll('#admin-tabs .tab').forEach(function(t,i){
+    t.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===adminTab);
+  });
+  renderAdmin();
+})();
 </script>
 
 </body>
