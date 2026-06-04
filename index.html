@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LLEGA YA — Rutas</title>
+<title>LLEGA YA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent !important;}
-body{background:#f0f4f8 !important;color:#0f172a !important;min-height:100vh;padding-bottom:20px;overflow-x:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:#f0f4f8;color:#0f172a;min-height:100vh;padding-bottom:20px;overflow-x:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;}
 .page{display:none;}.page.active{display:block;}
 /* DRAWER */
 .drw-ov{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:500;display:none;backdrop-filter:blur(2px);}
@@ -37,34 +37,35 @@ body{background:#f0f4f8 !important;color:#0f172a !important;min-height:100vh;pad
 .drw-uname{font-size:.88rem;font-weight:700;color:#0f172a;}
 .drw-urole{font-size:.72rem;color:#94a3b8;}
 /* HEADER */
-header{background:#fff !important;padding:0 16px;height:58px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+header{background:#fff;padding:0 16px;height:58px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.05);}
 .hdr-left{display:flex;align-items:center;gap:8px;}
 .menu-btn{width:38px;height:38px;background:#f1f5f9;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;flex-shrink:0;}
 header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .hbadge{font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;}
 .hbadge-blue{background:#eff6ff;color:#2563eb;}
 .hcount{font-size:.72rem;font-weight:700;background:#f1f5f9;color:#64748b;padding:3px 9px;border-radius:20px;}
-.header-r2{background:linear-gradient(135deg,#0f172a,#1e3a5f) !important;border-bottom-color:#1e3a5f !important;}
-.header-r2 h1{color:#e2e8f0 !important;}
+.header-r2{background:linear-gradient(135deg,#0f172a,#1e3a5f)!important;border-bottom-color:#1e3a5f!important;}
+.header-r2 h1{color:#e2e8f0!important;}
 .header-r2 .menu-btn{background:#1e293b;color:#94a3b8;}
 /* BARS */
 .adm-bar{display:flex;gap:8px;padding:12px 14px;background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:58px;z-index:49;}
 .adm-bar button{flex:1;padding:13px 6px;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;border-width:1.5px;border-style:solid;}
-.adm-bar-r2{background:#0f172a !important;border-bottom-color:#1e3a5f !important;}
+.adm-bar-r2{background:#0f172a!important;border-bottom-color:#1e3a5f!important;}
 .adm-search{padding:10px 14px;background:#f0f4f8;border-bottom:1px solid #e2e8f0;position:sticky;top:120px;z-index:48;}
-.adm-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none;background:#fff;color:#0f172a;font-size:.88rem;box-shadow:0 1px 4px rgba(0,0,0,.07);-webkit-text-fill-color:#0f172a;-webkit-box-shadow:0 0 0 1000px #fff inset;}
-.adm-search input::placeholder{color:#94a3b8;-webkit-text-fill-color:#94a3b8;}
+.adm-search input{width:100%;padding:12px 14px 12px 40px;border-radius:16px;border:none;background:#fff;color:#0f172a;font-size:.88rem;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.adm-search input::placeholder{color:#94a3b8;}
 .adm-search input:focus{outline:2px solid #2563eb;}
-.adm-search-r2{background:#0a0f1a !important;border-bottom-color:#1e3a5f !important;}
-.adm-search-r2 input{background:#1e3a5f !important;color:#e2e8f0 !important;-webkit-text-fill-color:#e2e8f0 !important;-webkit-box-shadow:0 0 0 1000px #1e3a5f inset !important;}
+.adm-search-r2{background:#0a0f1a!important;border-bottom-color:#1e3a5f!important;}
+.adm-search-r2 input{background:#1e3a5f!important;color:#e2e8f0!important;}
+.adm-search-r2 input::placeholder{color:#64748b!important;}
 .adm-tabs{display:flex;background:#fff;border-bottom:2px solid #e2e8f0;position:sticky;top:185px;z-index:47;}
 .adm-tabs .tab{flex:1;padding:12px 4px;text-align:center;font-size:.72rem;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:#94a3b8;margin-bottom:-2px;letter-spacing:.2px;text-transform:uppercase;}
 .adm-tabs .tab.active{color:#2563eb;border-bottom-color:#2563eb;}
-.adm-tabs-r2{background:#0f172a !important;border-bottom-color:#1e3a5f !important;}
-.adm-tabs-r2 .tab{color:#64748b !important;}
-.adm-tabs-r2 .tab.active{color:#60a5fa !important;border-bottom-color:#60a5fa !important;}
+.adm-tabs-r2{background:#0f172a!important;border-bottom-color:#1e3a5f!important;}
+.adm-tabs-r2 .tab{color:#64748b!important;}
+.adm-tabs-r2 .tab.active{color:#60a5fa!important;border-bottom-color:#60a5fa!important;}
 .sw{position:relative;}.sw .lupa{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:.9rem;pointer-events:none;color:#94a3b8;}
-/* BUTTONS */
+/* BTN */
 .btn-blue{background:#e3f0ff;border-color:#90bbf5;color:#1a56c4;}
 .btn-green{background:#e8f5e9;border-color:#81c784;color:#2e7d32;}
 .btn-purple{background:#ede7f6;border-color:#b39ddb;color:#5e35b1;}
@@ -73,16 +74,16 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .list-wrap{padding:14px;}
 .card-v2{background:#fff;border-radius:22px;margin-bottom:12px;border:1px solid #e8edf4;box-shadow:0 2px 10px rgba(15,23,42,.07),0 6px 20px rgba(15,23,42,.04);display:flex;overflow:hidden;transition:transform .12s;}
 .card-v2:active{transform:scale(.985);}
-.card-v2-done{opacity:.6;}.card-v2-nogps{border-color:#fde68a !important;}
-.cv2-left-bar{width:5px;flex-shrink:0;}
-.cv2-bar-blue{background:#2563eb;}.cv2-bar-green{background:#16a34a;}.cv2-bar-yellow{background:#d97706;}.cv2-bar-purple{background:#7c3aed;}.cv2-bar-dark{background:#334155;}
+.card-v2-done{opacity:.6;}.card-v2-nogps{border-color:#fde68a!important;}
+.cv2-bar{width:5px;flex-shrink:0;}
+.bar-blue{background:#2563eb;}.bar-green{background:#16a34a;}.bar-yellow{background:#d97706;}.bar-purple{background:#7c3aed;}.bar-dark{background:#334155;}
 .cv2-body{flex:1;padding:14px 13px 13px;min-width:0;}
 .cv2-header{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;}
 .cv2-hl{flex:1;min-width:0;}
 .cv2-num{font-size:.65rem;font-weight:700;color:#94a3b8;margin-bottom:2px;}
 .cv2-name{font-size:1rem;font-weight:800;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .cv2-tag{display:inline-block;font-size:.6rem;font-weight:700;padding:3px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;}
-.cv2-tag-gps{background:#fef3c7;color:#92400e;}.cv2-tag-multi{background:#ede9fe;color:#7c3aed;}
+.tag-gps{background:#fef3c7;color:#92400e;}.tag-multi{background:#ede9fe;color:#7c3aed;}
 .cv2-sub{font-size:.8rem;color:#475569;margin-top:4px;}
 .cv2-sort{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
 .cv2-sort-btn{background:#f1f5f9;border:none;color:#94a3b8;border-radius:9px;width:28px;height:25px;font-size:.65rem;cursor:pointer;}
@@ -101,14 +102,14 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .cap-red{background:#fce8e8;border-color:#ef9a9a;color:#c62828;}
 .cap-dark{background:#1e293b;border-color:#334155;color:#94a3b8;}
 .cv2-icon-btn{background:#f1f5f9;border:1.5px solid #cbd5e1;color:#475569;border-radius:13px;width:40px;height:40px;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
-.card-dark{background:#1e293b !important;border-color:#334155 !important;}
-.card-dark .cv2-name{color:#e2e8f0 !important;}.card-dark .cv2-num{color:#64748b !important;}
-.card-dark .cv2-sub{color:#94a3b8 !important;}.card-dark .note-simple,.card-dark .note-line{color:#94a3b8 !important;}
-.card-dark .card-notes{background:#0f172a !important;border-color:#334155 !important;}
-.card-dark .cv2-sort-btn{background:#334155 !important;color:#94a3b8 !important;}
-.card-dark .cv2-icon-btn{background:#334155 !important;border-color:#475569 !important;color:#94a3b8 !important;}
+.card-dark{background:#1e293b!important;border-color:#334155!important;}
+.card-dark .cv2-name{color:#e2e8f0!important;}.card-dark .cv2-num{color:#64748b!important;}
+.card-dark .cv2-sub{color:#94a3b8!important;}.card-dark .note-simple,.card-dark .note-line{color:#94a3b8!important;}
+.card-dark .card-notes{background:#0f172a!important;border-color:#334155!important;}
+.card-dark .cv2-sort-btn{background:#334155!important;color:#94a3b8!important;}
+.card-dark .cv2-icon-btn{background:#334155!important;border-color:#475569!important;color:#94a3b8!important;}
 /* MAP */
-#route-map-wrap,#route-map-wrap2{display:none;margin:10px 14px 0;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.10);position:relative;}
+#map-wrap1,#map-wrap2{display:none;margin:10px 14px 0;border-radius:18px;overflow:hidden;box-shadow:0 2px 10px rgba(15,23,42,.10);position:relative;}
 /* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;}
 .overlay.open{display:flex;}
@@ -130,16 +131,17 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .ec-info{font-size:.87rem;font-weight:700;color:#0f172a;}.ec-sub{font-size:.73rem;color:#334155;margin-top:2px;}
 .ec-btn{background:#fce8e8;border:1.5px solid #ef9a9a;color:#c62828;border-radius:12px;padding:6px 11px;font-size:.71rem;cursor:pointer;font-weight:700;}
 .empty{text-align:center;padding:52px 20px;color:#94a3b8;}.empty p{font-size:.88rem;margin-top:8px;}.empty-icon{font-size:2.6rem;display:block;margin-bottom:8px;}
-.wa-estado-btn{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;transition:all .15s;}
-.wa-estado-btn.active-pendiente{background:#f1f5f9;border-color:#cbd5e1;color:#475569;}
-.wa-estado-btn.active-proceso{background:#fff7ed;border-color:#fb923c;color:#ea580c;}
-.wa-estado-btn.active-transito{background:#eff6ff;border-color:#3b82f6;color:#1d4ed8;}
-.wa-estado-btn.active-entregado{background:#dcfce7;border-color:#16a34a;color:#166534;}
-.wa-estado-btn.active-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
-.wa-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0;}
-.toast-inv{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:700;z-index:700;transition:transform .3s ease;white-space:nowrap;color:#fff;pointer-events:none;}
-.toast-inv.show{transform:translateX(-50%) translateY(0);}
-.toast-inv.success{background:#2e7d32;}.toast-inv.error{background:#c62828;}.toast-inv.info{background:#1a56c4;}
+/* WA modal */
+.wa-btn{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;font-size:.88rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;transition:all .15s;margin-bottom:8px;}
+.wa-btn.st-pendiente{background:#f1f5f9;border-color:#cbd5e1;color:#475569;}
+.wa-btn.st-proceso{background:#fff7ed;border-color:#fb923c;color:#ea580c;}
+.wa-btn.st-transito{background:#eff6ff;border-color:#3b82f6;color:#1d4ed8;}
+.wa-btn.st-entregado{background:#dcfce7;border-color:#16a34a;color:#166534;}
+.wa-btn.st-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:700;z-index:700;transition:transform .3s ease;white-space:nowrap;color:#fff;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success{background:#2e7d32;}.toast.error{background:#c62828;}.toast.info{background:#1a56c4;}
 @keyframes slideOut{0%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(60px)}}
 .card-moving{animation:slideOut .3s ease forwards;}
 .fab{position:fixed;bottom:22px;right:16px;z-index:49;}
@@ -148,25 +150,20 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 </head>
 <body>
 
-<!-- DRAWER OVERLAY -->
-
-<div class="drw-ov" id="drwOv" onclick="closeDrawer()"></div>
-
-<!-- DRAWER -->
-
+<div class="drw-ov" id="drwOv" onclick="closeDrw()"></div>
 <div class="drw" id="drw">
   <div class="drw-head">
     <div class="drw-logo">LY</div>
     <span class="drw-app">LLEGA YA</span>
-    <button class="drw-x" onclick="closeDrawer()">&#10005;</button>
+    <button class="drw-x" onclick="closeDrw()">&#10005;</button>
   </div>
   <div class="drw-nav">
-    <div class="drw-item active" id="dnav-ruta1" onclick="goPage('ruta1')">
-      <span class="drw-icon">&#128506;&#65039;</span>
+    <div class="drw-item active" id="dn1" onclick="goPage(1)">
+      <span class="drw-icon">&#128506;</span>
       <span class="drw-label">Ruta</span>
       <span class="drw-badge" style="background:#eff6ff;color:#2563eb;" id="dc1">0</span>
     </div>
-    <div class="drw-item" id="dnav-ruta2" onclick="goPage('ruta2')">
+    <div class="drw-item" id="dn2" onclick="goPage(2)">
       <span class="drw-icon">&#128230;</span>
       <span class="drw-label">Ruta 2</span>
       <span class="drw-badge" style="background:#f0fdf4;color:#16a34a;" id="dc2">0</span>
@@ -174,7 +171,7 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
     </div>
   </div>
   <div class="drw-footer">
-    <div class="drw-fitem" onclick="closeDrawer();openModal('modalAjustes')">
+    <div class="drw-fitem" onclick="closeDrw();openM('mAjustes')">
       <span class="drw-ficon">&#9881;&#65039;</span>
       <span class="drw-flabel">Ajustes</span>
     </div>
@@ -185,31 +182,30 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
   </div>
 </div>
 
-<!-- PAGE RUTA 1 -->
+<!-- PAGE 1 -->
 
-<div class="page active" id="page-ruta1">
+<div class="page active" id="pg1">
   <header>
     <div class="hdr-left">
-      <button class="menu-btn" onclick="openDrawer()">&#9776;</button>
-      <h1>&#128506;&#65039; Ruta</h1>
+      <button class="menu-btn" onclick="openDrw()">&#9776;</button>
+      <h1>&#128506; Ruta</h1>
       <span class="hbadge hbadge-blue">Hoy</span>
     </div>
     <span class="hcount" id="cnt1">0</span>
   </header>
   <div class="adm-bar">
     <button class="btn-blue" onclick="document.getElementById('fx1').click()">&#128202; Excel</button>
-    <button style="background:#059669;color:#fff;border-color:#059669;border-radius:18px;" onclick="document.getElementById('fj1').click()">{} JSON</button>
+    <button style="background:#059669;color:#fff;border:1.5px solid #059669;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fj1').click()">{} JSON</button>
     <button class="btn-purple" onclick="sortNearest(1)">&#9889; Cercan&#237;a</button>
     <button class="btn-green" onclick="abrirNuevo(1)">+ Cliente</button>
   </div>
-  <input type="file" id="fx1" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event,1)">
-  <input type="file" id="fj1" accept=".json" style="display:none" onchange="cargarJSON(event,1)">
-  <div id="route-map-wrap">
-    <canvas id="rmc1" style="width:100%;display:block;border-radius:18px;"></canvas>
-    <div style="position:absolute;bottom:10px;right:10px;"><button onclick="abrirMaps(1)" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;">&#127758; Abrir en Maps</button></div>
-    <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#0f172a;" id="rmi1"></div>
+  <input type="file" id="fx1" accept=".xlsx,.xls" style="display:none" onchange="loadXL(event,1)">
+  <input type="file" id="fj1" accept=".json" style="display:none" onchange="loadJSON(event,1)">
+  <div id="map-wrap1"><canvas id="mc1" style="width:100%;display:block;border-radius:18px;"></canvas>
+    <div style="position:absolute;bottom:10px;right:10px;"><button onclick="openMaps(1)" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;">&#127758; Abrir en Maps</button></div>
+    <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#0f172a;" id="mi1"></div>
   </div>
-  <div class="adm-search"><div class="sw"><span class="lupa">&#128269;</span><input type="text" id="bq1" placeholder="Buscar por nombre o tel&#233;fono..." oninput="renderPage(1)"></div></div>
+  <div class="adm-search"><div class="sw"><span class="lupa">&#128269;</span><input type="text" id="bq1" placeholder="Buscar por nombre o tel&#233;fono..." oninput="render(1)"></div></div>
   <div class="adm-tabs" id="tabs1">
     <div class="tab active" onclick="switchTab(1,'pendientes')">Rutas</div>
     <div class="tab" onclick="switchTab(1,'sin_ubicacion')">Sin GPS</div>
@@ -217,34 +213,33 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
     <div class="tab" onclick="switchTab(1,'exportar')">&#128228; Exportar</div>
   </div>
   <div id="list1" class="list-wrap"></div>
-  <div class="fab"><button onclick="openModal('mc1')">&#9881;&#65039;</button></div>
+  <div class="fab"><button onclick="openM('mCfg1')">&#9881;&#65039;</button></div>
 </div>
 
-<!-- PAGE RUTA 2 -->
+<!-- PAGE 2 -->
 
-<div class="page" id="page-ruta2">
+<div class="page" id="pg2">
   <header class="header-r2">
     <div class="hdr-left">
-      <button class="menu-btn" onclick="openDrawer()">&#9776;</button>
+      <button class="menu-btn" onclick="openDrw()">&#9776;</button>
       <h1>&#128230; Ruta 2</h1>
       <span class="hbadge" style="background:rgba(96,165,250,.15);color:#60a5fa;">Anteriores</span>
     </div>
     <span class="hcount" id="cnt2" style="background:#1e293b;color:#94a3b8;">0</span>
   </header>
   <div class="adm-bar adm-bar-r2">
-    <button style="background:#1e3a5f;border-color:#2563eb;color:#60a5fa;border-radius:18px;" onclick="document.getElementById('fx2').click()">&#128202; Excel</button>
-    <button style="background:#134e2a;color:#4ade80;border-color:#16a34a;border-radius:18px;" onclick="document.getElementById('fj2').click()">{} JSON</button>
-    <button style="background:#2e1065;color:#c4b5fd;border-color:#7c3aed;border-radius:18px;" onclick="sortNearest(2)">&#9889; Cercan&#237;a</button>
-    <button style="background:#134e2a;color:#4ade80;border-color:#16a34a;border-radius:18px;" onclick="abrirNuevo(2)">+ Cliente</button>
+    <button style="background:#1e3a5f;border:1.5px solid #2563eb;color:#60a5fa;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fx2').click()">&#128202; Excel</button>
+    <button style="background:#134e2a;border:1.5px solid #16a34a;color:#4ade80;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fj2').click()">{} JSON</button>
+    <button style="background:#2e1065;border:1.5px solid #7c3aed;color:#c4b5fd;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="sortNearest(2)">&#9889; Cercan&#237;a</button>
+    <button style="background:#134e2a;border:1.5px solid #16a34a;color:#4ade80;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="abrirNuevo(2)">+ Cliente</button>
   </div>
-  <input type="file" id="fx2" accept=".xlsx,.xls" style="display:none" onchange="cargarExcel(event,2)">
-  <input type="file" id="fj2" accept=".json" style="display:none" onchange="cargarJSON(event,2)">
-  <div id="route-map-wrap2">
-    <canvas id="rmc2" style="width:100%;display:block;border-radius:18px;"></canvas>
-    <div style="position:absolute;bottom:10px;right:10px;"><button onclick="abrirMaps(2)" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;">&#127758; Abrir en Maps</button></div>
-    <div style="position:absolute;top:10px;left:10px;background:rgba(15,23,42,.85);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#e2e8f0;" id="rmi2"></div>
+  <input type="file" id="fx2" accept=".xlsx,.xls" style="display:none" onchange="loadXL(event,2)">
+  <input type="file" id="fj2" accept=".json" style="display:none" onchange="loadJSON(event,2)">
+  <div id="map-wrap2"><canvas id="mc2" style="width:100%;display:block;border-radius:18px;"></canvas>
+    <div style="position:absolute;bottom:10px;right:10px;"><button onclick="openMaps(2)" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;">&#127758; Abrir en Maps</button></div>
+    <div style="position:absolute;top:10px;left:10px;background:rgba(15,23,42,.85);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#e2e8f0;" id="mi2"></div>
   </div>
-  <div class="adm-search adm-search-r2"><div class="sw"><span class="lupa">&#128269;</span><input type="text" id="bq2" placeholder="Buscar en Ruta 2..." oninput="renderPage(2)"></div></div>
+  <div class="adm-search adm-search-r2"><div class="sw"><span class="lupa">&#128269;</span><input type="text" id="bq2" placeholder="Buscar en Ruta 2..." oninput="render(2)"></div></div>
   <div class="adm-tabs adm-tabs-r2" id="tabs2">
     <div class="tab active" onclick="switchTab(2,'pendientes')">Rutas</div>
     <div class="tab" onclick="switchTab(2,'sin_ubicacion')">Sin GPS</div>
@@ -252,91 +247,92 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
     <div class="tab" onclick="switchTab(2,'exportar')">&#128228; Exportar</div>
   </div>
   <div id="list2" style="padding:14px;background:#0a0f1a;min-height:100vh;"></div>
-  <div class="fab"><button onclick="openModal('mc2')" style="background:#1e3a5f;border-color:#2563eb;color:#60a5fa;">&#9881;&#65039;</button></div>
+  <div class="fab"><button onclick="openM('mCfg2')" style="background:#1e3a5f;border-color:#2563eb;color:#60a5fa;">&#9881;&#65039;</button></div>
 </div>
 
-<!-- MODALES -->
+<!-- MODAL CLIENTE -->
 
-<div class="overlay" id="modalCliente">
+<div class="overlay" id="mCliente">
   <div class="modal">
-    <h2 id="mct">Nuevo Cliente</h2>
-    <input type="hidden" id="eid"><input type="hidden" id="eruta">
+    <h2 id="mCT">Nuevo Cliente</h2>
+    <input type="hidden" id="eId"><input type="hidden" id="eRuta">
     <div class="field"><label>Nombre</label><input type="text" id="cN" placeholder="Nombre completo"></div>
     <div class="field"><label>Tel&#233;fono</label><input type="tel" id="cT" placeholder="8093334444"></div>
     <div class="field"><label>Monto RD$</label><input type="number" id="cC" placeholder="0"></div>
     <div class="field"><label>Coordenadas</label><input type="text" id="cX" placeholder="19.2917, -70.2558"></div>
     <div class="modal-btns">
-      <button class="btn-green" onclick="guardarCliente()">GUARDAR</button>
-      <button class="btn-gray" onclick="closeModal('modalCliente')">CANCELAR</button>
+      <button class="btn-green" onclick="saveCliente()">GUARDAR</button>
+      <button class="btn-gray" onclick="closeM('mCliente')">CANCELAR</button>
     </div>
   </div>
 </div>
-<div class="overlay" id="mc1">
+<!-- MODAL CFG 1 -->
+<div class="overlay" id="mCfg1">
   <div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Ruta</h2><br>
     <button class="ibtn ibtn-green" onclick="moverTodos()">&#128230; Mover todos a Ruta 2</button>
-    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todo en Ruta?')){cl1=[];ex1=[];guardar(1);closeModal('mc1');}">&#128465; Borrar Todo (Ruta)</button>
-    <button class="ibtn ibtn-secondary" onclick="closeModal('mc1')">CERRAR</button>
+    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todo en Ruta?')){cl[1]=[];ex[1]=[];save(1);closeM('mCfg1');}">&#128465; Borrar Todo (Ruta)</button>
+    <button class="ibtn ibtn-secondary" onclick="closeM('mCfg1')">CERRAR</button>
   </div>
 </div>
-<div class="overlay" id="mc2">
+<!-- MODAL CFG 2 -->
+<div class="overlay" id="mCfg2">
   <div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Ruta 2</h2><br>
-    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todo en Ruta 2?')){cl2=[];ex2=[];guardar(2);closeModal('mc2');}">&#128465; Borrar Todo (Ruta 2)</button>
-    <button class="ibtn ibtn-secondary" onclick="closeModal('mc2')">CERRAR</button>
+    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todo en Ruta 2?')){cl[2]=[];ex[2]=[];save(2);closeM('mCfg2');}">&#128465; Borrar Todo (Ruta 2)</button>
+    <button class="ibtn ibtn-secondary" onclick="closeM('mCfg2')">CERRAR</button>
   </div>
 </div>
-<div class="overlay" id="modalAjustes">
+<!-- MODAL AJUSTES -->
+<div class="overlay" id="mAjustes">
   <div class="modal"><h2>&#9881;&#65039; Ajustes</h2><br>
-    <button class="ibtn ibtn-green" onclick="moverTodos();closeModal('modalAjustes');">&#128230; Mover Ruta &#8594; Ruta 2</button>
-    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar TODO de ambas rutas?')){cl1=[];cl2=[];ex1=[];ex2=[];guardar();closeModal('modalAjustes');}">&#128465; Borrar Todo (ambas)</button>
-    <button class="ibtn ibtn-secondary" onclick="closeModal('modalAjustes')">CERRAR</button>
+    <button class="ibtn ibtn-green" onclick="moverTodos();closeM('mAjustes');">&#128230; Mover Ruta &#8594; Ruta 2</button>
+    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar TODO?')){cl[1]=[];cl[2]=[];ex[1]=[];ex[2]=[];save();closeM('mAjustes');}">&#128465; Borrar Todo (ambas)</button>
+    <button class="ibtn ibtn-secondary" onclick="closeM('mAjustes')">CERRAR</button>
   </div>
 </div>
-<div class="overlay" id="modalWA" onclick="if(event.target===this)closeModal('modalWA')">
+<!-- MODAL WA -->
+<div class="overlay" id="mWA" onclick="if(event.target===this)closeM('mWA')">
   <div class="modal" style="max-width:420px;padding:20px;">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
       <div style="width:40px;height:40px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">&#128172;</div>
-      <div><div style="font-size:.95rem;font-weight:800;color:#0f172a;" id="waN">-</div><div style="font-size:.75rem;color:#64748b;" id="waT">-</div></div>
+      <div><div style="font-size:.95rem;font-weight:800;color:#0f172a;" id="waN"></div><div style="font-size:.75rem;color:#64748b;" id="waT"></div></div>
     </div>
     <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Nuevo Estado</div>
-    <div id="waE" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
-    <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Mensaje <span id="waCC" style="float:right;color:#2563eb;"></span></div>
+    <div id="waE"></div>
+    <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:16px;">Mensaje <span id="waCC" style="float:right;color:#2563eb;"></span></div>
     <textarea id="waM" rows="4" style="width:100%;padding:12px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;font-size:.84rem;color:#0f172a;resize:none;line-height:1.5;" oninput="var n=this.value.length;var el=document.getElementById('waCC');el.textContent=n+' chars';el.style.color=n>4000?'#dc2626':n>300?'#f59e0b':'#2563eb';"></textarea>
-    <button onclick="enviarWA()" style="width:100%;margin-top:14px;padding:15px;background:#16a34a;color:#fff;border:none;border-radius:16px;font-size:.92rem;font-weight:700;cursor:pointer;">&#128172; Guardar y Notificar</button>
-    <button onclick="closeModal('modalWA')" style="width:100%;margin-top:8px;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:16px;font-size:.88rem;font-weight:700;cursor:pointer;">Cancelar</button>
+    <button onclick="sendWA()" style="width:100%;margin-top:14px;padding:15px;background:#16a34a;color:#fff;border:none;border-radius:16px;font-size:.92rem;font-weight:700;cursor:pointer;">&#128172; Guardar y Notificar</button>
+    <button onclick="closeM('mWA')" style="width:100%;margin-top:8px;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:16px;font-size:.88rem;font-weight:700;cursor:pointer;">Cancelar</button>
   </div>
 </div>
-<div class="toast-inv" id="toast"></div>
+<div class="toast" id="tst"></div>
 
 <script>
-var SK1='llega_ya_clientes',SK2='llega_ya_clientes2',EK1='llega_ya_exportados',EK2='llega_ya_exportados2';
-var cl1=JSON.parse(localStorage.getItem(SK1)||'[]');
-var cl2=JSON.parse(localStorage.getItem(SK2)||'[]');
-var ex1=JSON.parse(localStorage.getItem(EK1)||'[]');
-var ex2=JSON.parse(localStorage.getItem(EK2)||'[]');
-var tab1=localStorage.getItem('lly_t1')||'pendientes';
-var tab2=localStorage.getItem('lly_t2')||'pendientes';
-var tTimer,wUid=null,wRuta=null,wSt=null;
+// ── DATA ──
+var SK = ['','llega_ya_c1','llega_ya_c2'];
+var EK = ['','llega_ya_e1','llega_ya_e2'];
+var cl = [null, JSON.parse(localStorage.getItem(SK[1])||'[]'), JSON.parse(localStorage.getItem(SK[2])||'[]')];
+var ex = [null, JSON.parse(localStorage.getItem(EK[1])||'[]'), JSON.parse(localStorage.getItem(EK[2])||'[]')];
+var tabs = ['','pendientes','pendientes'];
+tabs[1] = localStorage.getItem('lly_t1')||'pendientes';
+tabs[2] = localStorage.getItem('lly_t2')||'pendientes';
+var tTimer, wUid=null, wR=null, wSt=null;
 
-function gid(s){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
-function eu(a){return a.map(function(c){return c._uid?c:Object.assign({},c,{_uid:gid()});});}
-cl1=eu(cl1);cl2=eu(cl2);ex1=eu(ex1);ex2=eu(ex2);
-function GC(r){return r===1?cl1:cl2;}
-function GE(r){return r===1?ex1:ex2;}
-function GT(r){return r===1?tab1:tab2;}
-function ST(r,t){if(r===1)tab1=t;else tab2=t;localStorage.setItem(r===1?'lly_t1':'lly_t2',t);}
-function cod(c){return c.pedidos?c.pedidos.reduce(function(s,p){return s+(parseFloat(p.cod)||0);},0):(parseFloat(c.cod)||0);}
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).substr(2,5); }
+for(var _r=1;_r<=2;_r++) cl[_r]=cl[_r].map(function(c){return c._uid?c:Object.assign({},c,{_uid:uid()});});
 
-function guardar(r){
-  if(r===1||!r){localStorage.setItem(SK1,JSON.stringify(cl1));localStorage.setItem(EK1,JSON.stringify(ex1));}
-  if(r===2||!r){localStorage.setItem(SK2,JSON.stringify(cl2));localStorage.setItem(EK2,JSON.stringify(ex2));}
-  if(r===1||!r)renderPage(1);
-  if(r===2||!r)renderPage(2);
+function cod(c){ return c.pedidos?c.pedidos.reduce(function(s,p){return s+(parseFloat(p.cod)||0);},0):(parseFloat(c.cod)||0); }
+
+function save(r){
+  if(!r||r===1){localStorage.setItem(SK[1],JSON.stringify(cl[1]));localStorage.setItem(EK[1],JSON.stringify(ex[1]));}
+  if(!r||r===2){localStorage.setItem(SK[2],JSON.stringify(cl[2]));localStorage.setItem(EK[2],JSON.stringify(ex[2]));}
+  if(!r||r===1) render(1);
+  if(!r||r===2) render(2);
   updCounts();
 }
 
 function updCounts(){
-  var n1=cl1.filter(function(c){return!c.estado||c.estado==='pendiente';}).length;
-  var n2=cl2.filter(function(c){return!c.estado||c.estado==='pendiente';}).length;
+  var n1=cl[1].filter(function(c){return!c.estado||c.estado==='pendiente';}).length;
+  var n2=cl[2].filter(function(c){return!c.estado||c.estado==='pendiente';}).length;
   document.getElementById('cnt1').textContent=n1;
   document.getElementById('cnt2').textContent=n2;
   document.getElementById('dc1').textContent=n1;
@@ -344,90 +340,97 @@ function updCounts(){
   document.getElementById('pip2').style.display=n2>0?'block':'none';
 }
 
-function openDrawer(){document.getElementById('drw').classList.add('open');document.getElementById('drwOv').classList.add('open');}
-function closeDrawer(){document.getElementById('drw').classList.remove('open');document.getElementById('drwOv').classList.remove('open');}
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
+// ── DRAWER ──
+function openDrw(){document.getElementById('drw').classList.add('open');document.getElementById('drwOv').classList.add('open');}
+function closeDrw(){document.getElementById('drw').classList.remove('open');document.getElementById('drwOv').classList.remove('open');}
+
+// ── MODALS ──
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
 document.addEventListener('click',function(e){if(e.target.classList.contains('overlay'))e.target.classList.remove('open');});
 
-function goPage(name){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.getElementById('page-'+name).classList.add('active');
-  document.querySelectorAll('.drw-item').forEach(function(n){n.classList.remove('active');});
-  document.getElementById('dnav-'+name).classList.add('active');
-  closeDrawer();
-  renderPage(name==='ruta1'?1:2);
+// ── NAVIGATION ──
+function goPage(r){
+  document.getElementById('pg1').classList.toggle('active',r===1);
+  document.getElementById('pg2').classList.toggle('active',r===2);
+  document.getElementById('dn1').classList.toggle('active',r===1);
+  document.getElementById('dn2').classList.toggle('active',r===2);
+  closeDrw();
+  render(r);
 }
 
+// ── TABS ──
 function switchTab(r,t){
-  ST(r,t);
+  tabs[r]=t;
+  localStorage.setItem(r===1?'lly_t1':'lly_t2',t);
   document.getElementById('bq'+r).value='';
   document.getElementById('tabs'+r).querySelectorAll('.tab').forEach(function(el,i){
     el.classList.toggle('active',['pendientes','sin_ubicacion','completados','exportar'][i]===t);
   });
-  renderPage(r);
+  render(r);
 }
 
-function getDatos(r,t){
-  var c=GC(r);
-  if(t==='pendientes')return c.filter(function(x){return(x.estado==='pendiente'||!x.estado)&&x.lat&&x.lng;});
-  if(t==='sin_ubicacion')return c.filter(function(x){return(!x.lat||!x.lng)&&(x.estado==='pendiente'||!x.estado);});
-  if(t==='completados')return c.filter(function(x){return x.estado==='completado';});
-  return[];
+function getData(r,t){
+  var c=cl[r];
+  if(t==='pendientes') return c.filter(function(x){return(x.estado==='pendiente'||!x.estado)&&x.lat&&x.lng;});
+  if(t==='sin_ubicacion') return c.filter(function(x){return(!x.lat||!x.lng)&&(x.estado==='pendiente'||!x.estado);});
+  if(t==='completados') return c.filter(function(x){return x.estado==='completado';});
+  return [];
 }
 
-function renderPage(r){
-  var t=GT(r);
+// ── RENDER ──
+function render(r){
+  var t=tabs[r];
   if(t==='exportar'){renderExp(r);return;}
   var dk=r===2;
   var le=document.getElementById('list'+r);
   var q=(document.getElementById('bq'+r).value||'').toLowerCase().trim();
-  var data=getDatos(r,t);
-  if(q)data=data.filter(function(c){return(c.nombre||'').toLowerCase().includes(q)||(c.telefono||'').includes(q);});
-  var mw=document.getElementById(r===1?'route-map-wrap':'route-map-wrap2');
+  var data=getData(r,t);
+  if(q) data=data.filter(function(c){return(c.nombre||'').toLowerCase().indexOf(q)>-1||(c.telefono||'').indexOf(q)>-1;});
+  var mw=document.getElementById('map-wrap'+r);
   if(t==='pendientes'){
-    var gps=GC(r).filter(function(c){return(c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng;});
+    var gps=cl[r].filter(function(c){return(c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng;});
     if(gps.length){mw.style.display='block';if((mw.dataset.gc||'0')!==String(gps.length)){mw.dataset.gc=String(gps.length);drawMap(null,gps,r);}}
     else mw.style.display='none';
-  }else mw.style.display='none';
+  } else mw.style.display='none';
   if(!data.length){le.innerHTML='<div class="empty"><span class="empty-icon">&#128506;</span><p>No hay clientes aqu&#237;</p></div>';updCounts();return;}
   le.innerHTML=data.map(function(c,i){
     var mu=c.lat&&c.lng?'https://www.google.com/maps?q='+c.lat+','+c.lng:null;
-    var su=!c.lat||!c.lng,uid=c._uid,em=c.pedidos&&c.pedidos.length>1,cv=cod(c);
+    var su=!c.lat||!c.lng, id=c._uid, em=c.pedidos&&c.pedidos.length>1, cv=cod(c);
     var ac=su?'yellow':(c.estado==='completado'?'green':(em?'purple':(dk?'dark':'blue')));
     var nh='';
-    if(em)nh='<div class="card-notes">'+c.pedidos.map(function(p,j){return'<div class="note-line">&#128230; Pedido '+(j+1)+': '+(p.nota||'&mdash;')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>';}).join('')+'</div>';
-    else if(c.nota)nh='<div class="note-simple">&#128230; '+c.nota+'</div>';
+    if(em) nh='<div class="card-notes">'+c.pedidos.map(function(p,j){return'<div class="note-line">&#128230; Pedido '+(j+1)+': '+(p.nota||'-')+(p.cod?' &middot; RD$ '+parseFloat(p.cod).toLocaleString():'')+'</div>';}).join('')+'</div>';
+    else if(c.nota) nh='<div class="note-simple">&#128230; '+c.nota+'</div>';
     var mvBtn=r===1
-      ?'<button class="cap" style="background:#e0f2fe;border:1.5px solid #7dd3fc;color:#0369a1;max-width:78px;font-size:.75rem;" onclick="moverA(\''+uid+'\',1,2)">&#128230; R2</button>'
-      :'<button class="cap" style="background:#eff6ff;border:1.5px solid #93c5fd;color:#1d4ed8;max-width:78px;font-size:.75rem;" onclick="moverA(\''+uid+'\',2,1)">&#128506; R1</button>';
+      ?'<button class="cap" style="background:#e0f2fe;border:1.5px solid #7dd3fc;color:#0369a1;max-width:78px;font-size:.75rem;" onclick="moveCard(\''+id+'\',1,2)">&#128230; R2</button>'
+      :'<button class="cap" style="background:#eff6ff;border:1.5px solid #93c5fd;color:#1d4ed8;max-width:78px;font-size:.75rem;" onclick="moveCard(\''+id+'\',2,1)">&#128506; R1</button>';
     var cBtn=c.estado==='completado'
-      ?'<button class="cap '+(dk?'cap-dark':'cap-gray')+'" onclick="devolver(\''+uid+'\','+r+')">&#8617; Volver</button>'
-      :'<button class="cap cap-orange" onclick="completar(\''+uid+'\','+r+')">&#128565; No Contesta</button>';
-    var cs=c.colorMark==='blue'?'background:#e3f0ff !important;border-color:#90bbf5 !important;':c.colorMark==='red'?'background:#fee2e2 !important;border-color:#fca5a5 !important;':'';
-    return'<div class="card-v2 '+(dk?'card-dark ':'')+''+(c.estado==='completado'?'card-v2-done ':'')+''+(su?'card-v2-nogps ':'')+'\" id="card-'+uid+'" style="'+cs+'">'
-      +'<div class="cv2-left-bar cv2-bar-'+ac+'"></div>'
+      ?'<button class="cap '+(dk?'cap-dark':'cap-gray')+'" onclick="revert(\''+id+'\','+r+')">&#8617; Volver</button>'
+      :'<button class="cap cap-orange" onclick="noContesta(\''+id+'\','+r+')">&#128565; No Contesta</button>';
+    var cs=c.colorMark==='blue'?'background:#e3f0ff!important;border-color:#90bbf5!important;':c.colorMark==='red'?'background:#fee2e2!important;border-color:#fca5a5!important;':'';
+    return '<div class="card-v2'+(dk?' card-dark':'')+(c.estado==='completado'?' card-v2-done':'')+(su?' card-v2-nogps':'')+'" id="card-'+id+'" style="'+cs+'">'
+      +'<div class="cv2-bar bar-'+ac+'"></div>'
       +'<div class="cv2-body">'
         +'<div class="cv2-header"><div class="cv2-hl">'
           +'<div class="cv2-num">#'+(i+1)+'</div>'
-          +'<div class="cv2-name">'+(c.nombre||'Sin nombre')+(su?' <span class="cv2-tag cv2-tag-gps">Sin GPS</span>':'')+(em?' <span class="cv2-tag cv2-tag-multi">'+c.pedidos.length+' pedidos</span>':'')+'</div>'
+          +'<div class="cv2-name">'+(c.nombre||'Sin nombre')+(su?' <span class="cv2-tag tag-gps">Sin GPS</span>':'')+(em?' <span class="cv2-tag tag-multi">'+c.pedidos.length+' pedidos</span>':'')+'</div>'
           +'<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cv?' &nbsp;&middot;&nbsp; <strong>RD$ '+cv.toLocaleString()+'</strong>':'')+'</div>'
         +'</div>'
-        +'<div class="cv2-sort"><button onclick="moverOrden(\''+uid+'\','+r+',-1)" class="cv2-sort-btn">&#9650;</button><button onclick="moverOrden(\''+uid+'\','+r+',1)" class="cv2-sort-btn">&#9660;</button></div>'
+        +'<div class="cv2-sort"><button onclick="reorder(\''+id+'\','+r+',-1)" class="cv2-sort-btn">&#9650;</button><button onclick="reorder(\''+id+'\','+r+',1)" class="cv2-sort-btn">&#9660;</button></div>'
         +'</div>'+nh
         +'<div class="cv2-actions">'
           +'<div class="cv2-row-main">'
             +(mu?'<a class="cv2-btn cv2-btn-blue" href="'+mu+'" target="_blank">&#128506; Mapa</a>':'')
-            +(c.telefono?'<button class="cv2-btn cv2-btn-wa" style="flex:2" onclick="abrirWA(\''+uid+'\','+r+')">&#128172; WhatsApp</button>':'')
-            +'<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="tgColor(\''+uid+'\','+r+')">&#11088;</button>'
-            +'<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="addExport(\''+uid+'\','+r+')">&#128228;</button>'
+            +(c.telefono?'<button class="cv2-btn cv2-btn-wa" style="flex:2" onclick="openWA(\''+id+'\','+r+')">&#128172; WhatsApp</button>':'')
+            +'<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="tgColor(\''+id+'\','+r+')">&#11088;</button>'
+            +'<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="addExp(\''+id+'\','+r+')">&#128228;</button>'
           +'</div>'
           +'<div class="cv2-row-sec">'
-            +'<button class="cv2-icon-btn" onclick="editarC(\''+uid+'\','+r+')">&#9999;&#65039;</button>'
+            +'<button class="cv2-icon-btn" onclick="editC(\''+id+'\','+r+')">&#9999;&#65039;</button>'
             +cBtn
-            +'<button class="cap cap-green" style="max-width:82px" onclick="entregado(\''+uid+'\','+r+')">&#10003; Entregado</button>'
+            +'<button class="cap cap-green" style="max-width:82px" onclick="deliver(\''+id+'\','+r+')">&#10003; Entregado</button>'
             +mvBtn
-            +'<button class="cap cap-red" style="max-width:54px" onclick="borrar(\''+uid+'\','+r+')">&#128465;</button>'
+            +'<button class="cap cap-red" style="max-width:54px" onclick="del(\''+id+'\','+r+')">&#128465;</button>'
           +'</div>'
         +'</div>'
       +'</div></div>';
@@ -436,179 +439,186 @@ function renderPage(r){
 }
 
 function renderExp(r){
-  var dk=r===2,le=document.getElementById('list'+r),exp=GE(r);
+  var le=document.getElementById('list'+r), exp=ex[r];
   if(!exp.length){le.innerHTML='<div class="empty"><span class="empty-icon">&#128228;</span><p>No hay contactos aqu&#237;</p></div>';return;}
   le.innerHTML='<div style="padding:10px">'
     +'<button class="ibtn ibtn-primary" onclick="dlJSON('+r+')" style="margin-bottom:8px;">&#11015; Descargar JSON ('+exp.length+')</button>'
-    +'<button class="ibtn ibtn-danger" style="margin-bottom:16px" onclick="if(confirm(\'Limpiar lista?\')){if('+r+'===1)ex1=[];else ex2=[];guardar('+r+')}">&#128465; Limpiar lista</button>'
-    +exp.map(function(c){return'<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+cod(c).toLocaleString()+' &middot; '+(c.telefono||'&mdash;')+'</div></div><button class="ec-btn" onclick="qExp(\''+c._uid+'\','+r+')">&#10005; Quitar</button></div>';}).join('')
+    +'<button class="ibtn ibtn-danger" style="margin-bottom:16px" onclick="if(confirm(\'Limpiar lista?\')){ex['+r+']=[];save('+r+')}">&#128465; Limpiar lista</button>'
+    +exp.map(function(c){return'<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+cod(c).toLocaleString()+' &middot; '+(c.telefono||'&mdash;')+'</div></div><button class="ec-btn" onclick="rmExp(\''+c._uid+'\','+r+')">&#10005; Quitar</button></div>';}).join('')
     +'</div>';
 }
 
-function moverA(uid,de,a){
-  var src=GC(de),idx=src.findIndex(function(x){return x._uid===uid;});
-  if(idx===-1)return;
-  var c=src.splice(idx,1)[0];
-  var el=document.getElementById('card-'+uid);
-  function mv(){c.estado='pendiente';if(a===1)cl1.push(c);else cl2.push(c);guardar(de);guardar(a);toast('Ficha movida a Ruta '+a,'success');}
+// ── CARD ACTIONS ──
+function moveCard(id,from,to){
+  var idx=cl[from].findIndex(function(x){return x._uid===id;});
+  if(idx===-1) return;
+  var c=cl[from].splice(idx,1)[0];
+  var el=document.getElementById('card-'+id);
+  function mv(){c.estado='pendiente';cl[to].push(c);save(from);save(to);showToast('Ficha movida a Ruta '+to,'success');}
   if(el){el.classList.add('card-moving');setTimeout(mv,300);}else mv();
 }
 function moverTodos(){
-  if(!confirm('Mover todos los pendientes de Ruta a Ruta 2?'))return;
-  var p=cl1.filter(function(c){return!c.estado||c.estado==='pendiente';});
-  p.forEach(function(c){c.estado='pendiente';cl2.push(c);});
-  cl1=cl1.filter(function(c){return c.estado&&c.estado!=='pendiente';});
-  guardar();toast(p.length+' clientes movidos a Ruta 2','success');
+  if(!confirm('Mover todos los pendientes de Ruta a Ruta 2?')) return;
+  var p=cl[1].filter(function(c){return!c.estado||c.estado==='pendiente';});
+  p.forEach(function(c){c.estado='pendiente';cl[2].push(c);});
+  cl[1]=cl[1].filter(function(c){return c.estado&&c.estado!=='pendiente';});
+  save();showToast(p.length+' clientes movidos a Ruta 2','success');
 }
-
-function moverOrden(uid,r,d){
-  var cl=GC(r),data=getDatos(r,GT(r));
-  var vp=data.findIndex(function(x){return x._uid===uid;}),vn=vp+d;
-  if(vn<0||vn>=data.length)return;
-  var ia=cl.findIndex(function(x){return x._uid===uid;}),ib=cl.findIndex(function(x){return x._uid===data[vn]._uid;});
-  var tmp=cl[ia];cl[ia]=cl[ib];cl[ib]=tmp;guardar(r);
+function reorder(id,r,d){
+  var data=getData(r,tabs[r]);
+  var vp=data.findIndex(function(x){return x._uid===id;}), vn=vp+d;
+  if(vn<0||vn>=data.length) return;
+  var ia=cl[r].findIndex(function(x){return x._uid===id;}), ib=cl[r].findIndex(function(x){return x._uid===data[vn]._uid;});
+  var tmp=cl[r][ia]; cl[r][ia]=cl[r][ib]; cl[r][ib]=tmp; save(r);
 }
-function completar(uid,r){var cl=GC(r),c=cl.find(function(x){return x._uid===uid;});if(!c)return;c.estado='completado';cl.push(cl.splice(cl.indexOf(c),1)[0]);guardar(r);}
-function devolver(uid,r){var c=GC(r).find(function(x){return x._uid===uid;});if(c){c.estado='pendiente';guardar(r);}}
-function borrar(uid,r){
-  if(!confirm('Eliminar este cliente?'))return;
-  if(r===1){cl1=cl1.filter(function(x){return x._uid!==uid;});ex1=ex1.filter(function(x){return x._uid!==uid;});}
-  else{cl2=cl2.filter(function(x){return x._uid!==uid;});ex2=ex2.filter(function(x){return x._uid!==uid;});}
-  guardar(r);toast('Cliente eliminado','info');
+function noContesta(id,r){
+  var c=cl[r].find(function(x){return x._uid===id;}); if(!c) return;
+  c.estado='completado'; cl[r].push(cl[r].splice(cl[r].indexOf(c),1)[0]); save(r);
 }
-function entregado(uid,r){
-  if(!confirm('Confirmar entrega?'))return;
-  if(r===1){cl1=cl1.filter(function(x){return x._uid!==uid;});ex1=ex1.filter(function(x){return x._uid!==uid;});}
-  else{cl2=cl2.filter(function(x){return x._uid!==uid;});ex2=ex2.filter(function(x){return x._uid!==uid;});}
-  var mw=document.getElementById(r===1?'route-map-wrap':'route-map-wrap2');if(mw)mw.dataset.gc='';
-  guardar(r);toast('&#10003; Entregado','success');
+function revert(id,r){var c=cl[r].find(function(x){return x._uid===id;});if(c){c.estado='pendiente';save(r);}}
+function del(id,r){
+  if(!confirm('Eliminar este cliente?')) return;
+  cl[r]=cl[r].filter(function(x){return x._uid!==id;}); ex[r]=ex[r].filter(function(x){return x._uid!==id;});
+  save(r); showToast('Eliminado','info');
 }
-function tgColor(uid,r){var c=GC(r).find(function(x){return x._uid===uid;});if(!c)return;if(!c.colorMark)c.colorMark='blue';else if(c.colorMark==='blue')c.colorMark='red';else c.colorMark=null;guardar(r);}
-function addExport(uid,r){
-  var c=GC(r).find(function(x){return x._uid===uid;});if(!c)return;
-  var exp=GE(r);if(exp.find(function(x){return x._uid===uid;}))return toast('Ya est&#225; en la lista','info');
-  exp.push(Object.assign({},c));c.estado='completado';
-  var cl=GC(r),idx=cl.indexOf(c);cl.push(cl.splice(idx,1)[0]);
-  guardar(r);toast(c.nombre+' &#8594; Exportar','success');
+function deliver(id,r){
+  if(!confirm('Confirmar entrega?')) return;
+  cl[r]=cl[r].filter(function(x){return x._uid!==id;}); ex[r]=ex[r].filter(function(x){return x._uid!==id;});
+  document.getElementById('map-wrap'+r).dataset.gc='';
+  save(r); showToast('Entregado','success');
 }
-function qExp(uid,r){
-  if(r===1)ex1=ex1.filter(function(x){return x._uid!==uid;});else ex2=ex2.filter(function(x){return x._uid!==uid;});
-  var c=GC(r).find(function(x){return x._uid===uid;});if(c)c.estado='pendiente';guardar(r);
+function tgColor(id,r){
+  var c=cl[r].find(function(x){return x._uid===id;}); if(!c) return;
+  if(!c.colorMark) c.colorMark='blue'; else if(c.colorMark==='blue') c.colorMark='red'; else c.colorMark=null;
+  save(r);
+}
+function addExp(id,r){
+  var c=cl[r].find(function(x){return x._uid===id;}); if(!c) return;
+  if(ex[r].find(function(x){return x._uid===id;})) return showToast('Ya en la lista','info');
+  ex[r].push(Object.assign({},c)); c.estado='completado';
+  cl[r].push(cl[r].splice(cl[r].indexOf(c),1)[0]); save(r); showToast(c.nombre+' exportado','success');
+}
+function rmExp(id,r){
+  ex[r]=ex[r].filter(function(x){return x._uid!==id;});
+  var c=cl[r].find(function(x){return x._uid===id;}); if(c) c.estado='pendiente'; save(r);
 }
 function dlJSON(r){
-  var exp=GE(r),def='llega_ya_ruta'+r+'_'+new Date().toISOString().slice(0,10);
-  var n=prompt('Nombre del archivo:',def);if(!n)return;n=n.replace(/\.json$/i,'');
-  var b=new Blob([JSON.stringify({clientes:exp.map(function(c){return{_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:cod(c),lat:c.lat||null,lng:c.lng||null,nota:c.nota||'',estado:'pendiente'};})},null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n+'.json';a.click();
+  var def='llega_ya_ruta'+r+'_'+new Date().toISOString().slice(0,10);
+  var n=prompt('Nombre del archivo:',def); if(!n) return; n=n.replace(/\.json$/i,'');
+  var b=new Blob([JSON.stringify({clientes:ex[r].map(function(c){return{_uid:c._uid,nombre:c.nombre||'',telefono:c.telefono||'',cod:cod(c),lat:c.lat||null,lng:c.lng||null,nota:c.nota||'',estado:'pendiente'};})},null,2)],{type:'application/json'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n+'.json'; a.click();
 }
 
-function abrirNuevo(r){document.getElementById('eid').value='';document.getElementById('eruta').value=r;document.getElementById('mct').textContent='Nuevo Cliente — Ruta '+r;['cN','cT','cC','cX'].forEach(function(id){document.getElementById(id).value='';});openModal('modalCliente');}
-function editarC(uid,r){var c=GC(r).find(function(x){return x._uid===uid;});if(!c)return;document.getElementById('eid').value=uid;document.getElementById('eruta').value=r;document.getElementById('mct').textContent='Editar Cliente';document.getElementById('cN').value=c.nombre||'';document.getElementById('cT').value=c.telefono||'';document.getElementById('cC').value=cod(c)||'';document.getElementById('cX').value=(c.lat&&c.lng)?c.lat+','+c.lng:'';openModal('modalCliente');}
-function guardarCliente(){
-  var eid=document.getElementById('eid').value,r=parseInt(document.getElementById('eruta').value)||1;
-  var n=document.getElementById('cN').value.trim(),t=document.getElementById('cT').value.trim();
-  var cv=document.getElementById('cC').value.trim(),xv=document.getElementById('cX').value.trim();
+// ── CLIENTE MODAL ──
+function abrirNuevo(r){document.getElementById('eId').value='';document.getElementById('eRuta').value=r;document.getElementById('mCT').textContent='Nuevo Cliente — Ruta '+r;['cN','cT','cC','cX'].forEach(function(i){document.getElementById(i).value='';});openM('mCliente');}
+function editC(id,r){var c=cl[r].find(function(x){return x._uid===id;});if(!c)return;document.getElementById('eId').value=id;document.getElementById('eRuta').value=r;document.getElementById('mCT').textContent='Editar Cliente';document.getElementById('cN').value=c.nombre||'';document.getElementById('cT').value=c.telefono||'';document.getElementById('cC').value=cod(c)||'';document.getElementById('cX').value=(c.lat&&c.lng)?c.lat+','+c.lng:'';openM('mCliente');}
+function saveCliente(){
+  var eid=document.getElementById('eId').value, r=parseInt(document.getElementById('eRuta').value)||1;
+  var n=document.getElementById('cN').value.trim(), t=document.getElementById('cT').value.trim();
+  var cv=document.getElementById('cC').value.trim(), xv=document.getElementById('cX').value.trim();
   if(eid){
-    var c=GC(r).find(function(x){return x._uid===eid;});
+    var c=cl[r].find(function(x){return x._uid===eid;});
     if(c){if(n)c.nombre=n;if(t)c.telefono=t.replace(/\D/g,'');if(cv)c.cod=parseFloat(cv)||0;if(xv){var m=xv.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/);if(m){c.lat=parseFloat(m[1]);c.lng=parseFloat(m[2]);}}}
-    guardar(r);closeModal('modalCliente');toast('Cliente actualizado','success');
+    save(r);closeM('mCliente');showToast('Cliente actualizado','success');
   }else{
-    if(!n){toast('El nombre es requerido','error');return;}
+    if(!n){showToast('Nombre requerido','error');return;}
     var cm=xv?xv.match(/(-?\d+\.?\d*)[,\s]+(-?\d+\.?\d*)/):null;
-    var nuevo={_uid:gid(),nombre:n,telefono:t.replace(/\D/g,''),cod:parseFloat(cv)||0,nota:'',lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'};
-    if(r===1)cl1.push(nuevo);else cl2.push(nuevo);
-    guardar(r);closeModal('modalCliente');toast('Cliente agregado','success');
+    cl[r].push({_uid:uid(),nombre:n,telefono:t.replace(/\D/g,''),cod:parseFloat(cv)||0,nota:'',lat:cm?parseFloat(cm[1]):null,lng:cm?parseFloat(cm[2]):null,estado:'pendiente'});
+    save(r);closeM('mCliente');showToast('Cliente agregado','success');
   }
 }
 
-function cargarExcel(e,r){var f=e.target.files[0];if(!f)return;e.target.value='';leerXL(f,r);}
-function cargarJSON(e,r){
+// ── LOAD FILES ──
+function loadXL(e,r){var f=e.target.files[0];if(!f)return;e.target.value='';readXL(f,r);}
+function loadJSON(e,r){
   var f=e.target.files[0];if(!f)return;e.target.value='';
   var rd=new FileReader();
   rd.onload=function(ev){
     try{
       var d=JSON.parse(ev.target.result),lista=d.clientes||d;
-      if(!Array.isArray(lista)||!lista.length){toast('JSON vac&#237;o','error');return;}
-      var cl=GC(r),bu=new Set(cl.map(function(c){return c._uid;})),ag=0,om=0;
+      if(!Array.isArray(lista)||!lista.length){showToast('JSON vacio','error');return;}
+      var bu=new Set(cl[r].map(function(c){return c._uid;})),ag=0,om=0;
       lista.forEach(function(c){
         if(!c._uid||bu.has(String(c._uid))){om++;return;}
         bu.add(String(c._uid));
-        cl.push({_uid:String(c._uid),nombre:c.nombre||'',telefono:String(c.telefono||'').replace(/\D/g,''),cod:parseFloat(c.cod)||0,nota:c.nota||c.note||'',lat:c.lat||null,lng:c.lng||null,estado:'pendiente'});
+        cl[r].push({_uid:String(c._uid),nombre:c.nombre||'',telefono:String(c.telefono||'').replace(/\D/g,''),cod:parseFloat(c.cod)||0,nota:c.nota||c.note||'',lat:c.lat||null,lng:c.lng||null,estado:'pendiente'});
         ag++;
       });
-      guardar(r);toast('&#10003; '+ag+' fichas'+(om?' &middot; &#9888; '+om+' dup.':''),'success');
-    }catch(err){toast('Error JSON: '+err.message,'error');}
+      save(r);showToast(ag+' fichas'+(om?' / '+om+' dup.':''),'success');
+    }catch(err){showToast('Error JSON','error');}
   };rd.readAsText(f);
 }
-function leerXL(file,r){
+function readXL(file,r){
   var rd=new FileReader();
   rd.onload=function(ev){
     try{
       var wb=XLSX.read(ev.target.result,{type:'binary'}),ws=wb.Sheets[wb.SheetNames[0]],raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-      if(!raw.length){toast('Archivo vac&#237;o','error');return;}
+      if(!raw.length){showToast('Archivo vacio','error');return;}
       var hi=-1;
       for(var i=0;i<Math.min(raw.length,8);i++){var rs=raw[i].join('|').toLowerCase();if(rs.indexOf('code')>-1||rs.indexOf('dropoff')>-1||rs.indexOf('cod')>-1||rs.indexOf('tel')>-1){hi=i;break;}}
-      if(hi===-1){toast('Sin encabezados','error');return;}
+      if(hi===-1){showToast('Sin encabezados','error');return;}
       var hd=raw[hi],rows=[];
       for(var j=hi+1;j<raw.length;j++){var o={};hd.forEach(function(h,k){o[String(h).trim()]=raw[j][k]||'';});rows.push(o);}
       function fc(row,cs){var ks=Object.keys(row);for(var i=0;i<cs.length;i++){var f=ks.find(function(k){return k.trim().toLowerCase()===cs[i].toLowerCase();});if(f)return f;}for(var i=0;i<cs.length;i++){var f=ks.find(function(k){return k.trim().toLowerCase().indexOf(cs[i].toLowerCase())>-1;});if(f)return f;}return null;}
-      if(!rows.length){toast('Sin filas','error');return;}
+      if(!rows.length){showToast('Sin filas','error');return;}
       var s=rows[0];
-      var cN=fc(s,['dropoff contact name','receiver','contacto','nombre','name','destinatario']);
-      var cT=fc(s,['dropoff contact','telefono','tel\u00e9fono','phone','tel','celular','whatsapp']);
-      var cC=fc(s,['cod','monto','amount','valor','precio']);
-      var cO=fc(s,['note','nota','notas','producto','descripcion','referencia']);
-      var cZ=fc(s,['zone','zona','sector','area']);
-      var cI=fc(s,['code','codigo','c\u00f3digo','orderid','order_no','orderno','id']);
+      var cN2=fc(s,['dropoff contact name','receiver','contacto','nombre','name','destinatario']);
+      var cT2=fc(s,['dropoff contact','telefono','phone','tel','celular','whatsapp']);
+      var cC2=fc(s,['cod','monto','amount','valor','precio']);
+      var cO2=fc(s,['note','nota','notas','producto','descripcion','referencia']);
+      var cZ2=fc(s,['zone','zona','sector','area']);
+      var cI2=fc(s,['code','codigo','orderid','order_no','orderno','id']);
       var used={};
       var lista=rows.map(function(row){
-        var n=cN?String(row[cN]||'').trim():'',t=cT?String(row[cT]||'').trim():'';
-        var c2=cC?parseFloat(String(row[cC]||'0').replace(/[^0-9.]/g,''))||0:0;
-        var nt=cO?String(row[cO]||'').trim():'',zo=cZ?String(row[cZ]||'').trim():'';
-        var cd=cI?String(row[cI]||'').trim():'';
+        var n=cN2?String(row[cN2]||'').trim():'', t=cT2?String(row[cT2]||'').trim():'';
+        var c2=cC2?parseFloat(String(row[cC2]||'0').replace(/[^0-9.]/g,''))||0:0;
+        var nt=cO2?String(row[cO2]||'').trim():'', zo=cZ2?String(row[cZ2]||'').trim():'';
+        var cd=cI2?String(row[cI2]||'').trim():'';
         if(nt==='-')nt='';if(!n&&!t)return null;
         t=t.replace(/\D/g,'');
         if(t.length===10&&t[0]!=='1')t='1'+t;else if(t.length===7)t='1809'+t;
-        var uid=cd&&!used[cd]?cd:gid();if(cd)used[cd]=1;
-        return{nombre:n,telefono:t,cod:c2,nota:nt,zone:zo,lat:null,lng:null,estado:'pendiente',_uid:uid};
+        var newUid=cd&&!used[cd]?cd:uid();if(cd)used[cd]=1;
+        return{nombre:n,telefono:t,cod:c2,nota:nt,zone:zo,lat:null,lng:null,estado:'pendiente',_uid:newUid};
       }).filter(Boolean);
-      if(!lista.length){toast('Sin clientes v\u00e1lidos','error');return;}
-      var cl=GC(r),bu=new Set(cl.map(function(c){return c._uid;})),ag=0,om=0;
-      lista.forEach(function(x){if(bu.has(x._uid)){om++;return;}bu.add(x._uid);cl.push(x);ag++;});
-      guardar(r);toast('&#10003; '+ag+' cargados'+(om?' &middot; &#9888; '+om+' dup.':''),'success');
-    }catch(err){toast('Error: '+err.message,'error');}
+      if(!lista.length){showToast('Sin clientes validos','error');return;}
+      var bu=new Set(cl[r].map(function(c){return c._uid;})),ag=0,om=0;
+      lista.forEach(function(x){if(bu.has(x._uid)){om++;return;}bu.add(x._uid);cl[r].push(x);ag++;});
+      save(r);showToast(ag+' cargados'+(om?' / '+om+' dup.':''),'success');
+    }catch(err){showToast('Error al leer','error');}
   };rd.readAsBinaryString(file);
 }
 
+// ── NEAREST ──
 function sortNearest(r){
-  var cl=GC(r),pend=cl.filter(function(c){return(c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng;}),resto=cl.filter(function(c){return!((c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng);});
-  if(!pend.length){toast('Sin GPS','error');return;}
-  if(!navigator.geolocation){toast('GPS no disponible','error');return;}
+  var pend=cl[r].filter(function(c){return(c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng;});
+  var resto=cl[r].filter(function(c){return!((c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng);});
+  if(!pend.length){showToast('Sin GPS','error');return;}
+  if(!navigator.geolocation){showToast('GPS no disponible','error');return;}
   function hv(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
   function t2(o,rt){var ok=true;while(ok){ok=false;for(var i=0;i<rt.length-1;i++){for(var j=i+2;j<rt.length;j++){var a0=i===0?o:rt[i-1],a1=rt[i],b0=rt[j],b1=j+1<rt.length?rt[j+1]:null;var bf=hv(a0.lat,a0.lng,a1.lat,a1.lng)+(b1?hv(b0.lat,b0.lng,b1.lat,b1.lng):0),af=hv(a0.lat,a0.lng,b0.lat,b0.lng)+(b1?hv(a1.lat,a1.lng,b1.lat,b1.lng):0);if(af<bf-0.001){rt=rt.slice(0,i).concat(rt.slice(i,j+1).reverse()).concat(rt.slice(j+1));ok=true;}}}}return rt;}
   function build(o,pts){var p=pts.slice(),res=[],la=o.lat,ln=o.lng;while(p.length){var bi=0,bm=Infinity;p.forEach(function(c,j){var d=hv(la,ln,c.lat,c.lng);if(d<bm){bm=d;bi=j;}});var n=p.splice(bi,1)[0];res.push(n);la=n.lat;ln=n.lng;}return t2(o,res);}
   navigator.geolocation.getCurrentPosition(function(pos){
     var o={lat:pos.coords.latitude,lng:pos.coords.longitude},ord=build(o,pend);
-    if(r===1)cl1=ord.concat(resto);else cl2=ord.concat(resto);
-    guardar(r);switchTab(r,'pendientes');drawMap(o,ord,r);
-    document.getElementById(r===1?'route-map-wrap':'route-map-wrap2').dataset.gc=String(ord.length);
-    toast('Ruta optimizada: '+ord.length+' paradas','success');
-  },function(){toast('No se pudo obtener ubicaci\u00f3n','error');},{timeout:10000,enableHighAccuracy:true});
+    cl[r]=ord.concat(resto);save(r);switchTab(r,'pendientes');drawMap(o,ord,r);
+    document.getElementById('map-wrap'+r).dataset.gc=String(ord.length);
+    showToast('Ruta optimizada: '+ord.length+' paradas','success');
+  },function(){showToast('No se pudo obtener ubicacion','error');},{timeout:10000,enableHighAccuracy:true});
 }
 
+// ── MAP ──
 function drawMap(origin,pts,r){
-  if(!pts.length)return;
-  var dk=r===2,wrap=document.getElementById(r===1?'route-map-wrap':'route-map-wrap2'),cv=document.getElementById(r===1?'rmc1':'rmc2');
+  if(!pts.length) return;
+  var dk=r===2, wrap=document.getElementById('map-wrap'+r), cv=document.getElementById('mc'+r);
   wrap.style.display='block';
-  var ho=origin&&origin.lat&&origin.lng,all=(ho?[origin]:[]).concat(pts.map(function(c){return{lat:c.lat,lng:c.lng};}));
-  var mn={lat:Infinity,lng:Infinity},mx={lat:-Infinity,lng:-Infinity};
+  var ho=origin&&origin.lat&&origin.lng, all=(ho?[origin]:[]).concat(pts.map(function(c){return{lat:c.lat,lng:c.lng};}));
+  var mn={lat:Infinity,lng:Infinity}, mx={lat:-Infinity,lng:-Infinity};
   all.forEach(function(p){mn.lat=Math.min(mn.lat,p.lat);mx.lat=Math.max(mx.lat,p.lat);mn.lng=Math.min(mn.lng,p.lng);mx.lng=Math.max(mx.lng,p.lng);});
-  var ls=(mx.lat-mn.lat)||0.01,gs=(mx.lng-mn.lng)||0.01;
+  var ls=(mx.lat-mn.lat)||0.01, gs=(mx.lng-mn.lng)||0.01;
   mn.lat-=ls*.18;mx.lat+=ls*.18;mn.lng-=gs*.18;mx.lng+=gs*.18;
-  var W=wrap.offsetWidth||340,H=Math.round(W*.58);
+  var W=wrap.offsetWidth||340, H=Math.round(W*.58);
   cv.width=W*2;cv.height=H*2;cv.style.height=H+'px';
   var ctx=cv.getContext('2d');ctx.scale(2,2);
-  var sx=function(lng){return(lng-mn.lng)/(mx.lng-mn.lng)*W;},sy=function(lat){return H-(lat-mn.lat)/(mx.lat-mn.lat)*H;};
+  var sx=function(lng){return(lng-mn.lng)/(mx.lng-mn.lng)*W;}, sy=function(lat){return H-(lat-mn.lat)/(mx.lat-mn.lat)*H;};
   ctx.fillStyle=dk?'#0f172a':'#eef2f7';ctx.fillRect(0,0,W,H);
   ctx.strokeStyle=dk?'#1e293b':'#dde3ec';ctx.lineWidth=.6;
   for(var i=1;i<=4;i++){var gx=W*i/5,gy=H*i/5;ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke();ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke();}
@@ -621,58 +631,89 @@ function drawMap(origin,pts,r){
   if(ho){var ox=sx(origin.lng),oy=sy(origin.lat);ctx.fillStyle='rgba(22,163,74,.2)';ctx.beginPath();ctx.arc(ox,oy,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#16a34a';ctx.beginPath();ctx.arc(ox,oy,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ox,oy,2.5,0,Math.PI*2);ctx.fill();}
   pts.forEach(function(c,i){var x=sx(c.lng),y=sy(c.lat);ctx.fillStyle='rgba(0,0,0,.13)';ctx.beginPath();ctx.arc(x+1,y+1.5,11,0,Math.PI*2);ctx.fill();ctx.fillStyle=dk?'#1d4ed8':'#2563eb';ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(x,y,11,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 8.5px -apple-system,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i+1,x,y);});
   function hv2(a,b,c,d){var R=6371,dL=(c-a)*Math.PI/180,dG=(d-b)*Math.PI/180,x=Math.pow(Math.sin(dL/2),2)+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.pow(Math.sin(dG/2),2);return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
-  var td=0,seq=(ho?[origin]:[]).concat(pts);for(var ii=0;ii<seq.length-1;ii++)td+=hv2(seq[ii].lat,seq[ii].lng,seq[ii+1].lat,seq[ii+1].lng);
-  document.getElementById(r===1?'rmi1':'rmi2').textContent=pts.length+' paradas \u00b7 ~'+td.toFixed(1)+' km';
+  var td=0, seq=(ho?[origin]:[]).concat(pts);
+  for(var ii=0;ii<seq.length-1;ii++) td+=hv2(seq[ii].lat,seq[ii].lng,seq[ii+1].lat,seq[ii+1].lng);
+  document.getElementById('mi'+r).textContent=pts.length+' paradas \u00b7 ~'+td.toFixed(1)+' km';
 }
-function abrirMaps(r){
-  var pend=GC(r).filter(function(c){return(c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng;});
-  if(!pend.length){toast('Sin GPS','error');return;}
-  var stops=pend.slice(0,10),dest=stops[stops.length-1];
+function openMaps(r){
+  var pend=cl[r].filter(function(c){return(c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng;});
+  if(!pend.length){showToast('Sin GPS','error');return;}
+  var stops=pend.slice(0,10), dest=stops[stops.length-1];
   var wp=stops.slice(0,stops.length-1).map(function(c){return c.lat+','+c.lng;}).join('|');
   window.open('https://www.google.com/maps/dir/?api=1&destination='+dest.lat+','+dest.lng+'&waypoints='+encodeURIComponent(wp)+'&travelmode=driving','_blank');
 }
 
-var waEst=[
-  {key:'pendiente',icon:'&#128230;',label:'Pendiente',color:'active-pendiente',msg:function(n,p){return'[LLEGA YA] Hola '+n+'! Tu pedido '+p+' est\u00e1 pendiente.\n\nComparte tu ubicaci\u00f3n para coordinar la entrega.';}},
-  {key:'proceso',icon:'&#128336;',label:'En proceso',color:'active-proceso',msg:function(n,p){return'[LLEGA YA] Hola '+n+'! Tu pedido '+p+' est\u00e1 en proceso.';}},
-  {key:'transito',icon:'&#128666;',label:'En tr\u00e1nsito',color:'active-transito',msg:function(n,p){return'[LLEGA YA] Hola '+n+'! Tu pedido '+p+' est\u00e1 en camino. &#128666;';}},
-  {key:'entregado',icon:'&#9989;',label:'Entregado',color:'active-entregado',msg:function(n,p){return'[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue entregado. &#9989; Gracias!';}},
-  {key:'devuelto',icon:'&#10060;',label:'Devuelto / Cancelado',color:'active-devuelto',msg:function(n,p){return'[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.';}}
+// ── WHATSAPP ──
+var waStates = [
+  {key:'pendiente', icon:'&#128230;', label:'Pendiente', cls:'st-pendiente',
+   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta pendiente.\n\nComparte tu ubicacion para coordinar la entrega.';}},
+  {key:'proceso', icon:'&#128336;', label:'En proceso', cls:'st-proceso',
+   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta en proceso.\n\nComparte tu ubicacion para coordinar la entrega.';}},
+  {key:'transito', icon:'&#128666;', label:'En transito', cls:'st-transito',
+   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta en camino. &#128666;';}},
+  {key:'entregado', icon:'&#9989;', label:'Entregado', cls:'st-entregado',
+   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue entregado. Gracias!';}},
+  {key:'devuelto', icon:'&#10060;', label:'Devuelto / Cancelado', cls:'st-devuelto',
+   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.';}}
 ];
-function abrirWA(uid,r){
-  wUid=uid;wRuta=r;wSt=null;
-  var c=GC(r).find(function(x){return x._uid===uid;});if(!c)return;
+
+function openWA(id,r){
+  wUid=id; wR=r; wSt=null;
+  var c=cl[r].find(function(x){return x._uid===id;}); if(!c) return;
+  var nombre=(c.nombre||'').split(' ')[0];
+  var prod=c.nota||c.nombre||'tu pedido';
   document.getElementById('waN').textContent=c.nombre||'Sin nombre';
   document.getElementById('waT').textContent='+'+(c.telefono||'');
-  document.getElementById('waE').innerHTML=waEst.map(function(e){return'<button class="wa-estado-btn" id="wab-'+e.key+'" onclick="selWA(\''+e.key+'\',\''+encodeURIComponent((c.nombre||'').split(' ')[0])+'\',\''+encodeURIComponent(c.nota||c.nombre||'tu pedido')+'\')"><span class="wa-icon">'+e.icon+'</span>'+e.label+'</button>';}).join('');
-  document.getElementById('waM').value='';document.getElementById('waCC').textContent='';openModal('modalWA');
+  document.getElementById('waE').innerHTML=waStates.map(function(s){
+    return '<button class="wa-btn" id="wb-'+s.key+'" onclick="selWA(\''+s.key+'\',\''+encodeURIComponent(nombre)+'\',\''+encodeURIComponent(prod)+'\')"><span style="font-size:1.1rem;width:24px;text-align:center;">'+s.icon+'</span>'+s.label+'</button>';
+  }).join('');
+  document.getElementById('waM').value='';
+  document.getElementById('waCC').textContent='';
+  openM('mWA');
 }
+
 function selWA(key,n64,p64){
-  wSt=key;var n=decodeURIComponent(n64),p=decodeURIComponent(p64);
-  document.querySelectorAll('.wa-estado-btn').forEach(function(b){b.className='wa-estado-btn';});
-  var e=waEst.find(function(x){return x.key===key;});
-  document.getElementById('wab-'+key).classList.add(e.color);
-  var m=e.msg(n,p);document.getElementById('waM').value=m;document.getElementById('waCC').textContent=m.length+' chars';
-}
-function enviarWA(){
-  if(!wSt){toast('Selecciona un estado','error');return;}
-  var c=GC(wRuta).find(function(x){return x._uid===wUid;});if(!c||!c.telefono){toast('Sin tel\u00e9fono','error');return;}
-  var w=window.open('https://wa.me/'+c.telefono.replace(/\D/g,'')+'?text='+encodeURIComponent(document.getElementById('waM').value),'_blank');
-  if(!w){toast('Permite ventanas emergentes','error');return;}
-  c.waEstado=wSt;guardar(wRuta);closeModal('modalWA');toast('Mensaje enviado','success');
+  wSt=key;
+  var n=decodeURIComponent(n64), p=decodeURIComponent(p64);
+  document.querySelectorAll('.wa-btn').forEach(function(b){b.className='wa-btn';});
+  var s=waStates.find(function(x){return x.key===key;});
+  document.getElementById('wb-'+key).classList.add(s.cls);
+  var msg=s.msg(n,p);
+  document.getElementById('waM').value=msg;
+  document.getElementById('waCC').textContent=msg.length+' chars';
 }
 
-function toast(msg,type){
-  var t=document.getElementById('toast');t.innerHTML=msg;t.className='toast-inv '+(type||'info')+' show';
-  clearTimeout(tTimer);tTimer=setTimeout(function(){t.classList.remove('show');},2800);
+function sendWA(){
+  if(!wSt){showToast('Selecciona un estado','error');return;}
+  var c=cl[wR].find(function(x){return x._uid===wUid;});
+  if(!c||!c.telefono){showToast('Sin telefono','error');return;}
+  var tel=c.telefono.replace(/\D/g,'');
+  var msg=document.getElementById('waM').value;
+  // Save state and close modal FIRST, then open WA
+  c.waEstado=wSt;
+  save(wR);
+  closeM('mWA');
+  showToast('Abriendo WhatsApp...','success');
+  setTimeout(function(){
+    window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+  },300);
 }
 
+// ── TOAST ──
+function showToast(msg,type){
+  var t=document.getElementById('tst');
+  t.innerHTML=msg; t.className='toast '+(type||'info')+' show';
+  clearTimeout(tTimer);
+  tTimer=setTimeout(function(){t.classList.remove('show');},2800);
+}
+
+// ── INIT ──
 (function(){
   ['pendientes','sin_ubicacion','completados','exportar'].forEach(function(t,i){
-    document.querySelectorAll('#tabs1 .tab')[i].classList.toggle('active',t===tab1);
-    document.querySelectorAll('#tabs2 .tab')[i].classList.toggle('active',t===tab2);
+    document.querySelectorAll('#tabs1 .tab')[i].classList.toggle('active',t===tabs[1]);
+    document.querySelectorAll('#tabs2 .tab')[i].classList.toggle('active',t===tabs[2]);
   });
-  renderPage(1);renderPage(2);updCounts();
+  render(1); render(2); updCounts();
 })();
 </script>
 
