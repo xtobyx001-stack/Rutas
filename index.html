@@ -301,7 +301,7 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
     <div id="waE"></div>
     <div id="waFechaWrap" style="display:none;margin-top:14px;">
       <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Fecha de entrega</div>
-      <input type="date" id="waFecha" style="width:100%;padding:12px 13px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;font-size:.9rem;" onchange="actualizarMsgConFecha()">
+      <input type="date" id="waFecha" style="width:100%;padding:12px 13px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;font-size:.9rem;" onchange="localStorage.setItem('lly_fecha',this.value);actualizarMsgConFecha()">
     </div>
     <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:16px;">Mensaje <span id="waCC" style="float:right;color:#2563eb;"></span></div>
     <textarea id="waM" rows="4" style="width:100%;padding:12px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;font-size:.84rem;color:#0f172a;resize:none;line-height:1.5;" oninput="var n=this.value.length;var el=document.getElementById('waCC');el.textContent=n+' chars';el.style.color=n>4000?'#dc2626':n>300?'#f59e0b':'#2563eb';"></textarea>
@@ -677,7 +677,9 @@ function openWA(id,r){
   document.getElementById('waM').value='';
   document.getElementById('waCC').textContent='';
   document.getElementById('waFechaWrap').style.display='none';
-  document.getElementById('waFecha').value='';
+  // Restore saved global fecha
+  var savedFecha=localStorage.getItem('lly_fecha')||'';
+  document.getElementById('waFecha').value=savedFecha;
   openM('mWA');
 }
 
@@ -691,6 +693,7 @@ function selWA(key,n64,p64){
   var fechaWrap=document.getElementById('waFechaWrap');
   fechaWrap.style.display=s.useFecha?'block':'none';
   if(!s.useFecha) document.getElementById('waFecha').value='';
+  if(s.useFecha){var saved=localStorage.getItem('lly_fecha')||'';if(saved&&!document.getElementById('waFecha').value)document.getElementById('waFecha').value=saved;}
   var fecha=s.useFecha?document.getElementById('waFecha').value:'';
   var fechaStr=fecha?formatFecha(fecha):'';
   var msg=s.msg(n,p,fechaStr);
