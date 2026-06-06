@@ -138,6 +138,7 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .wa-btn.st-transito{background:#eff6ff;border-color:#3b82f6;color:#1d4ed8;}
 .wa-btn.st-entregado{background:#dcfce7;border-color:#16a34a;color:#166534;}
 .wa-btn.st-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
+.wa-btn.st-ultimo{background:#fdf4ff;border-color:#d8b4fe;color:#7e22ce;}
 /* TOAST */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:700;z-index:700;transition:transform .3s ease;white-space:nowrap;color:#fff;pointer-events:none;}
 .toast.show{transform:translateX(-50%) translateY(0);}
@@ -298,6 +299,10 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
     </div>
     <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Nuevo Estado</div>
     <div id="waE"></div>
+    <div id="waFechaWrap" style="display:none;margin-top:14px;">
+      <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Fecha de entrega</div>
+      <input type="date" id="waFecha" style="width:100%;padding:12px 13px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;font-size:.9rem;" onchange="actualizarMsgConFecha()">
+    </div>
     <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;margin-top:16px;">Mensaje <span id="waCC" style="float:right;color:#2563eb;"></span></div>
     <textarea id="waM" rows="4" style="width:100%;padding:12px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;font-size:.84rem;color:#0f172a;resize:none;line-height:1.5;" oninput="var n=this.value.length;var el=document.getElementById('waCC');el.textContent=n+' chars';el.style.color=n>4000?'#dc2626':n>300?'#f59e0b':'#2563eb';"></textarea>
     <button onclick="sendWA()" style="width:100%;margin-top:14px;padding:15px;background:#16a34a;color:#fff;border:none;border-radius:16px;font-size:.92rem;font-weight:700;cursor:pointer;">&#128172; Guardar y Notificar</button>
@@ -645,16 +650,18 @@ function openMaps(r){
 
 // ── WHATSAPP ──
 var waStates = [
-  {key:'pendiente', icon:'&#128230;', label:'Pendiente', cls:'st-pendiente',
-   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta pendiente.\n\nComparte tu ubicacion para coordinar la entrega.';}},
-  {key:'proceso', icon:'&#128336;', label:'En proceso', cls:'st-proceso',
-   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta en proceso.\n\nComparte tu ubicacion para coordinar la entrega.';}},
-  {key:'transito', icon:'&#128666;', label:'En transito', cls:'st-transito',
-   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta en camino. &#128666;';}},
-  {key:'entregado', icon:'&#9989;', label:'Entregado', cls:'st-entregado',
-   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue entregado. Gracias!';}},
-  {key:'devuelto', icon:'&#10060;', label:'Devuelto / Cancelado', cls:'st-devuelto',
-   msg:function(n,p){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.';}}
+  {key:'pendiente', icon:'&#128230;', label:'Pendiente', cls:'st-pendiente', useFecha:false,
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta pendiente.\n\nComparte tu ubicacion para coordinar la entrega.';}},
+  {key:'proceso', icon:'&#128336;', label:'En proceso', cls:'st-proceso', useFecha:false,
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta en proceso.\n\nComparte tu ubicacion para coordinar la entrega.';}},
+  {key:'transito', icon:'&#128666;', label:'En transito', cls:'st-transito', useFecha:true,
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta en camino.'+(f?' Fecha estimada de entrega: '+f:'')+'  &#128666;';}},
+  {key:'ultimo', icon:'&#9203;', label:'Ultimo intento de entrega', cls:'st-ultimo', useFecha:true,
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Este es el ULTIMO intento de entrega de tu pedido '+p+'.'+(f?' Fecha: '+f:'')+' Por favor asegurate de estar disponible. De lo contrario el pedido sera devuelto.';}},
+  {key:'entregado', icon:'&#9989;', label:'Entregado', cls:'st-entregado', useFecha:false,
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue entregado. Gracias!';}},
+  {key:'devuelto', icon:'&#10060;', label:'Devuelto / Cancelado', cls:'st-devuelto', useFecha:false,
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.';}}
 ];
 
 function openWA(id,r){
@@ -669,6 +676,8 @@ function openWA(id,r){
   }).join('');
   document.getElementById('waM').value='';
   document.getElementById('waCC').textContent='';
+  document.getElementById('waFechaWrap').style.display='none';
+  document.getElementById('waFecha').value='';
   openM('mWA');
 }
 
@@ -678,9 +687,37 @@ function selWA(key,n64,p64){
   document.querySelectorAll('.wa-btn').forEach(function(b){b.className='wa-btn';});
   var s=waStates.find(function(x){return x.key===key;});
   document.getElementById('wb-'+key).classList.add(s.cls);
-  var msg=s.msg(n,p);
+  // Show/hide fecha field
+  var fechaWrap=document.getElementById('waFechaWrap');
+  fechaWrap.style.display=s.useFecha?'block':'none';
+  if(!s.useFecha) document.getElementById('waFecha').value='';
+  var fecha=s.useFecha?document.getElementById('waFecha').value:'';
+  var fechaStr=fecha?formatFecha(fecha):'';
+  var msg=s.msg(n,p,fechaStr);
   document.getElementById('waM').value=msg;
-  document.getElementById('waCC').textContent=msg.length+' chars';
+  var cc=document.getElementById('waCC');cc.textContent=msg.length+' chars';cc.style.color=msg.length>4000?'#dc2626':msg.length>300?'#f59e0b':'#2563eb';
+  // store for fecha change
+  document.getElementById('waFecha').dataset.n=n64;
+  document.getElementById('waFecha').dataset.p=p64;
+}
+function formatFecha(val){
+  if(!val) return '';
+  var parts=val.split('-');
+  if(parts.length!==3) return val;
+  var months=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  return parts[2]+' de '+months[parseInt(parts[1])-1]+' de '+parts[0];
+}
+function actualizarMsgConFecha(){
+  if(!wSt) return;
+  var s=waStates.find(function(x){return x.key===wSt;});
+  if(!s||!s.useFecha) return;
+  var n=decodeURIComponent(document.getElementById('waFecha').dataset.n||'');
+  var p=decodeURIComponent(document.getElementById('waFecha').dataset.p||'');
+  var fecha=document.getElementById('waFecha').value;
+  var fechaStr=fecha?formatFecha(fecha):'';
+  var msg=s.msg(n,p,fechaStr);
+  document.getElementById('waM').value=msg;
+  var cc=document.getElementById('waCC');cc.textContent=msg.length+' chars';cc.style.color=msg.length>4000?'#dc2626':msg.length>300?'#f59e0b':'#2563eb';
 }
 
 function sendWA(){
