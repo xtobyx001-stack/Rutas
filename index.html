@@ -271,14 +271,16 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 <div class="overlay" id="mCfg1">
   <div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Ruta</h2><br>
     <button class="ibtn ibtn-green" onclick="moverTodos()">&#128230; Mover todos a Ruta 2</button>
-    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todo en Ruta?')){cl[1]=[];ex[1]=[];save(1);closeM('mCfg1');}">&#128465; Borrar Todo (Ruta)</button>
+    <button class="ibtn ibtn-danger" onclick="borrarSeccion(1)">&#128465; Borrar secci&#243;n actual</button>
+    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar TODO en Ruta?')){cl[1]=[];ex[1]=[];save(1);closeM('mCfg1');}">&#128465; Borrar Todo (Ruta)</button>
     <button class="ibtn ibtn-secondary" onclick="closeM('mCfg1')">CERRAR</button>
   </div>
 </div>
 <!-- MODAL CFG 2 -->
 <div class="overlay" id="mCfg2">
   <div class="modal"><h2>&#9881;&#65039; Opciones &mdash; Ruta 2</h2><br>
-    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar todo en Ruta 2?')){cl[2]=[];ex[2]=[];save(2);closeM('mCfg2');}">&#128465; Borrar Todo (Ruta 2)</button>
+    <button class="ibtn ibtn-danger" onclick="borrarSeccion(2)">&#128465; Borrar secci&#243;n actual</button>
+    <button class="ibtn ibtn-danger" onclick="if(confirm('Borrar TODO en Ruta 2?')){cl[2]=[];ex[2]=[];save(2);closeM('mCfg2');}">&#128465; Borrar Todo (Ruta 2)</button>
     <button class="ibtn ibtn-secondary" onclick="closeM('mCfg2')">CERRAR</button>
   </div>
 </div>
@@ -463,11 +465,36 @@ function moveCard(id,from,to){
   if(el){el.classList.add('card-moving');setTimeout(mv,300);}else mv();
 }
 function moverTodos(){
-  if(!confirm('Mover todos los pendientes de Ruta a Ruta 2?')) return;
-  var p=cl[1].filter(function(c){return!c.estado||c.estado==='pendiente';});
-  p.forEach(function(c){c.estado='pendiente';cl[2].push(c);});
-  cl[1]=cl[1].filter(function(c){return c.estado&&c.estado!=='pendiente';});
-  save();showToast(p.length+' clientes movidos a Ruta 2','success');
+  if(!confirm('Mover TODOS los clientes de Ruta a Ruta 2?')) return;
+  cl[1].forEach(function(c){cl[2].push(c);});
+  var total=cl[1].length;
+  cl[1]=[];
+  save();showToast(total+' clientes movidos a Ruta 2','success');
+}
+function borrarSeccion(r){
+  var t=tabs[r];
+  var label={'pendientes':'Rutas (con GPS)','sin_ubicacion':'Sin GPS','completados':'No Contesta','exportar':'Exportar'}[t]||t;
+  if(!confirm('Borrar todos los clientes de la seccion "'+label+'" en Ruta '+r+'?')) return;
+  if(t==='pendientes'){
+    var antes=cl[r].length;
+    cl[r]=cl[r].filter(function(c){return!((c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng);});
+    showToast((antes-cl[r].length)+' clientes borrados','info');
+  } else if(t==='sin_ubicacion'){
+    var antes=cl[r].length;
+    cl[r]=cl[r].filter(function(c){return!(!c.lat||!c.lng?c.estado==='pendiente'||!c.estado:true)||c.lat&&c.lng;});
+    // simpler: keep those that are NOT (no coords AND pendiente)
+    cl[r]=cl[r].filter(function(c){var sinGps=(!c.lat||!c.lng)&&(c.estado==='pendiente'||!c.estado);return!sinGps;});
+    showToast('Clientes sin GPS borrados','info');
+  } else if(t==='completados'){
+    var antes=cl[r].length;
+    cl[r]=cl[r].filter(function(c){return c.estado!=='completado';});
+    showToast((antes-cl[r].length)+' clientes borrados','info');
+  } else if(t==='exportar'){
+    ex[r]=[];
+    showToast('Lista de exportar limpiada','info');
+  }
+  closeM('mCfg'+r);
+  save(r);
 }
 function reorder(id,r,d){
   var data=getData(r,tabs[r]);
