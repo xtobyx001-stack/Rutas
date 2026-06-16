@@ -329,7 +329,15 @@ for(var _r=1;_r<=2;_r++) cl[_r]=cl[_r].map(function(c){return c._uid?c:Object.as
 
 function cod(c){ return c.pedidos?c.pedidos.reduce(function(s,p){return s+(parseFloat(p.cod)||0);},0):(parseFloat(c.cod)||0); }
 
+function dedup(arr){
+  var seen=new Set();
+  return arr.filter(function(c){
+    if(!c._uid||seen.has(c._uid)) return false;
+    seen.add(c._uid); return true;
+  });
+}
 function save(r){
+  cl[1]=dedup(cl[1]); cl[2]=dedup(cl[2]);
   if(!r||r===1){localStorage.setItem(SK[1],JSON.stringify(cl[1]));localStorage.setItem(EK[1],JSON.stringify(ex[1]));}
   if(!r||r===2){localStorage.setItem(SK[2],JSON.stringify(cl[2]));localStorage.setItem(EK[2],JSON.stringify(ex[2]));}
   if(!r||r===1) render(1);
@@ -459,15 +467,38 @@ function renderExp(r){
 function moveCard(id,from,to){
   var idx=cl[from].findIndex(function(x){return x._uid===id;});
   if(idx===-1) return;
+  // Check not already in destination
+  if(cl[to].find(function(x){return x._uid===id;})){
+    cl[from].splice(idx,1);
+    save(from);
+    showToast('Ficha ya existe en Ruta '+to,'info');
+    return;
+  }
   var c=cl[from].splice(idx,1)[0];
   var el=document.getElementById('card-'+id);
-  function mv(){c.estado='pendiente';cl[to].push(c);save(from);save(to);showToast('Ficha movida a Ruta '+to,'success');}
+  function mv(){
+    c.estado='pendiente';
+    // Double-check before push
+    if(!cl[to].find(function(x){return x._uid===c._uid;})){
+      cl[to].push(c);
+    }
+    save(from);
+    save(to);
+    showToast('Ficha movida a Ruta '+to,'success');
+  }
   if(el){el.classList.add('card-moving');setTimeout(mv,300);}else mv();
 }
 function moverTodos(){
   if(!confirm('Mover TODOS los clientes de Ruta a Ruta 2?')) return;
-  cl[1].forEach(function(c){cl[2].push(c);});
-  var total=cl[1].length;
+  var existingUids=new Set(cl[2].map(function(x){return x._uid;}));
+  var total=0;
+  cl[1].forEach(function(c){
+    if(!existingUids.has(c._uid)){
+      cl[2].push(c);
+      existingUids.add(c._uid);
+      total++;
+    }
+  });
   cl[1]=[];
   save();showToast(total+' clientes movidos a Ruta 2','success');
 }
