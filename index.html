@@ -103,6 +103,8 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .cap-dark{background:#1e293b;border-color:#334155;color:#94a3b8;}
 .cv2-icon-btn{background:#f1f5f9;border:1.5px solid #cbd5e1;color:#475569;border-radius:13px;width:40px;height:40px;font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
 .card-dark{background:#ffffff!important;border-color:#e8edf4!important;}
+.card-dark.color-blue{background:#e3f0ff!important;border-color:#2563eb!important;outline:2px solid #2563eb;}
+.card-dark.color-red{background:#fee2e2!important;border-color:#ef4444!important;outline:2px solid #ef4444;}
 .card-dark .cv2-name{color:#0f172a!important;}.card-dark .cv2-num{color:#94a3b8!important;}
 .card-dark .cv2-sub{color:#475569!important;}.card-dark .note-simple,.card-dark .note-line{color:#334155!important;}
 .card-dark .card-notes{background:#f8fafc!important;border-color:#e8edf4!important;}
@@ -422,8 +424,9 @@ function render(r){
     var cBtn=c.estado==='completado'
       ?'<button class="cap '+(dk?'cap-dark':'cap-gray')+'" onclick="revert(\''+id+'\','+r+')">&#8617; Volver</button>'
       :'<button class="cap cap-orange" onclick="noContesta(\''+id+'\','+r+')">&#128565; No Contesta</button>';
-    var cs=c.colorMark==='blue'?'background:#e3f0ff!important;border-color:#90bbf5!important;':c.colorMark==='red'?'background:#fee2e2!important;border-color:#fca5a5!important;':'';
-    return '<div class="card-v2'+(dk?' card-dark':'')+(c.estado==='completado'?' card-v2-done':'')+(su?' card-v2-nogps':'')+'" id="card-'+id+'" style="'+cs+'">'
+    var cs=c.colorMark==='blue'?'background:#e3f0ff!important;border-color:#2563eb!important;outline:2px solid #2563eb;':c.colorMark==='red'?'background:#fee2e2!important;border-color:#ef4444!important;outline:2px solid #ef4444;':'';
+    var colorClass=c.colorMark==='blue'?' color-blue':c.colorMark==='red'?' color-red':'';
+    return '<div class="card-v2'+(dk?' card-dark':'')+colorClass+(c.estado==='completado'?' card-v2-done':'')+(su?' card-v2-nogps':'')+'" id="card-'+id+'" style="'+cs+'">'
       +'<div class="cv2-bar bar-'+ac+'"></div>'
       +'<div class="cv2-body">'
         +'<div class="cv2-header"><div class="cv2-hl">'
