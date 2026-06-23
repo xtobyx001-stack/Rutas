@@ -145,6 +145,7 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .wa-btn.st-transito{background:#eff6ff;border-color:#3b82f6;color:#1d4ed8;}
 .wa-btn.st-entregado{background:#dcfce7;border-color:#16a34a;color:#166534;}
 .wa-btn.st-devuelto{background:#fef2f2;border-color:#f87171;color:#b91c1c;}
+.wa-btn.st-norespuesta{background:#f0fdf4;border-color:#86efac;color:#166534;}
 .wa-btn.st-ultimo{background:#fdf4ff;border-color:#d8b4fe;color:#7e22ce;}
 /* TOAST */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);padding:13px 22px;border-radius:40px;font-size:.84rem;font-weight:700;z-index:700;transition:transform .3s ease;white-space:nowrap;color:#fff;pointer-events:none;}
@@ -754,7 +755,9 @@ var waStates = [
   {key:'entregado', icon:'&#9989;', label:'Entregado', cls:'st-entregado', useFecha:true,
    msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue entregado.'+(f?' Fecha de entrega: '+f:'')+' Gracias!';}},
   {key:'devuelto', icon:'&#10060;', label:'Devuelto / Cancelado', cls:'st-devuelto', useFecha:true,
-   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.'+(f?' Fecha: '+f:'');}}
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.'+(f?' Fecha: '+f:'');}},
+  {key:'norespuesta', icon:'&#128222;', label:'Sin respuesta (ayer)', cls:'st-norespuesta', useFecha:false,
+   msg:function(n,p,f){return 'Buenos dias '+n+', le contactamos ayer para coordinar la entrega de su pedido '+p+' y no pudimos comunicarnos. Podria estar pendiente a su celular hoy? Gracias. - LLEGA YA';}}
 ];
 
 function openWA(id,r){
