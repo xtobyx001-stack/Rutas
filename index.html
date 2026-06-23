@@ -772,11 +772,17 @@ function openWA(id,r){
   }).join('');
   document.getElementById('waM').value='';
   document.getElementById('waCC').textContent='';
-  // fecha always visible
   // Restore saved global fecha
   var savedFecha=localStorage.getItem('lly_fecha')||'';
   document.getElementById('waFecha').value=savedFecha;
+  document.getElementById('waFecha').dataset.n=encodeURIComponent(nombre);
+  document.getElementById('waFecha').dataset.p=encodeURIComponent(prod);
   openM('mWA');
+  // Auto-select last global state used
+  var lastState=localStorage.getItem('lly_last_wa_state')||'';
+  if(lastState){
+    selWA(lastState, encodeURIComponent(nombre), encodeURIComponent(prod));
+  }
 }
 
 function selWA(key,n64,p64){
@@ -822,8 +828,9 @@ function sendWA(){
   if(!c||!c.telefono){showToast('Sin telefono','error');return;}
   var tel=c.telefono.replace(/\D/g,'');
   var msg=document.getElementById('waM').value;
-  // Save state and close modal FIRST, then open WA
+  // Save state globally and per client, then close modal
   c.waEstado=wSt;
+  localStorage.setItem('lly_last_wa_state', wSt);
   save(wR);
   closeM('mWA');
   showToast('Abriendo WhatsApp...','success');
