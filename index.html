@@ -105,6 +105,7 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
 .card-dark{background:#ffffff!important;border-color:#e8edf4!important;}
 .card-dark.color-blue{background:#e3f0ff!important;border-color:#2563eb!important;outline:2px solid #2563eb;}
 .card-dark.color-red{background:#fee2e2!important;border-color:#ef4444!important;outline:2px solid #ef4444;}
+.card-dark.color-black{background:#f1f5f9!important;border-color:#0f172a!important;outline:2px solid #0f172a;}
 .card-dark .cv2-name{color:#0f172a!important;}.card-dark .cv2-num{color:#94a3b8!important;}
 .card-dark .cv2-sub{color:#475569!important;}.card-dark .note-simple,.card-dark .note-line{color:#334155!important;}
 .card-dark .card-notes{background:#f8fafc!important;border-color:#e8edf4!important;}
@@ -433,8 +434,8 @@ function render(r){
     var cBtn=c.estado==='completado'
       ?'<button class="cap '+(dk?'cap-dark':'cap-gray')+'" onclick="revert(\''+id+'\','+r+')">&#8617; Volver</button>'
       :'<button class="cap cap-orange" onclick="noContesta(\''+id+'\','+r+')">&#128565; No Contesta</button>';
-    var cs=c.colorMark==='blue'?'background:#e3f0ff!important;border-color:#2563eb!important;outline:2px solid #2563eb;':c.colorMark==='red'?'background:#fee2e2!important;border-color:#ef4444!important;outline:2px solid #ef4444;':'';
-    var colorClass=c.colorMark==='blue'?' color-blue':c.colorMark==='red'?' color-red':'';
+    var cs=c.colorMark==='blue'?'background:#e3f0ff!important;border-color:#2563eb!important;outline:2px solid #2563eb;':c.colorMark==='red'?'background:#fee2e2!important;border-color:#ef4444!important;outline:2px solid #ef4444;':c.colorMark==='black'?'background:#f1f5f9!important;border-color:#0f172a!important;outline:2px solid #0f172a;':'';
+    var colorClass=c.colorMark==='blue'?' color-blue':c.colorMark==='red'?' color-red':c.colorMark==='black'?' color-black':'';
     return '<div class="card-v2'+(dk?' card-dark':'')+colorClass+(c.vip?' card-vip':'')+(c.estado==='completado'?' card-v2-done':'')+(su?' card-v2-nogps':'')+'" id="card-'+id+'" style="'+cs+'">'
       +'<div class="cv2-bar bar-'+ac+'"></div>'
       +'<div class="cv2-body">'
@@ -449,7 +450,7 @@ function render(r){
           +'<div class="cv2-row-main">'
             +(mu?'<a class="cv2-btn cv2-btn-blue" href="'+mu+'" target="_blank">&#128506; Mapa</a>':'')
             +(c.telefono?'<button class="cv2-btn cv2-btn-wa" style="flex:2" onclick="openWA(\''+id+'\','+r+')">&#128172; WhatsApp</button>':'')
-            +'<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="tgColor(\''+id+'\','+r+')">&#11088;</button>'
+            +'<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':c.colorMark==='black'?'#0f172a':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':c.colorMark==='black'?'#0f172a':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="tgColor(\''+id+'\','+r+')">&#11088;</button>'
             +'<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="addExp(\''+id+'\','+r+')">&#128228;</button>'
           +'</div>'
           +'<div class="cv2-row-sec">'
@@ -577,7 +578,10 @@ function toggleVip(id,r){
 }
 function tgColor(id,r){
   var c=cl[r].find(function(x){return x._uid===id;}); if(!c) return;
-  if(!c.colorMark) c.colorMark='blue'; else if(c.colorMark==='blue') c.colorMark='red'; else c.colorMark=null;
+  if(!c.colorMark) c.colorMark='blue';
+  else if(c.colorMark==='blue') c.colorMark='red';
+  else if(c.colorMark==='red') c.colorMark='black';
+  else c.colorMark=null;
   save(r);
 }
 function addExp(id,r){
