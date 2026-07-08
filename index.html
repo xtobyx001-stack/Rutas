@@ -318,6 +318,12 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
       <div style="width:40px;height:40px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">&#128172;</div>
       <div><div style="font-size:.95rem;font-weight:800;color:#0f172a;" id="waN"></div><div style="font-size:.75rem;color:#64748b;" id="waT"></div></div>
     </div>
+    <!-- WA ACCOUNT SELECTOR -->
+    <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Abrir con</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button id="waAccBtn1" onclick="selWAcc(1)" style="flex:1;padding:11px;border-radius:14px;border:1.5px solid #25D366;background:#dcfce7;color:#166534;font-weight:700;font-size:.85rem;cursor:pointer;">&#128172; WhatsApp 1</button>
+      <button id="waAccBtn2" onclick="selWAcc(2)" style="flex:1;padding:11px;border-radius:14px;border:1.5px solid #e2e8f0;background:#f1f5f9;color:#475569;font-weight:700;font-size:.85rem;cursor:pointer;">&#128172; WhatsApp 2</button>
+    </div>
     <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Nuevo Estado</div>
     <div id="waE"></div>
     <div id="waFechaWrap" style="display:block;margin-top:14px;">
@@ -341,7 +347,7 @@ var ex = [null, JSON.parse(localStorage.getItem(EK[1])||'[]'), JSON.parse(localS
 var tabs = ['','pendientes','pendientes'];
 tabs[1] = localStorage.getItem('lly_t1')||'pendientes';
 tabs[2] = localStorage.getItem('lly_t2')||'pendientes';
-var tTimer, wUid=null, wR=null, wSt=null;
+var tTimer, wUid=null, wR=null, wSt=null, wAcc=1;
 
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).substr(2,5); }
 for(var _r=1;_r<=2;_r++) cl[_r]=cl[_r].map(function(c){return c._uid?c:Object.assign({},c,{_uid:uid()});});
@@ -798,10 +804,27 @@ function openWA(id,r){
   document.getElementById('waFecha').dataset.n=encodeURIComponent(nombre);
   document.getElementById('waFecha').dataset.p=encodeURIComponent(prod);
   openM('mWA');
+  // Restore last WA account used
+  wAcc=parseInt(localStorage.getItem('lly_wa_acc')||'1');
+  selWAcc(wAcc);
   // Auto-select last global state used
   var lastState=localStorage.getItem('lly_last_wa_state')||'';
   if(lastState){
     selWA(lastState, encodeURIComponent(nombre), encodeURIComponent(prod));
+  }
+}
+
+function selWAcc(acc){
+  wAcc=acc;
+  localStorage.setItem('lly_wa_acc', acc);
+  var btn1=document.getElementById('waAccBtn1');
+  var btn2=document.getElementById('waAccBtn2');
+  if(acc===1){
+    btn1.style.background='#dcfce7'; btn1.style.borderColor='#25D366'; btn1.style.color='#166534';
+    btn2.style.background='#f1f5f9'; btn2.style.borderColor='#e2e8f0'; btn2.style.color='#475569';
+  } else {
+    btn2.style.background='#dcfce7'; btn2.style.borderColor='#25D366'; btn2.style.color='#166534';
+    btn1.style.background='#f1f5f9'; btn1.style.borderColor='#e2e8f0'; btn1.style.color='#475569';
   }
 }
 
@@ -848,14 +871,25 @@ function sendWA(){
   if(!c||!c.telefono){showToast('Sin telefono','error');return;}
   var tel=c.telefono.replace(/\D/g,'');
   var msg=document.getElementById('waM').value;
-  // Save state globally and per client, then close modal
   c.waEstado=wSt;
   localStorage.setItem('lly_last_wa_state', wSt);
   save(wR);
   closeM('mWA');
-  showToast('Abriendo WhatsApp...','success');
+  showToast('Abriendo WhatsApp '+(wAcc===2?'2':'')+'...','success');
   setTimeout(function(){
-    window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+    var url;
+    if(wAcc===2){
+      // WhatsApp 2 - uses intent for Android dual SIM or wa2 scheme
+      url='intent://send/'+tel+'?text='+encodeURIComponent(msg)+'#Intent;scheme=whatsapp;package=com.whatsapp.w4b;end';
+      var a=document.createElement('a');
+      a.href=url;
+      try{ a.click(); }catch(e){
+        // fallback for iOS
+        window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+      }
+    } else {
+      window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
+    }
   },300);
 }
 
