@@ -453,13 +453,18 @@ function render(r){
       :'<button class="cap cap-orange" onclick="noContesta(\''+id+'\','+r+')">&#128565; No Contesta</button>';
     var cs=c.colorMark==='blue'?'background:#e3f0ff!important;border-color:#2563eb!important;outline:2px solid #2563eb;':c.colorMark==='red'?'background:#fee2e2!important;border-color:#ef4444!important;outline:2px solid #ef4444;':c.colorMark==='black'?'background:#0f172a!important;border-color:#000!important;outline:2px solid #000;':'';
     var colorClass=c.colorMark==='blue'?' color-blue':c.colorMark==='red'?' color-red':c.colorMark==='black'?' color-black':'';
+    var isBlack=c.colorMark==='black';
+    var txtName=isBlack?'style="color:#f1f5f9!important;"':'';
+    var txtNum=isBlack?'style="color:#94a3b8!important;"':'';
+    var txtSub=isBlack?'style="color:#94a3b8!important;"':'';
+    var txtNote=isBlack?'style="color:#94a3b8!important;"':'';
     return '<div class="card-v2'+(dk?' card-dark':'')+colorClass+(c.vip?' card-vip':'')+(c.estado==='completado'?' card-v2-done':'')+(su?' card-v2-nogps':'')+'" id="card-'+id+'" style="'+cs+'">'
       +'<div class="cv2-bar bar-'+ac+'"></div>'
       +'<div class="cv2-body">'
         +'<div class="cv2-header"><div class="cv2-hl">'
-          +'<div class="cv2-num">#'+(i+1)+'</div>'
-          +'<div class="cv2-name">'+(c.nombre||'Sin nombre')+(c.vip?' <span class="vip-badge">&#11088; VIP</span>':'')+(su?' <span class="cv2-tag tag-gps">Sin GPS</span>':'')+(em?' <span class="cv2-tag tag-multi">'+c.pedidos.length+' pedidos</span>':'')+'</div>'
-          +'<div class="cv2-sub">&#128222; '+(c.telefono||'&mdash;')+(cv?' &nbsp;&middot;&nbsp; <strong>RD$ '+cv.toLocaleString()+'</strong>':'')+'</div>'
+          +'<div class="cv2-num" '+txtNum+'>#'+(i+1)+'</div>'
+          +'<div class="cv2-name" '+txtName+'>'+(c.nombre||'Sin nombre')+(c.vip?' <span class="vip-badge">&#11088; VIP</span>':'')+(su?' <span class="cv2-tag tag-gps">Sin GPS</span>':'')+(em?' <span class="cv2-tag tag-multi">'+c.pedidos.length+' pedidos</span>':'')+'</div>'
+          +'<div class="cv2-sub" '+txtSub+'>&#128222; '+(c.telefono||'&mdash;')+(cv?' &nbsp;&middot;&nbsp; <strong>RD$ '+cv.toLocaleString()+'</strong>':'')+'</div>'
         +'</div>'
         +'<div class="cv2-sort"><button onclick="reorder(\''+id+'\','+r+',-1)" class="cv2-sort-btn">&#9650;</button><button onclick="reorder(\''+id+'\','+r+',1)" class="cv2-sort-btn">&#9660;</button></div>'
         +'</div>'+nh
