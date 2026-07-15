@@ -322,12 +322,6 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
       <div style="width:40px;height:40px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">&#128172;</div>
       <div><div style="font-size:.95rem;font-weight:800;color:#0f172a;" id="waN"></div><div style="font-size:.75rem;color:#64748b;" id="waT"></div></div>
     </div>
-    <!-- WA ACCOUNT SELECTOR -->
-    <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Abrir con</div>
-    <div style="display:flex;gap:8px;margin-bottom:14px;">
-      <button id="waAccBtn1" onclick="selWAcc(1)" style="flex:1;padding:11px;border-radius:14px;border:1.5px solid #25D366;background:#dcfce7;color:#166534;font-weight:700;font-size:.85rem;cursor:pointer;">&#128172; WhatsApp 1</button>
-      <button id="waAccBtn2" onclick="selWAcc(2)" style="flex:1;padding:11px;border-radius:14px;border:1.5px solid #e2e8f0;background:#f1f5f9;color:#475569;font-weight:700;font-size:.85rem;cursor:pointer;">&#128172; WhatsApp 2</button>
-    </div>
     <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Nuevo Estado</div>
     <div id="waE"></div>
     <div id="waFechaWrap" style="display:block;margin-top:14px;">
@@ -471,7 +465,8 @@ function render(r){
         +'<div class="cv2-actions">'
           +'<div class="cv2-row-main">'
             +(mu?'<a class="cv2-btn cv2-btn-blue" href="'+mu+'" target="_blank">&#128506; Mapa</a>':'')
-            +(c.telefono?'<button class="cv2-btn cv2-btn-wa" style="flex:2" onclick="openWA(\''+id+'\','+r+')">&#128172; WhatsApp</button>':'')
+            +(c.telefono?'<button class="cv2-btn cv2-btn-wa" onclick="openWA(\''+id+'\','+r+')">&#128172; Mensaje</button>':'')
+            +(c.telefono?'<a class="cv2-btn" style="background:#dcfce7;border:1.5px solid #4ade80;color:#166534;max-width:52px;flex:0 0 52px;padding:9px 0;font-size:.75rem;text-decoration:none;" href="whatsapp://call?phone='+c.telefono+'">&#128222; WA</a>':'')
             +'<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':c.colorMark==='black'?'#0f172a':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':c.colorMark==='black'?'#0f172a':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="tgColor(\''+id+'\','+r+')">&#11088;</button>'
             +'<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="addExp(\''+id+'\','+r+')">&#128228;</button>'
           +'</div>'
@@ -813,9 +808,6 @@ function openWA(id,r){
   document.getElementById('waFecha').dataset.n=encodeURIComponent(nombre);
   document.getElementById('waFecha').dataset.p=encodeURIComponent(prod);
   openM('mWA');
-  // Restore last WA account used
-  wAcc=parseInt(localStorage.getItem('lly_wa_acc')||'1');
-  selWAcc(wAcc);
   // Auto-select last global state used
   var lastState=localStorage.getItem('lly_last_wa_state')||'';
   if(lastState){
