@@ -466,7 +466,7 @@ function render(r){
           +'<div class="cv2-row-main">'
             +(mu?'<a class="cv2-btn cv2-btn-blue" href="'+mu+'" target="_blank">&#128506; Mapa</a>':'')
             +(c.telefono?'<button class="cv2-btn cv2-btn-wa" onclick="openWA(\''+id+'\','+r+')">&#128172; Mensaje</button>':'')
-            +(c.telefono?'<a class="cv2-btn" style="background:#dcfce7;border:1.5px solid #4ade80;color:#166534;max-width:52px;flex:0 0 52px;padding:9px 0;font-size:.75rem;text-decoration:none;" href="whatsapp://call?phone='+c.telefono+'">&#128222; WA</a>':'')
+            +(c.telefono?'<a class="cv2-btn" style="background:#dcfce7;border:1.5px solid #4ade80;color:#166534;max-width:52px;flex:0 0 52px;padding:9px 0;font-size:.75rem;text-decoration:none;" href="https://wa.me/'+c.telefono+'" target="_blank">&#128222; WA</a>':'')
             +'<button class="cv2-btn" style="background:'+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':c.colorMark==='black'?'#0f172a':'#f1f5f9')+';color:'+(c.colorMark?'#fff':'#475569')+';border:1.5px solid '+(c.colorMark==='blue'?'#2563eb':c.colorMark==='red'?'#dc2626':c.colorMark==='black'?'#0f172a':'#cbd5e1')+';max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="tgColor(\''+id+'\','+r+')">&#11088;</button>'
             +'<button class="cv2-btn" style="background:#fff3e0;color:#e65100;border:1.5px solid #ffb74d;max-width:44px;flex:0 0 44px;padding:9px 0;" onclick="addExp(\''+id+'\','+r+')">&#128228;</button>'
           +'</div>'
