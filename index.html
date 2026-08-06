@@ -795,23 +795,23 @@ function openWA(id,r){
   var c=cl[r].find(function(x){return x._uid===id;}); if(!c) return;
   var nombre=(c.nombre||'').split(' ')[0];
   var prod=c.nota||c.nombre||'tu pedido';
+  var tel=c.telefono||'';
   document.getElementById('waN').textContent=c.nombre||'Sin nombre';
-  document.getElementById('waT').textContent='+'+(c.telefono||'');
+  document.getElementById('waT').textContent='+'+tel;
   document.getElementById('waE').innerHTML=waStates.map(function(s){
-    return '<button class="wa-btn" id="wb-'+s.key+'" onclick="selWA(\''+s.key+'\',\''+encodeURIComponent(nombre)+'\',\''+encodeURIComponent(prod)+'\')"><span style="font-size:1.1rem;width:24px;text-align:center;">'+s.icon+'</span>'+s.label+'</button>';
+    return '<button class="wa-btn" id="wb-'+s.key+'" onclick="selWA(\''+s.key+'\',\''+encodeURIComponent(nombre)+'\',\''+encodeURIComponent(prod)+'\',\''+tel+'\')"><span style="font-size:1.1rem;width:24px;text-align:center;">'+s.icon+'</span>'+s.label+'</button>';
   }).join('');
   document.getElementById('waM').value='';
   document.getElementById('waCC').textContent='';
-  // Restore saved global fecha
   var savedFecha=localStorage.getItem('lly_fecha')||'';
   document.getElementById('waFecha').value=savedFecha;
   document.getElementById('waFecha').dataset.n=encodeURIComponent(nombre);
   document.getElementById('waFecha').dataset.p=encodeURIComponent(prod);
+  document.getElementById('waFecha').dataset.tel=tel;
   openM('mWA');
-  // Auto-select last global state used
   var lastState=localStorage.getItem('lly_last_wa_state')||'';
   if(lastState){
-    selWA(lastState, encodeURIComponent(nombre), encodeURIComponent(prod));
+    selWA(lastState, encodeURIComponent(nombre), encodeURIComponent(prod), tel);
   }
 }
 
@@ -829,22 +829,23 @@ function selWAcc(acc){
   }
 }
 
-function selWA(key,n64,p64){
+function selWA(key,n64,p64,tel){
   wSt=key;
   var n=decodeURIComponent(n64), p=decodeURIComponent(p64);
+  var telefono=tel||document.getElementById('waFecha').dataset.tel||'';
   document.querySelectorAll('.wa-btn').forEach(function(b){b.className='wa-btn';});
   var s=waStates.find(function(x){return x.key===key;});
   document.getElementById('wb-'+key).classList.add(s.cls);
-  // Fecha always visible
   if(s.useFecha){var saved=localStorage.getItem('lly_fecha')||'';if(saved&&!document.getElementById('waFecha').value)document.getElementById('waFecha').value=saved;}
   var fecha=s.useFecha?document.getElementById('waFecha').value:'';
   var fechaStr=fecha?formatFecha(fecha):'';
   var msg=s.msg(n,p,fechaStr);
+  if(telefono) msg=msg+'\n\nTel: +'+telefono;
   document.getElementById('waM').value=msg;
   var cc=document.getElementById('waCC');cc.textContent=msg.length+' chars';cc.style.color=msg.length>4000?'#dc2626':msg.length>300?'#f59e0b':'#2563eb';
-  // store for fecha change
   document.getElementById('waFecha').dataset.n=n64;
   document.getElementById('waFecha').dataset.p=p64;
+  if(telefono) document.getElementById('waFecha').dataset.tel=telefono;
 }
 function formatFecha(val){
   if(!val) return '';
@@ -859,9 +860,11 @@ function actualizarMsgConFecha(){
   if(!s||!s.useFecha) return;
   var n=decodeURIComponent(document.getElementById('waFecha').dataset.n||'');
   var p=decodeURIComponent(document.getElementById('waFecha').dataset.p||'');
+  var tel=document.getElementById('waFecha').dataset.tel||'';
   var fecha=document.getElementById('waFecha').value;
   var fechaStr=fecha?formatFecha(fecha):'';
   var msg=s.msg(n,p,fechaStr);
+  if(tel) msg=msg+'\n\nTel: +'+tel;
   document.getElementById('waM').value=msg;
   var cc=document.getElementById('waCC');cc.textContent=msg.length+' chars';cc.style.color=msg.length>4000?'#dc2626':msg.length>300?'#f59e0b':'#2563eb';
 }
