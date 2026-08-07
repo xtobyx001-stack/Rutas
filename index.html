@@ -379,7 +379,7 @@ var ex = [null, JSON.parse(localStorage.getItem(EK[1])||'[]'), JSON.parse(localS
 var tabs = ['','pendientes','pendientes'];
 tabs[1] = localStorage.getItem('lly_t1')||'pendientes';
 tabs[2] = localStorage.getItem('lly_t2')||'pendientes';
-var tTimer, wUid=null, wR=null, wSt=null, wAcc=1;
+var tTimer, wUid=null, wR=null, wSt=null;
 
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).substr(2,5); }
 for(var _r=1;_r<=2;_r++) cl[_r]=cl[_r].map(function(c){return c._uid?c:Object.assign({},c,{_uid:uid()});});
@@ -849,20 +849,6 @@ function openWA(id,r){
   }
 }
 
-function selWAcc(acc){
-  wAcc=acc;
-  localStorage.setItem('lly_wa_acc', acc);
-  var btn1=document.getElementById('waAccBtn1');
-  var btn2=document.getElementById('waAccBtn2');
-  if(acc===1){
-    btn1.style.background='#dcfce7'; btn1.style.borderColor='#25D366'; btn1.style.color='#166534';
-    btn2.style.background='#f1f5f9'; btn2.style.borderColor='#e2e8f0'; btn2.style.color='#475569';
-  } else {
-    btn2.style.background='#dcfce7'; btn2.style.borderColor='#25D366'; btn2.style.color='#166534';
-    btn1.style.background='#f1f5f9'; btn1.style.borderColor='#e2e8f0'; btn1.style.color='#475569';
-  }
-}
-
 function selWA(key,n64,p64,tel){
   wSt=key;
   var n=decodeURIComponent(n64), p=decodeURIComponent(p64);
@@ -989,12 +975,15 @@ function processScan(code){
   // Avoid duplicate scans in same session
   if(scanLog.indexOf(code)>-1) return;
   scanLog.push(code);
-  // Find client by _uid or by code in nombre/nota
+  // Find client only among those with GPS (pendientes tab)
   var r=scanRuta;
   var c=cl[r].find(function(x){
-    return x._uid===code ||
+    var isPendiente=(x.estado==='pendiente'||!x.estado)&&x.lat&&x.lng;
+    return isPendiente && (
+      x._uid===code ||
       (x.nota&&x.nota.toLowerCase().indexOf(code.toLowerCase())>-1) ||
-      (x.nombre&&x.nombre.toLowerCase().indexOf(code.toLowerCase())>-1);
+      (x.nombre&&x.nombre.toLowerCase().indexOf(code.toLowerCase())>-1)
+    );
   });
   var logEl=document.getElementById('scanLog');
   if(c){
