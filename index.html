@@ -222,6 +222,7 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
     <button style="background:#059669;color:#fff;border:1.5px solid #059669;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fj1').click()">{} JSON</button>
     <button class="btn-purple" onclick="sortNearest(1)">&#9889; Cercan&#237;a</button>
     <button class="btn-green" onclick="abrirNuevo(1)">+ Cliente</button>
+    <button style="background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="openScanner(1)">&#128247; Scan</button>
   </div>
   <input type="file" id="fx1" accept=".xlsx,.xls" style="display:none" onchange="loadXL(event,1)">
   <input type="file" id="fj1" accept=".json" style="display:none" onchange="loadJSON(event,1)">
@@ -334,6 +335,39 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
     <button onclick="closeM('mWA')" style="width:100%;margin-top:8px;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:16px;font-size:.88rem;font-weight:700;cursor:pointer;">Cancelar</button>
   </div>
 </div>
+<!-- MODAL SCANNER -->
+<div class="overlay" id="mScanner" onclick="if(event.target===this)closeScanner()">
+  <div class="modal" style="max-width:420px;padding:20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 style="margin:0;">&#128247; Esc&#225;ner de paquetes</h2>
+      <button onclick="closeScanner()" style="background:#f1f5f9;border:none;border-radius:50%;width:32px;height:32px;font-size:.9rem;cursor:pointer;color:#64748b;">&#10005;</button>
+    </div>
+    <div style="font-size:.75rem;color:#64748b;margin-bottom:12px;">Apunta la c&#225;mara al c&#243;digo del paquete. Al detectarlo se mover&#225; autom&#225;ticamente a Exportar.</div>
+    <div style="position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:1;">
+      <video id="scanVideo" style="width:100%;height:100%;object-fit:cover;" playsinline autoplay muted></video>
+      <canvas id="scanCanvas" style="display:none;"></canvas>
+      <!-- Scan frame overlay -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <div style="width:65%;height:65%;border:3px solid #f59e0b;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,.45);"></div>
+      </div>
+      <div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;">
+        <span id="scanStatus" style="background:rgba(0,0,0,.6);color:#fff;font-size:.75rem;font-weight:700;padding:5px 14px;border-radius:20px;">Buscando c&#243;digo...</span>
+      </div>
+    </div>
+    <!-- Manual input fallback -->
+    <div style="margin-top:14px;">
+      <div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">O ingresa el c&#243;digo manualmente</div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="scanManual" placeholder="Codigo del paquete..." style="flex:1;padding:12px 13px;border-radius:13px;border:1.5px solid #e2e8f0;background:#f8fafc;color:#0f172a;font-size:.9rem;" onkeydown="if(event.key==='Enter')scanManualSubmit()">
+        <button onclick="scanManualSubmit()" style="padding:12px 16px;background:#f59e0b;color:#fff;border:none;border-radius:13px;font-weight:700;cursor:pointer;">&#10003;</button>
+      </div>
+    </div>
+    <!-- Scanned list -->
+    <div id="scanLog" style="margin-top:14px;max-height:150px;overflow-y:auto;"></div>
+    <button onclick="closeScanner()" style="width:100%;margin-top:14px;padding:13px;background:#f1f5f9;color:#475569;border:none;border-radius:16px;font-size:.88rem;font-weight:700;cursor:pointer;">Cerrar</button>
+  </div>
+</div>
+
 <div class="toast" id="tst"></div>
 
 <script>
@@ -895,6 +929,92 @@ function sendWA(){
       window.open('https://wa.me/'+tel+'?text='+encodeURIComponent(msg),'_blank');
     }
   },300);
+}
+
+// ── SCANNER ──
+var scanRuta=1, scanStream=null, scanInterval=null, scanLog=[];
+
+function openScanner(r){
+  scanRuta=r; scanLog=[];
+  document.getElementById('scanLog').innerHTML='';
+  document.getElementById('scanManual').value='';
+  document.getElementById('scanStatus').textContent='Buscando codigo...';
+  openM('mScanner');
+  startCamera();
+}
+
+function startCamera(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    document.getElementById('scanStatus').textContent='Camara no disponible';
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+    .then(function(stream){
+      scanStream=stream;
+      var video=document.getElementById('scanVideo');
+      video.srcObject=stream;
+      video.play();
+      // Use BarcodeDetector if available
+      if('BarcodeDetector' in window){
+        var detector=new BarcodeDetector({formats:['qr_code','code_128','code_39','ean_13','ean_8','upc_a','upc_e','data_matrix','pdf417','aztec','itf']});
+        scanInterval=setInterval(function(){
+          if(video.readyState===video.HAVE_ENOUGH_DATA){
+            detector.detect(video).then(function(codes){
+              if(codes.length>0){
+                var code=codes[0].rawValue;
+                processScan(code);
+              }
+            }).catch(function(){});
+          }
+        },500);
+      } else {
+        document.getElementById('scanStatus').textContent='Usa el campo manual';
+      }
+    })
+    .catch(function(){
+      document.getElementById('scanStatus').textContent='Sin acceso a camara - usa campo manual';
+    });
+}
+
+function closeScanner(){
+  if(scanInterval){clearInterval(scanInterval);scanInterval=null;}
+  if(scanStream){scanStream.getTracks().forEach(function(t){t.stop();});scanStream=null;}
+  document.getElementById('scanVideo').srcObject=null;
+  closeM('mScanner');
+}
+
+function processScan(code){
+  code=String(code).trim();
+  if(!code) return;
+  // Avoid duplicate scans in same session
+  if(scanLog.indexOf(code)>-1) return;
+  scanLog.push(code);
+  // Find client by _uid or by code in nombre/nota
+  var r=scanRuta;
+  var c=cl[r].find(function(x){
+    return x._uid===code ||
+      (x.nota&&x.nota.toLowerCase().indexOf(code.toLowerCase())>-1) ||
+      (x.nombre&&x.nombre.toLowerCase().indexOf(code.toLowerCase())>-1);
+  });
+  var logEl=document.getElementById('scanLog');
+  if(c){
+    addExp(c._uid,r);
+    document.getElementById('scanStatus').textContent='Escaneado: '+c.nombre;
+    logEl.innerHTML='<div style="padding:6px 10px;background:#dcfce7;border-radius:10px;margin-bottom:6px;font-size:.78rem;font-weight:700;color:#166534;">&#10003; '+c.nombre+' &#8594; Exportar</div>'+logEl.innerHTML;
+    showToast('&#10003; '+c.nombre+' movido a Exportar','success');
+  } else {
+    document.getElementById('scanStatus').textContent='No encontrado: '+code;
+    logEl.innerHTML='<div style="padding:6px 10px;background:#fee2e2;border-radius:10px;margin-bottom:6px;font-size:.78rem;font-weight:700;color:#991b1b;">&#10005; Codigo no encontrado: '+code+'</div>'+logEl.innerHTML;
+    showToast('Codigo no encontrado','error');
+  }
+  setTimeout(function(){document.getElementById('scanStatus').textContent='Buscando codigo...';},2000);
+}
+
+function scanManualSubmit(){
+  var val=document.getElementById('scanManual').value.trim();
+  if(!val) return;
+  processScan(val);
+  document.getElementById('scanManual').value='';
 }
 
 // ── TOAST ──
