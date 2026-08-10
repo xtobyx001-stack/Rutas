@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LLEGA YA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{background:#f0f4f8;color:#0f172a;min-height:100vh;padding-bottom:20px;overflow-x:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;}
@@ -923,69 +924,71 @@ function sendWA(){
 }
 
 // ── SCANNER ──
-var scanRuta=1, scanStream=null, scanInterval=null, scanLog=[];
+var scanRuta=1, scanReader=null, scanLog=[];
 
 function openScanner(r){
   scanRuta=r; scanLog=[];
   document.getElementById('scanLog').innerHTML='';
   document.getElementById('scanManual').value='';
-  document.getElementById('scanStatus').textContent='Buscando codigo...';
+  document.getElementById('scanStatus').textContent='Iniciando camara...';
   openM('mScanner');
-  startCamera();
+  startZXing();
 }
 
-function startCamera(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    document.getElementById('scanStatus').textContent='Camara no disponible';
-    return;
-  }
-  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
-    .then(function(stream){
-      scanStream=stream;
-      var video=document.getElementById('scanVideo');
-      video.srcObject=stream;
-      video.play();
-      // Use BarcodeDetector if available
-      if('BarcodeDetector' in window){
-        var detector=new BarcodeDetector({formats:['qr_code','code_128','code_39','ean_13','ean_8','upc_a','upc_e','data_matrix','pdf417','aztec','itf']});
-        scanInterval=setInterval(function(){
-          if(video.readyState===video.HAVE_ENOUGH_DATA){
-            detector.detect(video).then(function(codes){
-              if(codes.length>0){
-                var code=codes[0].rawValue;
-                processScan(code);
-              }
-            }).catch(function(){});
-          }
-        },500);
-      } else {
-        document.getElementById('scanStatus').textContent='Usa el campo manual';
+function startZXing(){
+  try{
+    var hints=new Map();
+    var formats=[
+      ZXing.BarcodeFormat.CODE_128,
+      ZXing.BarcodeFormat.CODE_39,
+      ZXing.BarcodeFormat.EAN_13,
+      ZXing.BarcodeFormat.EAN_8,
+      ZXing.BarcodeFormat.UPC_A,
+      ZXing.BarcodeFormat.QR_CODE,
+      ZXing.BarcodeFormat.DATA_MATRIX,
+      ZXing.BarcodeFormat.PDF_417,
+      ZXing.BarcodeFormat.ITF
+    ];
+    hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
+    hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+    scanReader=new ZXing.BrowserMultiFormatReader(hints);
+    var video=document.getElementById('scanVideo');
+    scanReader.decodeFromVideoDevice(null, video, function(result, err){
+      if(result){
+        processScan(result.getText());
       }
-    })
-    .catch(function(){
-      document.getElementById('scanStatus').textContent='Sin acceso a camara - usa campo manual';
     });
+    document.getElementById('scanStatus').textContent='Buscando codigo...';
+  }catch(e){
+    document.getElementById('scanStatus').textContent='Usa el campo manual';
+    console.error(e);
+  }
 }
 
 function closeScanner(){
-  if(scanInterval){clearInterval(scanInterval);scanInterval=null;}
-  if(scanStream){scanStream.getTracks().forEach(function(t){t.stop();});scanStream=null;}
-  document.getElementById('scanVideo').srcObject=null;
+  if(scanReader){
+    try{scanReader.reset();}catch(e){}
+    scanReader=null;
+  }
+  var video=document.getElementById('scanVideo');
+  if(video&&video.srcObject){
+    video.srcObject.getTracks().forEach(function(t){t.stop();});
+    video.srcObject=null;
+  }
   closeM('mScanner');
 }
 
 function processScan(code){
   code=String(code).trim();
   if(!code) return;
-  // Avoid duplicate scans in same session
   if(scanLog.indexOf(code)>-1) return;
   scanLog.push(code);
-  // Find client only among those with GPS (pendientes tab)
   var r=scanRuta;
+  // Search by _uid, nota, or name - only pendientes with GPS
   var c=cl[r].find(function(x){
     var isPendiente=(x.estado==='pendiente'||!x.estado)&&x.lat&&x.lng;
     return isPendiente && (
-      x._uid===code ||
+      String(x._uid)===code ||
       (x.nota&&x.nota.toLowerCase().indexOf(code.toLowerCase())>-1) ||
       (x.nombre&&x.nombre.toLowerCase().indexOf(code.toLowerCase())>-1)
     );
@@ -993,12 +996,12 @@ function processScan(code){
   var logEl=document.getElementById('scanLog');
   if(c){
     addExp(c._uid,r);
-    document.getElementById('scanStatus').textContent='Escaneado: '+c.nombre;
+    document.getElementById('scanStatus').textContent='OK: '+c.nombre;
     logEl.innerHTML='<div style="padding:6px 10px;background:#dcfce7;border-radius:10px;margin-bottom:6px;font-size:.78rem;font-weight:700;color:#166534;">&#10003; '+c.nombre+' &#8594; Exportar</div>'+logEl.innerHTML;
     showToast('&#10003; '+c.nombre+' movido a Exportar','success');
   } else {
     document.getElementById('scanStatus').textContent='No encontrado: '+code;
-    logEl.innerHTML='<div style="padding:6px 10px;background:#fee2e2;border-radius:10px;margin-bottom:6px;font-size:.78rem;font-weight:700;color:#991b1b;">&#10005; Codigo no encontrado: '+code+'</div>'+logEl.innerHTML;
+    logEl.innerHTML='<div style="padding:6px 10px;background:#fee2e2;border-radius:10px;margin-bottom:6px;font-size:.78rem;font-weight:700;color:#991b1b;">&#10005; No encontrado: '+code+'</div>'+logEl.innerHTML;
     showToast('Codigo no encontrado','error');
   }
   setTimeout(function(){document.getElementById('scanStatus').textContent='Buscando codigo...';},2000);
