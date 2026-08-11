@@ -984,18 +984,23 @@ function processScan(code){
   if(scanLog.indexOf(code)>-1) return;
   scanLog.push(code);
   var r=scanRuta;
-  // Search by _uid, nota, or name - only pendientes with GPS
-  var c=cl[r].find(function(x){
-    var isPendiente=(x.estado==='pendiente'||!x.estado)&&x.lat&&x.lng;
-    return isPendiente && (
-      String(x._uid)===code ||
-      (x.nota&&x.nota.toLowerCase().indexOf(code.toLowerCase())>-1) ||
-      (x.nombre&&x.nombre.toLowerCase().indexOf(code.toLowerCase())>-1)
-    );
+  // Search ALL clients in both routes - only condition is having GPS
+  var found=null, foundR=null;
+  [1,2].forEach(function(ruta){
+    if(found) return;
+    var c=cl[ruta].find(function(x){
+      var tieneGps=x.lat&&x.lng;
+      return tieneGps && (
+        String(x._uid)===code ||
+        (x.nota&&x.nota.toLowerCase().indexOf(code.toLowerCase())>-1) ||
+        (x.nombre&&x.nombre.toLowerCase().indexOf(code.toLowerCase())>-1)
+      );
+    });
+    if(c){found=c;foundR=ruta;}
   });
-  var logEl=document.getElementById('scanLog');
+  var c=found, logEl=document.getElementById('scanLog');
   if(c){
-    addExp(c._uid,r);
+    addExp(c._uid,foundR);
     document.getElementById('scanStatus').textContent='OK: '+c.nombre;
     logEl.innerHTML='<div style="padding:6px 10px;background:#dcfce7;border-radius:10px;margin-bottom:6px;font-size:.78rem;font-weight:700;color:#166534;">&#10003; '+c.nombre+' &#8594; Exportar</div>'+logEl.innerHTML;
     showToast('&#10003; '+c.nombre+' movido a Exportar','success');
