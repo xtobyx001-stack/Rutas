@@ -506,6 +506,7 @@ function render(r){
           +'<div class="cv2-num" '+txtNum+'>#'+(i+1)+'</div>'
           +'<div class="cv2-name" '+txtName+'>'+(c.nombre||'Sin nombre')+(c.vip?' <span class="vip-badge">&#11088; VIP</span>':'')+(su?' <span class="cv2-tag tag-gps">Sin GPS</span>':'')+(em?' <span class="cv2-tag tag-multi">'+c.pedidos.length+' pedidos</span>':'')+'</div>'
           +'<div class="cv2-sub" '+txtSub+'>&#128222; '+(c.telefono||'&mdash;')+(cv?' &nbsp;&middot;&nbsp; <strong>RD$ '+cv.toLocaleString()+'</strong>':'')+'</div>'
+          +(c._uid?'<div style="font-size:.68rem;color:#94a3b8;margin-top:2px;">&#128230; Cod: '+c._uid+'</div>':'')
         +'</div>'
         +'<div class="cv2-sort"><button onclick="reorder(\''+id+'\','+r+',-1)" class="cv2-sort-btn">&#9650;</button><button onclick="reorder(\''+id+'\','+r+',1)" class="cv2-sort-btn">&#9660;</button></div>'
         +'</div>'+nh
@@ -816,7 +817,7 @@ function openMaps(r){
 // ── WHATSAPP ──
 var waStates = [
   {key:'pendiente', icon:'&#128230;', label:'Pendiente', cls:'st-pendiente', useFecha:true,
-   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta pendiente.'+(f?' Fecha estimada de entrega: '+f:'')+' \n\nComparte tu ubicacion para coordinar la entrega.';}},
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Estamos listos para entregar tu pedido '+p+'. Solo estamos a la espera de tu ubicacion para colocarlo en ruta y enviarlo lo antes posible.'+(f?' Fecha estimada: '+f:'')+'\n\nPor favor comparte tu ubicacion para coordinar la entrega. Gracias!';}}  ,
   {key:'proceso', icon:'&#128336;', label:'En proceso', cls:'st-proceso', useFecha:true,
    msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' esta en proceso.'+(f?' Fecha estimada de entrega: '+f:'')+' \n\nComparte tu ubicacion para coordinar la entrega.';}},
   {key:'transito', icon:'&#128666;', label:'En transito', cls:'st-transito', useFecha:true,
@@ -826,15 +827,7 @@ var waStates = [
   {key:'entregado', icon:'&#9989;', label:'Entregado', cls:'st-entregado', useFecha:true,
    msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue entregado.'+(f?' Fecha de entrega: '+f:'')+' Gracias!';}},
   {key:'devuelto', icon:'&#10060;', label:'Devuelto / Cancelado', cls:'st-devuelto', useFecha:true,
-   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.'+(f?' Fecha: '+f:'');}},
-  {key:'norespuesta', icon:'&#128222;', label:'Sin respuesta (ayer)', cls:'st-norespuesta', useFecha:false,
-   msg:function(n,p,f){return 'Buenos dias '+n+', le contactamos ayer para coordinar la entrega de su pedido '+p+' y no pudimos comunicarnos. Podria estar pendiente a su celular hoy? Gracias. - LLEGA YA';}},
-  {key:'encuesta', icon:'&#128203;', label:'Encuesta de entrega', cls:'st-encuesta', useFecha:false,
-   msg:function(n,p,f){return 'Su pedido esta en proceso para ser despachado.\n\nPor favor, indiquenos como desea recibirlo:\n\n\uD83C\uDD70\uFE0F *Entrega estandar* - Sin costo adicional, con nuestros mensajeros habituales.\n\n\uD83C\uDD71\uFE0F *Entrega prioritaria* - Por 100 pesos de propina, su pedido sera entregado por un mensajero externo de nuestra confianza, con la mayor rapidez posible.\n\nSeleccione una opcion.\n\n*1* Opcion (A) Entrega estandar\n\n*2* Opcion (B) Entrega rapida con chofer exterior\n\nEnvie 1 o 2 segun su preferencia de entrega.';}},
-  {key:'confirm_prioritaria', icon:'&#9889;', label:'Confirmar entrega prioritaria', cls:'st-confirm-prioritaria', useFecha:false,
-   msg:function(n,p,f){return '\u2705 Excelente eleccion! Su pedido sera entregado mediante nuestro servicio prioritario, a traves de un mensajero externo de nuestra confianza.\n\nEste mensajero se pondra en camino de inmediato para garantizarle la mayor rapidez posible.\n\nPor favor, tenga disponible la propina de 100 pesos para el mensajero al momento de la entrega.\n\nGracias por confiar en nosotros. \uD83D\uDE4C';}},
-  {key:'confirm_estandar', icon:'&#10003;', label:'Confirmar entrega estandar', cls:'st-confirm-estandar', useFecha:false,
-   msg:function(n,p,f){return '\u2705 Perfecto! Su pedido sera entregado mediante nuestro servicio estandar, sin costo adicional.\n\nUno de nuestros mensajeros se pondra en camino y le notificaremos cuando este cerca de su ubicacion.\n\nGracias por confiar en nosotros. \uD83D\uDE4C';}}
+   msg:function(n,p,f){return '[LLEGA YA] Hola '+n+'! Tu pedido '+p+' fue devuelto/cancelado.'+(f?' Fecha: '+f:'');}}
 ];
 
 function openWA(id,r){
