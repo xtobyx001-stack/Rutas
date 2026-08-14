@@ -223,12 +223,14 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
   <div class="adm-bar">
     <button class="btn-blue" onclick="document.getElementById('fx1').click()">&#128202; Excel</button>
     <button style="background:#059669;color:#fff;border:1.5px solid #059669;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fj1').click()">{} JSON</button>
+    <button style="background:#e0f2fe;color:#0369a1;border:1.5px solid #7dd3fc;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fc1').click()">&#128196; CSV</button>
     <button class="btn-purple" onclick="sortNearest(1)">&#9889; Cercan&#237;a</button>
     <button class="btn-green" onclick="abrirNuevo(1)">+ Cliente</button>
     <button style="background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="openScanner(1)">&#128247; Scan</button>
   </div>
   <input type="file" id="fx1" accept=".xlsx,.xls" style="display:none" onchange="loadXL(event,1)">
   <input type="file" id="fj1" accept=".json" style="display:none" onchange="loadJSON(event,1)">
+  <input type="file" id="fc1" accept=".csv,.txt" style="display:none" onchange="loadCSV(event,1)">
   <div id="map-wrap1"><canvas id="mc1" style="width:100%;display:block;border-radius:18px;"></canvas>
     <div style="position:absolute;bottom:10px;right:10px;"><button onclick="openMaps(1)" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;">&#127758; Abrir en Maps</button></div>
     <div style="position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#0f172a;" id="mi1"></div>
@@ -259,11 +261,13 @@ header h1{font-size:.95rem;font-weight:800;color:#0f172a;letter-spacing:-.2px;}
   <div class="adm-bar adm-bar-r2">
     <button style="background:#1e3a5f;border:1.5px solid #2563eb;color:#60a5fa;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fx2').click()">&#128202; Excel</button>
     <button style="background:#134e2a;border:1.5px solid #16a34a;color:#4ade80;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fj2').click()">{} JSON</button>
+    <button style="background:#0c4a6e;border:1.5px solid #38bdf8;color:#7dd3fc;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="document.getElementById('fc2').click()">&#128196; CSV</button>
     <button style="background:#2e1065;border:1.5px solid #7c3aed;color:#c4b5fd;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="sortNearest(2)">&#9889; Cercan&#237;a</button>
     <button style="background:#134e2a;border:1.5px solid #16a34a;color:#4ade80;border-radius:18px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="abrirNuevo(2)">+ Cliente</button>
   </div>
   <input type="file" id="fx2" accept=".xlsx,.xls" style="display:none" onchange="loadXL(event,2)">
   <input type="file" id="fj2" accept=".json" style="display:none" onchange="loadJSON(event,2)">
+  <input type="file" id="fc2" accept=".csv,.txt" style="display:none" onchange="loadCSV(event,2)">
   <div id="map-wrap2"><canvas id="mc2" style="width:100%;display:block;border-radius:18px;"></canvas>
     <div style="position:absolute;bottom:10px;right:10px;"><button onclick="openMaps(2)" style="background:#2563eb;color:#fff;border:none;border-radius:14px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;">&#127758; Abrir en Maps</button></div>
     <div style="position:absolute;top:10px;left:10px;background:rgba(15,23,42,.85);border-radius:10px;padding:5px 10px;font-size:.7rem;font-weight:700;color:#e2e8f0;" id="mi2"></div>
@@ -471,7 +475,13 @@ function render(r){
   var le=document.getElementById('list'+r);
   var q=(document.getElementById('bq'+r).value||'').toLowerCase().trim();
   var data=getData(r,t);
-  if(q) data=data.filter(function(c){return(c.nombre||'').toLowerCase().indexOf(q)>-1||(c.telefono||'').indexOf(q)>-1;});
+  if(q) data=data.filter(function(c){
+    var uid4=c._uid?String(c._uid).slice(-4):'';
+    return (c.nombre||'').toLowerCase().indexOf(q)>-1
+      ||(c.telefono||'').indexOf(q)>-1
+      ||(c._uid&&String(c._uid).toLowerCase().indexOf(q)>-1)
+      ||(uid4&&uid4===q);
+  });
   var mw=document.getElementById('map-wrap'+r);
   if(t==='pendientes'){
     var gps=cl[r].filter(function(c){return(c.estado==='pendiente'||!c.estado)&&c.lat&&c.lng;});
@@ -535,7 +545,11 @@ function renderExp(r){
   var le=document.getElementById('list'+r), exp=ex[r];
   if(!exp.length){le.innerHTML='<div class="empty"><span class="empty-icon">&#128228;</span><p>No hay contactos aqu&#237;</p></div>';return;}
   le.innerHTML='<div style="padding:10px">'
-    +'<button class="ibtn ibtn-primary" onclick="dlJSON('+r+')" style="margin-bottom:8px;">&#11015; Descargar JSON ('+exp.length+')</button>'
+    +'<div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Descargar como</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:16px;">'
+    +'<button class="ibtn ibtn-primary" onclick="dlJSON('+r+')" style="margin:0;flex:1;">&#128196; JSON</button>'
+    +'<button style="flex:1;padding:14px;border-radius:18px;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;border:1.5px solid #7dd3fc;background:#e0f2fe;color:#0369a1;" onclick="dlCSV('+r+')">&#128196; CSV</button>'
+    +'</div>'
     +'<button class="ibtn ibtn-danger" style="margin-bottom:16px" onclick="if(confirm(\'Limpiar lista?\')){ex['+r+']=[];save('+r+')}">&#128465; Limpiar lista</button>'
     +exp.map(function(c){return'<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+cod(c).toLocaleString()+' &middot; '+(c.telefono||'&mdash;')+'</div></div><button class="ec-btn" onclick="rmExp(\''+c._uid+'\','+r+')">&#10005; Quitar</button></div>';}).join('')
     +'</div>';
@@ -658,6 +672,58 @@ function addExp(id,r){
 function rmExp(id,r){
   ex[r]=ex[r].filter(function(x){return x._uid!==id;});
   var c=cl[r].find(function(x){return x._uid===id;}); if(c) c.estado='pendiente'; save(r);
+}
+function dlCSV(r){
+  var exp=ex[r];
+  var def='llega_ya_ruta'+r+'_'+new Date().toISOString().slice(0,10);
+  var n=prompt('Nombre del archivo:',def); if(!n) return; n=n.replace(/\.csv$/i,'');
+  var rows=[['_uid','nombre','telefono','cod','nota','lat','lng','estado','vip','colorMark']];
+  exp.forEach(function(c){
+    rows.push([c._uid||'',c.nombre||'',c.telefono||'',cod(c),c.nota||'',c.lat||'',c.lng||'','pendiente',c.vip?'true':'false',c.colorMark||'']);
+  });
+  var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=n+'.csv'; a.click();
+}
+
+function loadCSV(e,r){
+  var f=e.target.files[0]; if(!f) return; e.target.value='';
+  var rd=new FileReader();
+  rd.onload=function(ev){
+    try{
+      var text=ev.target.result.replace(/^\uFEFF/,'');
+      var lines=text.split('\n').filter(function(l){return l.trim();});
+      if(lines.length<2){showToast('CSV vacio','error');return;}
+      var headers=lines[0].split(',').map(function(h){return h.replace(/^"|"$/g,'').trim();});
+      function getCol(name){var idx=headers.indexOf(name);return idx>-1?idx:-1;}
+      var iUid=getCol('_uid'),iNom=getCol('nombre'),iTel=getCol('telefono');
+      var iCod=getCol('cod'),iNota=getCol('nota'),iLat=getCol('lat'),iLng=getCol('lng');
+      var iVip=getCol('vip'),iColor=getCol('colorMark');
+      var bu=new Set(cl[r].map(function(c){return c._uid;})), ag=0, om=0;
+      for(var i=1;i<lines.length;i++){
+        var cols=lines[i].match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g)||[];
+        cols=cols.map(function(v){return v.replace(/^"|"$/g,'').replace(/""/g,'"').trim();});
+        var uid=iUid>-1?cols[iUid]:'';
+        if(!uid||bu.has(uid)){om++;continue;}
+        bu.add(uid);
+        cl[r].push({
+          _uid:uid,
+          nombre:iNom>-1?cols[iNom]||'':'',
+          telefono:iTel>-1?(cols[iTel]||'').replace(/\D/g,''):'',
+          cod:iCod>-1?parseFloat(cols[iCod])||0:0,
+          nota:iNota>-1?cols[iNota]||'':'',
+          lat:iLat>-1&&cols[iLat]?parseFloat(cols[iLat])||null:null,
+          lng:iLng>-1&&cols[iLng]?parseFloat(cols[iLng])||null:null,
+          vip:iVip>-1?cols[iVip]==='true':false,
+          colorMark:iColor>-1?cols[iColor]||null:null,
+          estado:'pendiente'
+        });
+        ag++;
+      }
+      save(r); showToast(ag+' clientes importados'+(om?' / '+om+' dup.':''),'success');
+    }catch(err){showToast('Error leyendo CSV','error');console.error(err);}
+  };
+  rd.readAsText(f,'UTF-8');
 }
 function dlJSON(r){
   var def='llega_ya_ruta'+r+'_'+new Date().toISOString().slice(0,10);
