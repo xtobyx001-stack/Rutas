@@ -547,8 +547,8 @@ function renderExp(r){
   le.innerHTML='<div style="padding:10px">'
     +'<div style="font-size:.65rem;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Descargar como</div>'
     +'<div style="display:flex;gap:8px;margin-bottom:16px;">'
-    +'<button class="ibtn ibtn-primary" onclick="dlJSON('+r+')" style="margin:0;flex:1;">&#128196; JSON</button>'
-    +'<button style="flex:1;padding:14px;border-radius:18px;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;border:1.5px solid #7dd3fc;background:#e0f2fe;color:#0369a1;" onclick="dlCSV('+r+')">&#128196; CSV</button>'
+    +'<button class="ibtn ibtn-primary" onclick="dlJSON('+r+')" style="margin:0;flex:1;">&#128196; JSON ('+exp.length+')</button>'
+    +'<button style="flex:1;padding:14px;border-radius:18px;font-size:.9rem;font-weight:700;cursor:pointer;text-align:center;border:1.5px solid #7dd3fc;background:#e0f2fe;color:#0369a1;" onclick="dlCSV('+r+')">&#128196; CSV ('+exp.length+')</button>'
     +'</div>'
     +'<button class="ibtn ibtn-danger" style="margin-bottom:16px" onclick="if(confirm(\'Limpiar lista?\')){ex['+r+']=[];save('+r+')}">&#128465; Limpiar lista</button>'
     +exp.map(function(c){return'<div class="export-card"><div><div class="ec-info">'+(c.nombre||'Sin nombre')+'</div><div class="ec-sub">RD$ '+cod(c).toLocaleString()+' &middot; '+(c.telefono||'&mdash;')+'</div></div><button class="ec-btn" onclick="rmExp(\''+c._uid+'\','+r+')">&#10005; Quitar</button></div>';}).join('')
@@ -1088,10 +1088,13 @@ function showToast(msg,type){
 
 // ── INIT ──
 (function(){
-  ['pendientes','sin_ubicacion','completados','exportar'].forEach(function(t,i){
-    document.querySelectorAll('#tabs1 .tab')[i].classList.toggle('active',t===tabs[1]);
-    document.querySelectorAll('#tabs2 .tab')[i].classList.toggle('active',t===tabs[2]);
-  });
+  try{
+    var tabKeys=['pendientes','sin_ubicacion','completados','exportar'];
+    [1,2].forEach(function(r){
+      var els=document.querySelectorAll('#tabs'+r+' .tab');
+      tabKeys.forEach(function(t,i){if(els[i])els[i].classList.toggle('active',t===tabs[r]);});
+    });
+  }catch(e){}
   render(1); render(2); updCounts();
 })();
 </script>
